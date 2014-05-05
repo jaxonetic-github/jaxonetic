@@ -1,0 +1,13 @@
+{
+  "name" : "JaxonSpace Theme",
+  "description" : "My default layout",
+  "screenshot" : "screenshot.png",
+
+  "author" : "Alonzo Jackson",
+  "authorEmail" : "jaxonetic@gmail.com",
+  "authorUrl" : "http://authorswebsite.com",
+
+  "menus" : ["main"],
+
+  "regions" : ["none"]
+}

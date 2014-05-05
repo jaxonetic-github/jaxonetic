@@ -1,0 +1,242 @@
+.scrollspy-example {
+  display: block;
+  overflow: scroll;
+  width: 300px;
+  height: 200px;
+}
+//************   general  
+#bottom-content{margin-top:150px}
+
+.margined-paragraph{    margin-bottom: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 66%;}
+
+.carousel-inner {
+    text-align: center;
+  }
+  
+  //teal
+  #flashMessages{  color: #008080;
+                   font-size: 22px;}
+#site-news{height:250px}
+#site-news-nav{position:absolute; top:0; right:35px; z-index:101};
+.uppercased{ text-transform: uppercase;}
+.capitalized{text-transform:capitalize;}
+.active-mainnav-item, .active{background-color:rgba(210,210,210,.8);}
+.rocky-img-responsive {
+    display: block;  height: auto;   width: 55%;    margin: auto;
+}
+.rocky-project-img-responsive {
+    display: block; height: auto;   width: 110%;    margin: auto;
+}
+
+.rocky-center-aligned{text-align:center}
+//***********  endgeneral
+
+//*********   overriding bootstrap 
+.navbar-default {
+    background-color: transparent;
+    border: none;
+    
+}
+
+//center the 4rowed button
+@media (max-width: 768px) {
+
+  .navbar-header button{ display: block;margin-left: auto;    margin-right: auto;}
+}
+
+.navbar-toggle {float:none}
+.col-md-9 {
+    float: right !important;
+}
+.col-md-5 {
+    width: 66.667% !important;
+}
+
+//**************   home
+
+body {
+  #wrapper {    border-top: 10px solid #444444;}
+    background-image: url("img/bkgrnd_print.png"); background-size: cover; background-position: center top;
+    color: #EEEEEE;
+    padding:0;
+    
+   ul.navtext{index-z:100; a{color:white;font-weight: bolder; font-size: 16px; font-size-adjust: 0.6;text-transform: uppercase;font-stretch: ultra-condensed;}}
+   .home-text{font-size:16px}
+.jumbotron {  background-color: rgba(0, 0, 0, 0) !important; padding-bottom:0;
+  .container{ max-width: 1109px;
+  .horizontal-bar{width:100%; height:4px; background-color:gray;}
+  
+  
+  
+  //-------------  News
+  .home-news-banneritems{background-color:gray; font-size: 16px; text-align:left;width:100%;
+            .img-cell{text-align:center; vertical-align: middle;width:24%;
+                .thumbnail{margin:10px}
+                img{}
+            }
+            .text-cell{max-width: 600px;width: 55%;}
+            .nav-date-cell{text-align:right; vertical-align: top;width: 17%;
+                            ul{position:relative;text-align:right; height: 156px;
+                            .bottomdate{height:75%}
+                            }
+             }
+            
+            .news-banner-text{text-align:left; color:#555; font-weight: bold;font-stretch: ultra-condensed;}
+            .news-banner-title{text-align:left;color:#000; font-weight: bolder; font-size: 16px; font-size-adjust: 0.8;text-transform: uppercase;font-stretch: ultra-condensed;}
+            .news-banner-date-text{color:#ccc;bottom: 10px; position: absolute;   width: 100%;}                           
+  }
+  
+  //-------------  Framing, Fiber, Concrete 3 Column Banner
+    #home-carousel{
+      .carousel-inner{
+         .item{ 
+            .list-inline{
+               li.imgLiquidFill{height:500px; width:30%; vertical-align: middle;}
+               }//.list-inline                
+          }//.item
+      }//.carousel-inner
+    }//#home-carousel
+}//.container
+}//.jumbotron
+
+
+footer{text-align:center}
+
+}//body
+
+
+
+//***********  projects   ************/
+
+#project-content.container_16 .grid_11 {
+    float: right;
+    width: 640px;
+
+
+}
+
+#sidebar{
+   .has-thick-bottom-border{border-bottom: 10px solid rgba(200, 200, 200, 0.5); line-height: 2.5;}
+  .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+    background-color:transparent;
+  }
+  .nav >li{border-bottom: 0.1px dotted;}
+  a{color:white}
+#sidebar-header {
+    background-color: rgba(40, 40, 40, 0.77);
+    border-top: 2px outset;
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+    margin-top: -5px;
+}
+.sidenav-category{
+        .category-indicator{padding-right:10px}
+          a{span{line-height:3.5}}
+ .inner-project-nav{display:none}        
+}
+
+
+#sidenav-footer{background-color:rgba(0,0,0,.3); height: 82px;}
+#footer-img-overlay{background-color: rgba(100, 100, 100, 0.64);
+    height: 100%;
+    position: absolute;
+    top: 0;
+    width: 100%;}
+}/***sidebar***/
+
+
+
+
+
+
+/*** Styles to affix sidebar  */
+.body {
+  position: relative;
+}
+.affix {
+  width: inherit; //helped keep the content the same size on fluid layouts
+  position: fixed;
+  top: 50px;  //height of the nav
+}
+
+.affix-top {
+   width: inherit;
+  position: absolute;
+  top: 295px;  //height of the footer
+}
+
+#projects-sidemenu{background-color: rgba(200,200,200,.5); border-bottom-right-radius: 9px; border-bottom-left-radius: 9px;}
+.projects-detailcategory-section{ padding-top:20px;
+//.small-category{font-size:50%}
+.category-title{font-size:30px}
+ }
+.projects-actualdetail-section{background-color:rgba(130, 130, 130, 0.92); padding-top:15px; padding-bottom:15px;margin-bottom: 5px;
+   .detail-image{height: 300px;max-height: 300px;   width: 100%;}
+   dl{margin-left: 20px;}
+   dt{text-align:left}
+  
+}
+
+//********* Contact Form
+
+.contact-form{width:60%;
+  label{float:left}
+  input{width:100%}
+  textarea{width:100%}
+  .submit{width:25%}
+
+}
+
+
+//********      Community    ********//
+#community-box{
+.rocky-thumb{  img{ max-height:250px;}}
+.description-box{vertical-align:top;}
+}
+
+#community-logos{text-align: center; width:90%;padding-bottom: 67px;
+.logo-img-frame{display: inline-table;max-width: 200px;
+img{border-radius:6px}}
+dt{width:33%}
+dd{width:66%}
+}
+
+
+.rocky-project-topnav{margin-top:10px}
+
+//*********        top navbar     *********//
+.rocky-project-topnav, .rockytopnav{margin-top:100px;
+   .dropdown-menu{   margin-top: -1px; background-color: lightslategrey;}
+   .rocky-dropdownmenulevelone-active{ background-color: #EEEEEE;}
+  // .nav .open > a,  .nav .open > a:hover {background-color: #EEEEEE;}
+  // .nav .open > a:focus{background-color:transparent}
+}
+.rocky-menuitem{
+  a{ font-family: fantasy; font-size: 35px;}
+}
+
+//************    admin
+#admin-login {
+    //margin: 120px auto 0;
+    //max-width: 352px;
+    .box {
+          background-color: #F5F5F5;
+          border: 1px solid #DDDDDD;
+          border-radius: 2px;
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+          margin-bottom: 10px;
+          min-height: 20px;
+          padding: 10px;
+          .radio, .checkbox {min-height: 20px;    padding-left: 20px;}
+          .radio input[type="radio"], .checkbox input[type="checkbox"] {float: none;margin-left: -20px; margin-right: 35px;}
+           input[type="radio"], input[type="checkbox"] {  width: auto;}
+           
+           //specifically for the "Remember Me" text
+           label{color: #428BCA;}
+    }//.box
+      
+}
+

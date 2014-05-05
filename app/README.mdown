@@ -1,0 +1,29 @@
+# Customizable Website for a Client
+
+This is a PHP 5.4+ based site with Croogo 1.5 as CMS and powered by [CakePHP](http://cakephp.org) MVC framework.
+
+This is a work in progress based on a rushed job I did for a client.  There are parts (i.e. File uploads) where 
+I need to do some refactoring because in the middle of development you can't optimize everything.  So I hang my head 
+in shame at those parts. 
+
+## Requirements
+  * Apache with `mod_rewrite`
+  * PHP 5.4 or higher
+  * MySQL 4.1 or higher (`utf8_unicode_ci` collation)
+
+## Installation
+
+#### Installation using git  --Incomplete
+
+  * Ensure you have a recent cakephp version 2.3
+  * Run `git submodule update --init`
+  *
+## Links
+
+  * **Official website**: [http://croogo.org](http://croogo.org)
+  * **Blog**: [http://blog.croogo.org](http://blog.croogo.org)
+  * **Downloads**: [http://downloads.croogo.org](http://downloads.croogo.org)
+  * **Issue Tracker**: [http://github.com/croogo/croogo/issues](http://github.com/croogo/croogo/issues)
+  * **Documentation**: [http://docs.croogo.org](http://docs.croogo.org)
+  * **Google Group**: [http://groups.google.com/group/croogo](http://groups.google.com/group/croogo)
+  * **IRC Channel**: [#croogo](irc://irc.freenode.net/croogo) on irc.freenode.net

@@ -1,0 +1,142 @@
+$overlay-color:rgba(212,200,175,.7);
+$margin-standard : 25px;
+$topnav-text-color:teal;
+$overlay-text-color:#251313;
+//************   general  
+#bottom-content{margin-top:150px}
+
+.margined-paragraph{    margin-bottom: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 66%;}
+
+.left-margined-paragraph{    margin-bottom: 30px;
+    margin-left: $margin-standard;
+    margin-right: $margin-standard;}
+
+
+.carousel-inner {
+    text-align: center;
+  }
+  
+  //teal
+  #flashMessages{  color: #008080;
+                   font-size: 22px;}
+
+.uppercased{ text-transform: uppercase;}
+.capitalized{text-transform:capitalize;}
+.active-mainnav-item, .active{background-color:rgba(210,210,210,.8);}
+.jax-img-responsive {
+    display: block;  height: auto;   width: 55%;    margin: auto;
+}
+.jax-project-img-responsive {
+    display: block; height: auto;   width: 110%;    margin: auto;
+}
+
+.jax-center-aligned{text-align:center}
+a {color: #295377;}
+h3{color:darkslategray}
+h4{color:sienna}
+//***********  endgeneral
+
+//*********   overriding bootstrap 
+.navbar-default {
+    background-color: transparent;
+    border: none;
+  }  
+.navbar-toggle {float:none}
+
+@media (min-width: 768px){
+.navbar-inverse {background-color: transparent;border-color: #080808;margin-left:0;width: 60%;}
+ .jax-innerpage-pane{ width: 54%; margin-left:$margin-standard; }
+}
+@media (max-width: 640px) {
+.navbar-fixed-top, .navbar-fixed-bottom {
+   //right:auto;
+   width:100%
+   }
+   .navbar-inverse {width:100%; border-color: #080808;}
+    
+}
+@media (max-width: 768px) {
+.navbar-fixed-top, .navbar-fixed-bottom {
+   right:auto;
+   width:100%
+   }
+   .navbar-toggle{ display: block;margin-right: auto;margin-left: auto;}
+   .jax-innerpage-pane{ width: 79%; display: block;margin-right: auto;margin-left: auto;}
+ }
+@media (min-width: 768px) and(max-width: 960px) {
+.navbar-inverse {  background-color: #222222;border-color: #080808; margin-left:0; min-width: 250px;width: 50%;}
+.navbar-fixed-top, .navbar-fixed-bottom {right:0;}
+.nav{width:100%}
+  //.navbar-header button{ display: block;margin-left: auto;    margin-right: auto;}
+}
+@media (min-width: 1100px){
+
+ .jax-innerpage-pane{  margin-left:5% }
+}
+
+
+//**************   home
+html{
+  height: 100%;
+}
+
+ 
+
+body {
+  #wrapper {    margin-top: 4em; background-color: transparent;}
+    background-image: url("img/me.png"); background-size: cover; background-position: center top;
+    background-position:  top;
+    background-repeat: no-repeat;
+    background-color: #000;
+    color: #251313;
+    padding:0;
+    font-size: 16px;
+  
+
+
+footer{text-align:center}
+
+}//body
+//*********** 
+
+.jax-innerpage-pane{min-width:500px; background-color:$overlay-color;
+    iframe{padding-bottom: $margin-standard;}
+}
+
+.btn-primary{ background-color: $topnav-text-color;}
+.modal-content {
+position: relative;
+ background-color: $overlay-color;
+}
+
+
+
+  .modal-header{background-color: darkslategray;
+   border-radius:10px 10px 0 0;border-bottom:none} //specifically for the resume modal
+
+.jax-project-topnav{margin-top:10px}
+
+//*********        top navbar     *********//
+.jax-project-topnav, .jaxtopnav{margin-top:100px;
+   .dropdown-menu{   margin-top: -1px; background-color: lightslategrey;}
+   .jax-dropdownmenulevelone-active{ background-color: #EEEEEE;}
+  // .nav .open > a,  .nav .open > a:hover {background-color: #EEEEEE;}
+  // .nav .open > a:focus{background-color:transparent}
+}
+.jax-menuitem{
+  a{ font-family: fantasy; font-size: 25px; color:$topnav-text-color;}
+}
+
+#threeCanvas{width:400px; height:400px}
+
+//***********  resume   ************/
+#resume{background-color:$overlay-color; margin:0; color:$overlay-text-color;
+  h3 , h4{display:block; margin:auto}
+  .section{padding:10px 25px 25px 25px}
+  dt{color:sienna;}
+ dd{margin-left:$margin-standard;}
+  
+}
