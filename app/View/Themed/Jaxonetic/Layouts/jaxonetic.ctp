@@ -34,12 +34,19 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		echo $this->Html->css("jumbotron");
 		echo $this->Html->css("jax");
 		
+        
+        
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
 		echo $this->Html->script('jquery-2.0.2.min');
-         echo $this->Html->script('three.min');
+         echo $this->Html->script('three');
 		echo $this->fetch('script');
+        
+//echo $this->Html->tag('script', '', array('src' => 'theme/Jaxonetic/fonts/helvetiker_bold.typeface.js'));
+
 		?>
+		
+		<script src='theme/Jaxonetic/fonts/helvetiker_regular.typeface.js'></script>
 </head>
 <body>
   
