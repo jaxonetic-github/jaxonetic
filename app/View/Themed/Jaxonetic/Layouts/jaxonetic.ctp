@@ -32,14 +32,18 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		
         echo $this->Html->css("bootstrap");
 		echo $this->Html->css("jumbotron");
-		echo $this->Html->css("jax");
-		
-        
-        
-		echo $this->fetch('meta');
+		echo $this->Html->css("jax" );
+
+            echo $this->fetch(
+        'meta');
 		echo $this->fetch('css');
 		echo $this->Html->script('jquery-2.0.2.min');
          echo $this->Html->script('three');
+                  echo $this->Html->script('cannon');
+            echo $this->Html->script('PointerLockControls');
+               echo $this->Html->script('VoxelLandscape');
+        //  echo $this->Html->script('physi');
+       //  echo $this->Html->script('tquery');
 		echo $this->fetch('script');
         
 //echo $this->Html->tag('script', '', array('src' => 'theme/Jaxonetic/fonts/helvetiker_bold.typeface.js'));
@@ -69,7 +73,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 </div>
 	<?php 	
 		
-//echo $this->Html->script("jquery.cookie");
+echo $this->Html->script("jquery.cookie");
         echo $this->Html->script('jquery.cycle2.js');
 
             echo $this->Html->script('bootstrap.min');

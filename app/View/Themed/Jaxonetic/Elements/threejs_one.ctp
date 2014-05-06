@@ -6,179 +6,332 @@ jQuery(function($) {
     //starting point from---|||ˆˆˆbut now I to put text. so moving on...
     //-->going to-->stemkoski.github.io/Three.js/Mouse-Click.html
     
-// set the scene size
-var WIDTH = 400;
-var  HEIGHT = 400;
+            var sphereShape, sphereBody, world, physicsMaterial, walls=[], balls=[], ballMeshes=[], boxes=[], boxMeshes=[], voxels, groundBody;
 
-// set some camera attributes
-var VIEW_ANGLE = 45;
-var  ASPECT = WIDTH / HEIGHT;
-var  NEAR = 0.1;
-var  FAR = 10000;
+            var camera, scene, renderer;
+            var geometry, material, mesh;
+            var controls,time = Date.now();
 
-// get the DOM element to attach to
-// - assume we've got jQuery to hand
-var container = $('#threeCanvas');
+            var blocker = document.getElementById( 'blocker' );
+            var instructions = document.getElementById( 'instructions' );
 
-// create a WebGL renderer, camera
-// and a scene
-var renderer = new THREE.WebGLRenderer();
-var camera   =  new THREE.PerspectiveCamera(VIEW_ANGLE,ASPECT,NEAR,FAR);
-var sphere;
-var scene;
-var geometry;
-var material;
-var cube;
+            var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
 
-function init(){
-    scene    = new THREE.Scene();
-    geometry = new THREE.CubeGeometry(1,1,1);
-     material = new THREE.MeshBasicMaterial({color: 0x00ff00}); 
-     cube = new THREE.Mesh(geometry, material); 
-     
-    //-----------------Sphere 
-// set up the sphere vars
-var radius = 60;
-var    segments = 16;
-var    rings = 16;
+            if ( havePointerLock ) {
 
-// create the sphere's material
-var sphereMaterial =
-  new THREE.MeshLambertMaterial(
-    {
-      color: 0xCC0000
-    });
-    
-// create a new mesh with
-// sphere geometry - we will cover
-// the sphereMaterial next!
- sphere= new THREE.Mesh(
-        new THREE.SphereGeometry( radius,  segments, rings),
-        sphereMaterial);
+                var element = document.body;
+
+                var pointerlockchange = function ( event ) {
+
+                    if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
+
+                        controls.enabled = true;
+
+                        blocker.style.display = 'none';
+
+                    } else {
+
+                        controls.enabled = false;
+
+                        blocker.style.display = '-webkit-box';
+                        blocker.style.display = '-moz-box';
+                        blocker.style.display = 'box';
+
+                        instructions.style.display = '';
+
+                    }
+
+                }
+
+                var pointerlockerror = function ( event ) {
+                    instructions.style.display = '';
+                }
+
+                // Hook pointer lock state change events
+                document.addEventListener( 'pointerlockchange', pointerlockchange, false );
+                document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
+                document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
+
+                document.addEventListener( 'pointerlockerror', pointerlockerror, false );
+                document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
+                document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
+
+                instructions.addEventListener( 'click', function ( event ) {
+                    instructions.style.display = 'none';
+
+                    // Ask the browser to lock the pointer
+                    element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+
+                    if ( /Firefox/i.test( navigator.userAgent ) ) {
+
+                        var fullscreenchange = function ( event ) {
+
+                            if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
+
+                                document.removeEventListener( 'fullscreenchange', fullscreenchange );
+                                document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
+
+                                element.requestPointerLock();
+                            }
+
+                        }
+
+                        document.addEventListener( 'fullscreenchange', fullscreenchange, false );
+                        document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
+
+                        element.requestFullscreen = element.requestFullscreen || element.mozRequestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen;
+
+                        element.requestFullscreen();
+
+                    } else {
+
+                        element.requestPointerLock();
+
+                    }
+
+                }, false );
+
+            } else {
+
+                instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
+
+            }
+
+            initCannon();
+            init();
+            animate();
+
+            function initCannon(){
+                // Setup our world
+                world = new CANNON.World();
+                world.quatNormalizeSkip = 0;
+                world.quatNormalizeFast = false;
+
+                var solver = new CANNON.GSSolver();
+
+                world.defaultContactMaterial.contactEquationStiffness = 1e9;
+                world.defaultContactMaterial.contactEquationRegularizationTime = 4;
+
+                solver.iterations = 7;
+                solver.tolerance = 0.1;
+                var split = true;
+                if(split)
+                    world.solver = new CANNON.SplitSolver(solver);
+                else
+                    world.solver = solver;
+
+                world.gravity.set(0,-20,0);
+                world.broadphase = new CANNON.NaiveBroadphase();
+                world.broadphase.useBoundingBoxes = true;
+
+                // Create a slippery material (friction coefficient = 0.0)
+                physicsMaterial = new CANNON.Material("slipperyMaterial");
+                var physicsContactMaterial = new CANNON.ContactMaterial(physicsMaterial,
+                                                                        physicsMaterial,
+                                                                        0.0, // friction coefficient
+                                                                        0.3  // restitution
+                                                                        );
+                // We must add the contact materials to the world
+                world.addContactMaterial(physicsContactMaterial);
+
+                var nx = 50,
+                    ny = 8,
+                    nz = 50,
+                    sx = 0.5,
+                    sy = 0.5,
+                    sz = 0.5;
+
+                // Create a sphere
+                var mass = 5, radius = 1.3;
+                sphereShape = new CANNON.Sphere(radius);
+                sphereBody = new CANNON.RigidBody(mass,sphereShape,physicsMaterial);
+                sphereBody.position.set(nx*sx*0.5,ny*sy+radius*2,nz*sz*0.5);
+                sphereBody.linearDamping = 0.9;
+                world.add(sphereBody);
+
+                // Create a plane
+                var groundShape = new CANNON.Plane();
+                groundBody = new CANNON.RigidBody(0,groundShape,physicsMaterial);
+                groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);
+                groundBody.position.set(0,0,0);
+                world.add(groundBody);
+
+                voxels = new VoxelLandscape(world,nx,ny,nz,sx,sy,sz);
+
+                for(var i=0;  i<nx; i++){
+                    for(var j=0; j<ny; j++){
+                        for(var k=0; k<nz; k++){
+                            var filled = true;
+
+                            // Insert map constructing logic here
+                            if(Math.sin(i*0.1)*Math.sin(k*0.1) < j/ny*2-1)
+                                filled = false;
+
+                              voxels.setFilled(i,j,k,filled);
+
+                        }
+                    }
+                }
+
+                voxels.update();
+                console.log(voxels.boxes.length+" voxel physics bodies");
+            }
+
+            function init() {
+
+                camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+                scene = new THREE.Scene();
+                scene.fog = new THREE.Fog( 0x000000, 0, 500 );
+
+                var ambient = new THREE.AmbientLight( 0x111111 );
+                scene.add( ambient );
+
+                light = new THREE.SpotLight( 0xffffff );
+                light.position.set( 10, 30, 20 );
+                light.target.position.set( 0, 0, 0 );
+                if(true){
+                    light.castShadow = true;
+
+                    light.shadowCameraNear = 20;
+                    light.shadowCameraFar = 50;//camera.far;
+                    light.shadowCameraFov = 40;
+
+                    light.shadowMapBias = 0.1;
+                    light.shadowMapDarkness = 0.7;
+                    light.shadowMapWidth = 2*512;
+                    light.shadowMapHeight = 2*512;
+
+                    //light.shadowCameraVisible = true;
+                }
+                scene.add( light );
+
+                controls = new PointerLockControls( camera , sphereBody );
+                scene.add( controls.getObject() );
+
+                // floor
+                geometry = new THREE.PlaneGeometry( 300, 300, 50, 50 );
+                geometry.applyMatrix( new THREE.Matrix4().makeRotationX( - Math.PI / 2 ) );
+
+                material = new THREE.MeshLambertMaterial( { color: 0xdddddd } );
+                //THREE.ColorUtils.adjustHSV( material.color, 0, 0, 0.9 );
+
+                mesh = new THREE.Mesh( geometry, material );
+                
+                groundBody.position.copy(mesh.position);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                scene.add( mesh );
+
+                // voxels
+                for(var i=0; i<voxels.boxes.length; i++){
+                    var b = voxels.boxes[i];
+                    var voxelGeometry = new THREE.CubeGeometry( voxels.sx*b.nx, voxels.sy*b.ny, voxels.sz*b.nz );
+                    var voxelMesh = new THREE.Mesh( voxelGeometry, material );
+                    voxelMesh.castShadow = true;
+                    voxelMesh.receiveShadow = true;
+                    scene.add( voxelMesh );
+                    boxMeshes.push( voxelMesh );
+                }
 
 
+                renderer = new THREE.WebGLRenderer();
+                renderer.shadowMapEnabled = true;
+                renderer.shadowMapSoft = true;
+                renderer.setSize( window.innerWidth, window.innerHeight );
+                renderer.setClearColor( scene.fog.color, 1 );
 
-// the camera starts at 0,0,0
-// so pull it back
-camera.position.z = 300;
+                document.body.appendChild( renderer.domElement );
 
-// start the renderer
-renderer.setSize(WIDTH, HEIGHT);
+                window.addEventListener( 'resize', onWindowResize, false );
+            }
 
-// attach the render-supplied DOM element
-container.append(renderer.domElement);
-     //---------------Lights------------------------>
-// create a point light
-var pointLight =new THREE.PointLight(0xFFFFFF);
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight );
+            }
 
+            var dt = 1/60;
+            function animate() {
+                requestAnimationFrame( animate );
+                if(controls.enabled){
+                    world.step(dt);
 
-// set its position
-pointLight.position.x = 10;
-pointLight.position.y = 50;
-pointLight.position.z = 130;
+                    // Update ball positions
+                    for(var i=0; i<balls.length; i++){
+                        balls[i].position.copy(ballMeshes[i].position);
+                        balls[i].quaternion.copy(ballMeshes[i].quaternion);
+                    }
 
-// add to the scene
-scene.add(pointLight);
-// add the sphere to the scene
-scene.add(sphere);
+                    // Update box positions
+                    for(var i=0; i<voxels.boxes.length; i++){
+                        voxels.boxes[i].position.copy(boxMeshes[i].position);
+                        voxels.boxes[i].quaternion.copy(boxMeshes[i].quaternion);
+                    }
+                }
 
-// add the camera to the scene
-scene.add(camera);
-// add to the scene
-scene.add(pointLight);
+                controls.update( Date.now() - time );
+                renderer.render( scene, camera );
+                time = Date.now();
 
-cube.position.x=100;
-scene.add(cube);
+            }
 
-    /////////
-    // SKY //
-    /////////
-    
-    // recommend either a skybox or fog effect (can't use both at the same time) 
-    // without one of these, the scene's background color is determined by webpage background
+            var ballShape = new CANNON.Sphere(0.2);
+            var ballGeometry = new THREE.SphereGeometry(ballShape.radius);
+            var shootDirection = new THREE.Vector3();
+            var shootVelo = 15;
+            var projector = new THREE.Projector();
+            function getShootDir(targetVec){
+                var vector = targetVec;
+                targetVec.set(0,0,1);
+                projector.unprojectVector(vector, camera);
+                var ray = new THREE.Ray(sphereBody.position, vector.subSelf(sphereBody.position).normalize() );
+                targetVec.x = ray.direction.x;
+                targetVec.y = ray.direction.y;
+                targetVec.z = ray.direction.z;
+            }
 
-    // make sure the camera's "far" value is large enough so that it will render the skyBox!
-    var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
-    // BackSide: render faces from inside of the cube, instead of from outside (default).
-    var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
-    var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
-   //  scene.add(skyBox);
-    
-    // fog must be added to scene before first render
-    scene.fog = new THREE.FogExp2( 0x000000, 0.00025 );
-   
-    ///////////
-    // FLOOR //
-    ///////////
-    
-    // note: 4x4 checkboard pattern scaled so that each square is 25 by 25 pixels.
-    //var floorTexture = new THREE.ImageUtils.loadTexture( '/jaxonetic/img/brick.png' );
-  
+            window.addEventListener("click",function(e){ 
+                if(controls.enabled==true){
+                    var x = sphereBody.position.x;
+                    var y = sphereBody.position.y;
+                    var z = sphereBody.position.z;
+                    var ballBody = new CANNON.RigidBody(1,ballShape);
+                    var ballMesh = new THREE.Mesh( ballGeometry, material );
+                    world.add(ballBody);
+                    scene.add(ballMesh);
+                    ballMesh.castShadow = true;
+                    ballMesh.receiveShadow = true;
+                    balls.push(ballBody);
+                    ballMeshes.push(ballMesh);
+                    getShootDir(shootDirection);
+                    ballBody.velocity.set(  shootDirection.x * shootVelo,
+                                            shootDirection.y * shootVelo,
+                                            shootDirection.z * shootVelo);
 
-}
+                    // Move the ball outside the player sphere
+                    x += shootDirection.x * (sphereShape.radius*1.02 + ballShape.radius);
+                    y += shootDirection.y * (sphereShape.radius*1.02 + ballShape.radius);
+                    z += shootDirection.z * (sphereShape.radius*1.02 + ballShape.radius);
+                    ballBody.position.set(x,y,z);
+                    ballMesh.position.set(x,y,z);
+                    ballMesh.useQuaternion = true;
+                }
+            });
 
-init();
-
-//>>z>>Events
-//>>z->>Mouse Events
-
-document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-
-function onDocumentMouseDown( event ) 
-{
-    // the following line would stop any other event handler from firing
-    // (such as the mouse's TrackballControls)
-    // event.preventDefault();
-    
-    console.log("Click.");
-    
-    
-    ////////////
-    // CUSTOM //
-    ////////////
-    
-    // add 3D text
-    var materialFront = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
-    var materialSide = new THREE.MeshBasicMaterial( { color: 0x000088 } );
-    var materialArray = [ materialFront, materialSide ];
-    var textGeom = new THREE.TextGeometry( "Hello, World!", 
-    {
-        size: 20, height: 1, curveSegments: 3,
-        font: "helvetiker", style: "normal",
-        bevelThickness: .5, bevelSize: 1, bevelEnabled: true,
-        material: 0, extrudeMaterial: 1
-    });
-    // font: helvetiker, gentilis, droid sans, droid serif, optimer
-    // weight: normal, bold
-    
-    var textMaterial = new THREE.MeshFaceMaterial(materialArray);
-    var textMesh = new THREE.Mesh(textGeom, textMaterial );
-    
-    textGeom.computeBoundingBox();
-    var textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x;
-    
-    textMesh.position.set( -0.5 * textWidth, 50, 100 );
-    textMesh.rotation.x = -Math.PI / 4;
-    scene.add(textMesh);
-
-}
-
-function render() {
-     requestAnimationFrame(render);
-     cube.rotation.x += 0.1; 
-     
-     cube.rotation.y += 0.1;
-     
-     sphere.rotation.x += 0.1; 
-     sphere.rotation.y += 0.1;
-     
-     //cube.position.y+=2;
-     renderer.render(scene, camera);
-      }
-       render();
 });
 <?php $this->Html->scriptEnd(); ?>
 
+        <div id="blocker">
+
+            <div id="instructions">
+                <span style="font-size:40px">Click to play</span>
+                <br />
+                (W,A,S,D = Move, SPACE = Jump, MOUSE = Look, CLICK = Shoot)
+            </div>
+
+        </div>
 
 
         <div id="threeCanvas" class="center-block"  /></div>
