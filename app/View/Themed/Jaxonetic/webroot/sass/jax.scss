@@ -130,7 +130,7 @@ position: relative;
   a{ font-family: fantasy; font-size: 25px; color:$topnav-text-color;}
 }
 
-#threeCanvas{width:500px; height:500px}
+#threeCanvas{width:500px; height:500px;border:1px solid sienna; background-color:rgba(200,200,200,.4)}
 
 //***********  resume   ************/
 #resume{background-color:$overlay-color; margin:0; color:$overlay-text-color;

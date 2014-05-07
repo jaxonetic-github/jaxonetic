@@ -47,7 +47,18 @@ class PagesController extends AppController {
     public function index(){} 
     public function aboutme(){}
     public function projects(){}  
-    public function resume(){} 
+    public function resume(){
+    }
+    public function resumeAsPdf(){
+        $this->layout = "pdf";
+        $this->viewClass = 'Dompdf.Pdf';
+        $params = array('download' => true, 'name' => 'alonzo_resume.pdf','paperOrientation' => 'portrait','paperSize' => 'letter');
+        $this->set($params);
+     }
+ 
+    
+    
+ 
 /**
  * Displays a view
  *

@@ -21,8 +21,7 @@
 <div class="jax-center-aligned">
     <button class="btn btn-primary btn-default" data-toggle="modal"
      href="/jaxonetic/resume" data-target="#resumeModal">View</button>&nbsp;or&nbsp;
-     <a href="#" target="_blank"><button class="btn btn-primary btn-default" 
-     href="/jaxonetic/resume" data-target="#resumeModal">download</button></a> my resume
+     <a href="/jaxonetic/resume_as_pdf" target="_blank"><button class="btn btn-primary btn-default" >Generate PDF  &amp; Download</button></a> my resume
     
      </div>
 

@@ -10,4 +10,5 @@ App::uses('CroogoAppController', 'Croogo.Controller');
  */
 class AppController extends CroogoAppController {
 //public $components = array('Cookie');
+ //public $components = array('RequestHandler', "Auth");
 }

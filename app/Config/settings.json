@@ -11,7 +11,7 @@
         "title": "Croogo"
     },
     "Hook": {
-        "bootstraps": "Settings,Comments,Contacts,Nodes,Meta,Menus,Users,Blocks,Taxonomy,FileManager,Ckeditor"
+        "bootstraps": "Settings,Comments,Contacts,Nodes,Meta,Menus,Users,Blocks,Taxonomy,FileManager,Ckeditor,Dompdf"
     },
     "Croogo": {
         "installed": 1,

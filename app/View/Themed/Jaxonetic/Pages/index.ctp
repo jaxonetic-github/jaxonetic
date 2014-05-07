@@ -15,4 +15,4 @@
     $this -> end();
 	?>
 </div>
-<?php echo  $this->element("threejs_one"); ?>
+<?php echo  $this->element("cannon"); ?>

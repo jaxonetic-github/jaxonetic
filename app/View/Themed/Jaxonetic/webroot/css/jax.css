@@ -251,6 +251,8 @@ body footer {
 #threeCanvas {
   width: 500px;
   height: 500px;
+  border: 1px solid sienna;
+  background-color: rgba(200, 200, 200, 0.4);
 }
 
 /* line 136, ../sass/jax.scss */

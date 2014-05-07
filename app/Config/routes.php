@@ -31,8 +31,9 @@ Router::connect('/aboutme', array('controller' => 'pages', 'action' => 'aboutme'
 Router::connect('/projects', array('controller' => 'projects', 'action' => 'index'));
 Router::connect('/jaxman', array('controller' => 'projects', 'action' => 'jaxman'));
 Router::connect('/resume', array('controller' => 'pages', 'action' => 'resume'));
+Router::connect('/resume_as_pdf', array('controller' => 'pages', 'action' => 'resumeAsPdf'));
 
 CakePlugin::routes();
-Router::parseExtensions('json', 'rss');
+Router::parseExtensions('json', 'rss', 'pdf');
 CroogoRouter::localize();
 require CAKE . 'Config' . DS . 'routes.php';
