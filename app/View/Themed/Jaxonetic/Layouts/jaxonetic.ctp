@@ -58,9 +58,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 <?php echo $this->element('topnav'); ?>
     
 <div id="wrapper">
-    
-
-	   	
+    	   	
        <div id="flashMessages" class="container rocky-center-aligned">
            <?php echo $this->Session->flash(); ?></p>
        </div>
@@ -74,8 +72,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 </div>
 	<?php 	
 		
-echo $this->Html->script("jquery.cookie");
-        echo $this->Html->script('jquery.cycle2.js');
+
 
             echo $this->Html->script('bootstrap.min');
       

@@ -47,6 +47,7 @@ class PagesController extends AppController {
     public function index(){} 
     public function aboutme(){}
     public function projects(){}  
+    public function blog(){}
     public function resume(){
     }
     public function resumeAsPdf(){

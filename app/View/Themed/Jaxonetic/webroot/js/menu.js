@@ -3,25 +3,15 @@
  */
 jQuery(function($) {
 
-  $(document).on('mouseleave', '.rocky-menuitem-header', function() {
+  $(document).on('mouseleave', '.rocky-menuitem-header', function() {});
 
 
 $(document).on('hidden.bs.show','#top-navbar-collapse', function () {
   alert("collapsed  -- hidden");
-})
+});
 
 
-
-   //if the company dropdown is open, close it
-  if( $(".rockynav-company").hasClass("open") ){
-  	//hide/lse the dropdown
-	 $(".rocky-menuitem-header").find('.dropdown-toggle').dropdown('toggle');
-	 
-	 //if you don't blur the dropdown, the bootstrap css won't remove the hightlight
-	 $(".rocky-menuitem-header").find('.dropdown-toggle').blur().val('');
-  } 
   
-  })
 
 
 

@@ -6,8 +6,8 @@
     This is a PHP <?php echo PHP_VERSION?> site powered by CakePHP with
      Croogo CMS v1.5.7 connected to a MySQL database. 
     It uses Twitter Bootstrap, Scss/Sass, JQuery, and simple  javascript.
-    I will be adding some Three.JS animations soon. Source @Github.  
-    This site is being hosted by <a href="http://www.0fees.net/hosting.php">0fees.net</a>.
+    See the source at&nbsp;<a href="https://github.com/jaxonetic-github/jaxonetic" target="_blank">Github</a>.  
+    This site is being hosted by <a href="http://www.0fees.net/hosting.php" target="_blank">0fees.net</a>.
 </p>
 </div>
 
@@ -67,9 +67,14 @@
 </div>
 
 <div class="project-item"> 
+<h4>... Living Interactive 3D Blog:</h4>
+<p class="left-margined-paragraph">This will be using Node.js and will be hosted on Heroku</p>
+</div>
+
+<div class="project-item"> 
 <h4>... Quebert 3D:</h4>
 <p class="left-margined-paragraph"> The kid in me couldn't let Pac-Man be the only
-    game. I am using the Unity3d Engine for this game. </p>
+    game. I am using the Unity3d Engine for this game.</p>
 </div> 
 
 <div class="project-item">   
