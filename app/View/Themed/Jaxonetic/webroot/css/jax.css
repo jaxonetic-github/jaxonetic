@@ -249,10 +249,11 @@ body footer {
 
 /* line 133, ../sass/jax.scss */
 #threeCanvas {
-  width: 500px;
+  width: 100%;
   height: 500px;
-  border: 1px solid sienna;
-  background-color: rgba(200, 200, 200, 0.4);
+  position: absolute;
+  left: 0;
+  margin: 0;
 }
 
 /* line 136, ../sass/jax.scss */
@@ -277,4 +278,9 @@ body footer {
 /* line 140, ../sass/jax.scss */
 #resume dd {
   margin-left: 25px;
+}
+
+/* line 145, ../sass/jax.scss */
+#home {
+  margin: 25px;
 }

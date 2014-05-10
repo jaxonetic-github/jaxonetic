@@ -27,8 +27,8 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 	<?php
 		echo $this->Html->meta('icon');
 		echo $this->Html->meta('viewport', 'width=device-width, initial-scale=1.0');
-		echo $this->Html->meta('description',    'Construction, Rocky Coast Builders');
-		echo $this->Html->meta('author',    'Alonzo Jackson');
+		echo $this->Html->meta('description',    'Blog, 3D Blog, Programmer');
+		echo $this->Html->meta('author',    'jaxonetic');
 		
         echo $this->Html->css("bootstrap");
 		echo $this->Html->css("jumbotron");
@@ -38,19 +38,22 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
         'meta');
 		echo $this->fetch('css');
 		echo $this->Html->script('jquery-2.0.2.min');
-         echo $this->Html->script('Three');
+         echo $this->Html->script('threejs/Three');
                   echo $this->Html->script('cannon');
            // echo $this->Html->script('PointerLockControls');
-         //      echo $this->Html->script('VoxelLandscape');
-          echo $this->Html->script('THREEx.WindowResize');
-         echo $this->Html->script('Detector');
-       //   echo $this->Html->script('OrbitControls');
+               echo $this->Html->script('threejs/OrbitControls');
+          echo $this->Html->script('threejs/THREEx.WindowResize');
+         echo $this->Html->script('threejs/Detector');
+        echo $this->Html->script('threejs/FresnelShader');
+         echo $this->Html->script('threejs/THREEx.KeyboardState.js');
+        echo $this->Html->script('threejs/DAT.GUI.min');
+         echo $this->Html->script('threejs/SubdivisionModifier');
 		echo $this->fetch('script');
         
 //echo $this->Html->tag('script', '', array('src' => 'theme/Jaxonetic/fonts/helvetiker_bold.typeface.js'));
 
 		?>
-		
+		<script src="theme/Jaxonetic/fonts/helvetiker_bold.typeface.js"></script>
 		<script src='theme/Jaxonetic/fonts/helvetiker_regular.typeface.js'></script>
 </head>
 <body>
@@ -59,10 +62,11 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
     
 <div id="wrapper">
     	   	
-       <div id="flashMessages" class="container rocky-center-aligned">
+       <div id="flashMessages" class="container">
            <?php echo $this->Session->flash(); ?></p>
        </div>
-			
+			<?php echo  $this->element("threejs"); ?>
+
 <div id="content">
 	<?php echo $this->fetch('content'); ?>
    </div>
@@ -70,12 +74,6 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		
 		
 </div>
-	<?php 	
-		
-
-
-            echo $this->Html->script('bootstrap.min');
-      
-	?>
+	<?php 	  echo $this->Html->script('bootstrap.min');?>
 </body>
 </html>

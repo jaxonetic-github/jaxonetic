@@ -17,4 +17,4 @@
 </div>
 
 
-<?php echo  $this->element("cannon"); ?>
+<?php echo  $this->element("glowybox"); ?>

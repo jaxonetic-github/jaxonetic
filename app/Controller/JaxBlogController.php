@@ -9,7 +9,7 @@ class JaxBlogController extends AppController {
 //  public $components = array( 'DebugKit.Toolbar' => array(/* array of settings */));
 
 
-  var $layout = 'threejs';
+  var $layout = 'jaxonetic';
   
   public function index(){}
   

@@ -1,21 +1,24 @@
-
-<?php echo $this->Html->scriptStart(array('inline' => false)); ?>
-jQuery(function($) {
-  
-  
   
 //////////  
 // MAIN //
 //////////
 
+
+// MAIN
+
 // standard global variables
 var container, scene, camera, renderer, controls, stats;
 //var keyboard = new THREEx.KeyboardState();
-var clock = new THREE.Clock();
-var projector, ray;
+//var clock = new THREE.Clock();
 
 // custom global variables
-var cube, sphere;
+var targetList = [];
+var projector, mouse = { x: 0, y: 0 };
+
+
+
+// custom global variables
+var cube, sphereMenu;
 // initialization
 init();
 
@@ -38,8 +41,8 @@ console.log("aqui");
     ////////////
     
     // set the view size in pixels (custom or according to window size)
-     var SCREEN_WIDTH = 500, SCREEN_HEIGHT = 500;
-    //var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;   
+     //var SCREEN_WIDTH = 500, SCREEN_HEIGHT = 500;
+    var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;   
     // camera attributes
     var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 2000;
     // set up camera
@@ -48,14 +51,10 @@ console.log("aqui");
     scene.add(camera);
     // the camera defaults to position (0,0,0)
     //  so pull it back (z = 400) and up (y = 100) and set the angle towards the scene origin
-    camera.position.set(0,0,200);
-//    camera.lookAt(scene.position);  
+    camera.position.set(0,0,10);
+    camera.lookAt(scene.position);  
     
-    //////////////
-    // RENDERER //
-    //////////////
-    
-    // create and start the renderer; choose antialias setting.
+      // create and start the renderer; choose antialias setting.
   //  if ( Detector.webgl )
   //      renderer = new THREE.WebGLRenderer( {antialias:true} );
   //  else
@@ -81,7 +80,25 @@ console.log("aqui");
     // toggle full-screen on given key press
     //THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
     
+      ///////////
+    // LIGHT //
+    ///////////
     
+    // create a light
+    var light = new THREE.PointLight(0xffffff);
+    light.position.set(0,250,0);
+    scene.add(light);
+    var ambientLight = new THREE.AmbientLight(0x111111);
+     scene.add(ambientLight);
+    initGeometricObjects();
+}
+
+function initGeometricObjects(){
+    //////////////
+    // RENDERER //
+    //////////////
+    
+  
     
     //////////////
     // GEOMETRY //
@@ -92,14 +109,18 @@ console.log("aqui");
     //  a set of surface parameters ("material")    
 
     // Sphere parameters: radius, segments along width, segments along height
-    var sphereGeometry = new THREE.SphereGeometry( 10, 32, 16 ); 
+    var sphereGeometry = new THREE.SphereGeometry( 1, 32, 16 ); 
     // use a "lambert" material rather than "basic" for realistic lighting.
     //   (don't forget to add (at least one) light!)
     var sphereMaterial = new THREE.MeshLambertMaterial( {color: 0x8888ff} ); 
-     sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    sphere.position.set(0, 0, -5);
-    scene.add(sphere);
-    
+     sphereMenu = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    sphereMenu.position.set(0, 0, 0);
+    scene.add(sphereMenu);
+   
+    //add sphereMenu to list of event targets
+    targetList.push(sphereMenu);
+   
+   /** 
     // Create an array of materials to be used in a cube, one for each side
     var cubeMaterialArray = [];
     // order to add materials: x+,x-,y+,y-,z+,z-
@@ -153,9 +174,57 @@ console.log("aqui");
     // direction (normalized), origin, length, color(hex)
     var origin = new THREE.Vector3(50,100,50);
     //var terminus  = new THREE.Vector3(75,75,75);
-    var direction = new THREE.Vector3().subVectors(sphere.position , origin).normalize();
+    var direction = new THREE.Vector3().subVectors(sphereMenu.position , origin).normalize();
     var arrow = new THREE.ArrowHelper(direction, origin, 80, 0x884400);
     scene.add(arrow);
+    
+    **/
+   
+       // direction (normalized), origin, length, color(hex)
+    var origin_of_rightarrow = new THREE.Vector3(2, 4,-5);
+    
+    //var terminus  = new THREE.Vector3(1,1,1);
+    var direction_of_rightarrow = new THREE.Vector3().subVectors(sphereMenu.position , origin_of_rightarrow).normalize();
+    var rightarrow = new THREE.ArrowHelper(direction_of_rightarrow, origin_of_rightarrow, 5, 0x884400);
+    scene.add(rightarrow);
+    
+    // direction (normalized), origin, length, color(hex)
+    var origin_of_leftarrow = new THREE.Vector3(-2, 4,-5);
+    
+    //var terminus  = new THREE.Vector3(1,1,1);
+    var direction_of_leftarrow = new THREE.Vector3().subVectors(sphereMenu.position , origin_of_leftarrow).normalize();
+    var leftarrow = new THREE.ArrowHelper(direction_of_leftarrow, origin_of_leftarrow, 5, 0x884400);
+    scene.add(leftarrow);
+    
+    ///////////
+    // ADD PLAY TEXT
+    ///////////
+    
+        // add 3D text
+    var materialFront = new THREE.MeshBasicMaterial( { color: 0x028482 } );
+    var materialSide = new THREE.MeshBasicMaterial( { color: 0x889898 } );
+    var materialArray = [ materialFront, materialSide ];
+    var textGeom = new THREE.TextGeometry( "Play me!", 
+    {
+        size: 4, height: 1, curveSegments: 13,
+        font: "helvetiker", weight: "bold", style: "normal",
+        bevelThickness: .1, bevelSize: .1, bevelEnabled: false,
+        material: 0, extrudeMaterial: 0
+    });
+    // font: helvetiker, gentilis, droid sans, droid serif, optimer
+    // weight: normal, bold
+    
+    var textMaterial = new THREE.MeshFaceMaterial(materialArray);
+    var textMesh = new THREE.Mesh(textGeom, textMaterial );
+    
+    textGeom.computeBoundingBox();
+    var textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x;
+    
+    textMesh.position.set( -0.5 * textWidth, -10, -30 );
+    textMesh.rotation.x = -Math.PI / 4;
+    scene.add(textMesh);
+    // done adding Text
+    
     ///////////
     // LIGHT //
     ///////////
@@ -176,7 +245,7 @@ console.log("aqui");
     // note: 4x4 checkboard pattern scaled so that each square is 25 by 25 pixels.
    
     
-    
+    /**
     /////////
     // SKY //
     /////////
@@ -192,7 +261,12 @@ console.log("aqui");
     // scene.add(skyBox);
     
     // fog must be added to scene before first render
-    scene.fog = new THREE.FogExp2( 0x9999ff, 0.00025 );
+    //scene.fog = new THREE.FogExp2( 0x9999ff, 0.00025 );
+    */
+   
+    // initialize object to perform world/screen calculations
+    projector = new THREE.Projector();
+    
 }
 
 function animate() 
@@ -203,80 +277,62 @@ function animate()
 }
 
   
-  function resetMouseDetectors(){
-      
-
-        mouse_vector = new THREE.Vector3();
- ray = new THREE.Ray( camera.position, new THREE.Vector3(0,0,0) );
-
-  }
       function render() {
   
           renderer.render( scene, camera );
   
       }
       
-        window.addEventListener("click",function(event){ 
-     //       event.preventDefault();
-            resetMouseDetectors();
+        // when the mouse down, 
+          document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    	  window.addEventListener( 'resize', onWindowResize, false );
 
-                 // console.log("scene position="+scene.position);
-                  projector = new THREE.Projector();
+              function onWindowResize() {
 
- //     console.log("body position"+body.position);
-      console.log("camera position"+camera.position);
-      
-            console.log("("+event.clientX+","+event.clientY+")");
-               var vector = new THREE.Vector3(
-    ( event.clientX / window.innerWidth ) * 2 - 1,
-    - ( event.clientY / window.innerHeight ) * 2 + 1,
-    0.5 );
-var intersects = [];
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
 
-//var mouseX = ;
+                renderer.setSize( window.innerWidth, window.innerHeight );
 
-//var mouseY = ;
+            }
 
-//here is our THREE vector and we will pass it to the projector
+function onDocumentMouseDown( event ) 
+{
+    // the following line would stop any other event handler from firing
+    // (such as the mouse's TrackballControls)
+    // event.preventDefault();
+    
+    console.log("Click.");
+    
+    // update the mouse variable
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    
+    // find intersections
 
- mouse_vector.set( ( ( event.clientX / window.innerWidth )*2-1),
-  ((-1)*( event.clientY / window.innerHeight ) * 2 + 1),
-   1 );
+    // create a Ray with origin at the mouse position
+    //   and direction into the scene (camera direction)
+    var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+    projector.unprojectVector( vector, camera );
+    var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
 
-
-
-console.log(mouse_vector);
-//the final step of the transformation process, basically this method call
-
-//creates a point in 3d space independent of the camera where the mouse click
-
-//occurred, this does change the mouse_vector object
-
-projector.unprojectVector( mouse_vector, camera );
-
-var ray =new  THREE.Raycaster( camera.position,  mouse_vector,0.1,5000);
-
-intersects = ray.intersectObject( sphere );
-
-console.log(intersects)
-  if( intersects.length ) {
-
-       
-
-        alert( "hit" );
-
-       
-
+    // create an array containing all objects in the scene with which the ray intersects
+    var intersects = ray.intersectObjects( targetList );
+    console.log(mouse.x + "," + mouse.y+"-----");
+    console.log( sphereMenu.position);
+    console.log();
+    // if there is one (or more) intersections
+    if ( intersects.length > 0 )
+    {
+        console.log("Hit @ " + toString( intersects[0].point ) );
+        // change the color of the closest face.
+        intersects[ 0 ].face.color.setRGB( 0.8 * Math.random() + 0.2, 0, 0 ); 
+        intersects[ 0 ].object.geometry.colorsNeedUpdate = true;
+      //  $(".bird-canvas").load("jaxonetic/jaxblog");
+$("#content").load("jaxblog");
+   //  scene.remove(sphereMenu);
     }
 
-            });
-});
-<?php $this->Html->scriptEnd(); ?>
+}
 
-
-
-        <div id="threeCanvas" class="center-block"  /></div>
-  
- 
-
- 
+    
