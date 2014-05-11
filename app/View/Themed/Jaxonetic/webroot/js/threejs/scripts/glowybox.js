@@ -10,8 +10,13 @@
 var container, scene, camera, renderer, controls, stats;
 var keyboard = new THREEx.KeyboardState();
 var clock = new THREE.Clock();
+var targetList = [],mouse = { x: 0, y: 0 };
+var projector;
+
+
+
 // custom global variables
-var cube;
+var sphereMenu;
 
 init();
 animate();
@@ -21,6 +26,8 @@ function init()
 {
 	// SCENE
 	scene = new THREE.Scene();
+	projector = new THREE.Projector();
+	
 	// CAMERA
 	var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
 	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
@@ -59,34 +66,33 @@ function init()
 	floor.rotation.x = Math.PI / 2;
 	//scene.add(floor);
 	
-	// SKYBOX/FOG
-	var imagePrefix = "theme/jaxonetic/img/dawnmountain-";
-	var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
-	var imageSuffix = ".png";
-	var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );	
 	
-	var materialArray = [];
-	for (var i = 0; i < 6; i++)
-		materialArray.push( new THREE.MeshBasicMaterial({
-			map: THREE.ImageUtils.loadTexture( imagePrefix + directions[i] + imageSuffix ),
-			side: THREE.BackSide
-		}));
-	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
-	var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
-	scene.add( skyBox );
-	
-	////////////
-	// CUSTOM //
-	////////////
 
-	var sphereGeom = new THREE.SphereGeometry(100, 32, 16);
+	
+	//setSkyBox();
+	sphereMenu = addSphere(35, 32, 16,-50,10,-150);
+
+    //add sphereMenu to list of event targets
+    targetList.push(sphereMenu);
+
+	console.log(sphereMenu);
+        // when the mouse down, 
+          document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+}
+
+	////////////
+	// addSphere 
+	////////////
+function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ){
+	console.log(positionX+" "+positionY +" "+ positionZ);
+	var sphereGeom = new THREE.SphereGeometry(radius, geometryY, geometryZ);
     
 	var moonTexture = THREE.ImageUtils.loadTexture( 'theme/jaxonetic/img/ball.png' );
 	var moonMaterial = new THREE.MeshBasicMaterial( { map: moonTexture } );
     var moon = new THREE.Mesh(sphereGeom, moonMaterial);
-	moon.position.set(150,0,-150);
+	moon.position.set(positionX, positionY, positionZ);
     scene.add(moon);
-
+    
 	// create custom material from the shader code above
 	//   that is within specially labeled script tags
 	var customMaterial = new THREE.ShaderMaterial( 
@@ -115,7 +121,7 @@ function init()
 	var crateMaterial = new THREE.MeshBasicMaterial( { map: crateTexture } );
     this.crate = new THREE.Mesh(cubeGeom, crateMaterial);
 	crate.position.set(-150,0,-150);
-    scene.add(crate);
+   // scene.add(crate);
 
 	var smoothCubeGeom = cubeGeom.clone();
 	var modifier = new THREE.SubdivisionModifier( 2 );
@@ -124,11 +130,28 @@ function init()
 	this.crateGlow = new THREE.Mesh( smoothCubeGeom, customMaterial.clone() );
     crateGlow.position = crate.position;
 	crateGlow.scale.multiplyScalar(1.5);
-	scene.add( crateGlow );
+	//scene.add( crateGlow );
 	
-
-	
+	return moon;
 }
+
+	function setSkyBox(){
+		// SKYBOX/FOG
+		var imagePrefix = "theme/jaxonetic/img/dawnmountain-";
+		var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+		var imageSuffix = ".png";
+		var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );	
+		
+		var materialArray = [];
+		for (var i = 0; i < 6; i++)
+			materialArray.push( new THREE.MeshBasicMaterial({
+				map: THREE.ImageUtils.loadTexture( imagePrefix + directions[i] + imageSuffix ),
+				side: THREE.BackSide
+			}));
+		var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+		var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+		scene.add( skyBox );
+	}
 
 function animate() 
 {
@@ -149,4 +172,60 @@ function update()
 function render() 
 {
 	renderer.render( scene, camera );
+}
+
+
+
+function onDocumentMouseDown( event ) 
+{
+    // the following line would stop any other event handler from firing
+    // (such as the mouse's TrackballControls)
+    // event.preventDefault();
+    
+    console.log("Click.");
+    
+    // update the mouse variable
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    
+    // find intersections
+
+    // create a Ray with origin at the mouse position
+    //   and direction into the scene (camera direction)
+    var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+  //  console.log(vector.normalize());
+    projector.unprojectVector( vector, camera );
+     console.log(vector);
+     console.log(camera.position);
+     vectorsub = vector.sub( camera.position );
+     console.log( vectorsub );
+    var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+console.log( ray );
+    // create an array containing all objects in the scene with which the ray intersects
+    var intersects = ray.intersectObjects( targetList );
+    console.log(mouse.x + "," + mouse.y+"-----");
+   // console.log( sphereMenu.position);
+    //console.log();
+    // if there is one (or more) intersections
+    if ( intersects.length > 0 )
+    {
+        console.log("Hit @ " + toString( intersects[0].point ) );
+        // change the color of the closest face.
+        intersects[ 0 ].face.color.setRGB( 0.8 * Math.random() + 0.2, 0, 0 ); 
+        intersects[ 0 ].object.geometry.colorsNeedUpdate = true;
+      //  $(".bird-canvas").load("jaxonetic/jaxblog");
+$("#content").load("about");
+   //  scene.remove(sphereMenu);
+    }
+    
+    
+       // direction (normalized), origin, length, color(hex)
+    var origin_of_rightarrow =vector;
+    
+    //var terminus  = new THREE.Vector3(1,1,1);
+    var direction_of_rightarrow = new THREE.Vector3().subVectors(sphereMenu.position , origin_of_rightarrow);
+    var rightarrow = new THREE.ArrowHelper(direction_of_rightarrow, origin_of_rightarrow, 15, 0x884400);
+    scene.add(rightarrow);
+    
+
 }
