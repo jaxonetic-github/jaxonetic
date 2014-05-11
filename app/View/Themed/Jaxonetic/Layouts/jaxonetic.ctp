@@ -57,7 +57,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		<script src='theme/Jaxonetic/fonts/helvetiker_regular.typeface.js'></script>
 </head>
 <body>
-  
+ <?php echo  $this->element("threejs"); ?> 
 <?php echo $this->element('topnav'); ?>
     
 <div id="wrapper">
@@ -65,10 +65,11 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
        <div id="flashMessages" class="container">
            <?php echo $this->Session->flash(); ?></p>
        </div>
-			<?php echo  $this->element("threejs"); ?>
+			
 
 <div id="content">
 	<?php echo $this->fetch('content'); ?>
+	
    </div>
 	
 		

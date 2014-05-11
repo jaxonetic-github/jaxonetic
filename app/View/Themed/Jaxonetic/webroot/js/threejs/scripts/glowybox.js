@@ -43,7 +43,7 @@ function init()
 	controls = new THREE.OrbitControls( camera, renderer.domElement );
 	controls.addEventListener( 'change', render );
 
-
+   //window.addEventListener( 'change', render, false );
 	// LIGHT
 	var light = new THREE.PointLight(0xffffff);
 	light.position.set(0,250,0);
