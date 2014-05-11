@@ -108,7 +108,8 @@ footer{text-align:center}
 }//body
 //*********** 
 
-.jax-innerpage-pane{min-width:500px; background-color:$overlay-color;  margin-top:60px;
+.jax-innerpage-pane{min-width:500px; background-color:$overlay-color;  margin-top:60px; border-radius:20px;
+ border:2px inset sienna;
     iframe{padding-bottom: $margin-standard;}
 }
 

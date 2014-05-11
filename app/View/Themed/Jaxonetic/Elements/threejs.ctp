@@ -13,7 +13,7 @@ jQuery(function($) {
 
  <div id="threeCanvas" class="center-block bird-canvas"  /></div>
 
-<?php     echo $this->Html->script('threejs/scripts/glowybox');?>
+<?php     echo $this->Html->script('oimo/scripts/glowybox');?>
 
        
   

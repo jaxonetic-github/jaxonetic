@@ -206,57 +206,59 @@ body footer {
   min-width: 500px;
   background-color: rgba(212, 200, 175, 0.7);
   margin-top: 60px;
+  border-radius: 20px;
+  border: 2px inset sienna;
 }
-/* line 112, ../sass/jax.scss */
+/* line 113, ../sass/jax.scss */
 .jax-innerpage-pane iframe {
   padding-bottom: 25px;
 }
 
-/* line 115, ../sass/jax.scss */
+/* line 116, ../sass/jax.scss */
 .btn-primary {
   background-color: teal;
 }
 
-/* line 116, ../sass/jax.scss */
+/* line 117, ../sass/jax.scss */
 .modal-content {
   position: relative;
   background-color: rgba(212, 200, 175, 0.7);
 }
 
-/* line 123, ../sass/jax.scss */
+/* line 124, ../sass/jax.scss */
 .modal-header {
   background-color: darkslategray;
   border-radius: 10px 10px 0 0;
   border-bottom: none;
 }
 
-/* line 126, ../sass/jax.scss */
+/* line 127, ../sass/jax.scss */
 .jax-project-topnav {
   margin-top: 10px;
 }
 
-/* line 129, ../sass/jax.scss */
+/* line 130, ../sass/jax.scss */
 .jax-project-topnav, .jaxtopnav {
   margin-top: 100px;
 }
-/* line 130, ../sass/jax.scss */
+/* line 131, ../sass/jax.scss */
 .jax-project-topnav .dropdown-menu, .jaxtopnav .dropdown-menu {
   margin-top: -1px;
   background-color: lightslategrey;
 }
-/* line 131, ../sass/jax.scss */
+/* line 132, ../sass/jax.scss */
 .jax-project-topnav .jax-dropdownmenulevelone-active, .jaxtopnav .jax-dropdownmenulevelone-active {
   background-color: #EEEEEE;
 }
 
-/* line 136, ../sass/jax.scss */
+/* line 137, ../sass/jax.scss */
 .jax-menuitem a {
   font-family: fantasy;
   font-size: 25px;
   color: teal;
 }
 
-/* line 139, ../sass/jax.scss */
+/* line 140, ../sass/jax.scss */
 #threeCanvas {
   z-index: 0;
   position: absolute;
@@ -264,31 +266,31 @@ body footer {
   border: 1px solid sienna;
 }
 
-/* line 144, ../sass/jax.scss */
+/* line 145, ../sass/jax.scss */
 #resume {
   background-color: rgba(212, 200, 175, 0.7);
   margin: 0;
   color: #251313;
 }
-/* line 145, ../sass/jax.scss */
+/* line 146, ../sass/jax.scss */
 #resume h3, #resume h4 {
   display: block;
   margin: auto;
 }
-/* line 146, ../sass/jax.scss */
+/* line 147, ../sass/jax.scss */
 #resume .section {
   padding: 10px 25px 25px 25px;
 }
-/* line 147, ../sass/jax.scss */
+/* line 148, ../sass/jax.scss */
 #resume dt {
   color: sienna;
 }
-/* line 148, ../sass/jax.scss */
+/* line 149, ../sass/jax.scss */
 #resume dd {
   margin-left: 25px;
 }
 
-/* line 153, ../sass/jax.scss */
+/* line 154, ../sass/jax.scss */
 #home {
   margin: 25px;
 }

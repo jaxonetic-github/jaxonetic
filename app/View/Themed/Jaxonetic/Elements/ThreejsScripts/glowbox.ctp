@@ -25,3 +25,4 @@ void main()
 }
 </script>
 <!-- ----------------------------------------------------------- -->
+ <script src="theme/Jaxonetic/obj/Bird.js"></script>
