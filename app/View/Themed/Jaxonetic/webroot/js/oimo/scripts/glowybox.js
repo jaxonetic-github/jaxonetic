@@ -19,6 +19,8 @@ var projector;
 
 // custom global variables
 var sphereMenu;
+var areBirdsActive;
+
 
 init();
 animate();
@@ -26,6 +28,9 @@ animate();
 // FUNCTIONS 		
 function init() 
 {
+	
+	areBirdsActive = false;
+		
 	// SCENE
 	scene = new THREE.Scene();
 	projector = new THREE.Projector();
@@ -171,9 +176,9 @@ function initBoidsAndBirds(){
                     */
                     boid = boids[ i ] = new Boid();
                     
-                    boid.position.x = 0;
-                    boid.position.y = 0;
-                    boid.position.z = 0;
+                    boid.position.x = -50;
+                    boid.position.y = 10;
+                    boid.position.z = -100;
                     boid.velocity.x = Math.random() * 2 - 1;
                     boid.velocity.y = Math.random() * 2 - 1;
                     boid.velocity.z = Math.random() * 2 - 1;
@@ -207,15 +212,34 @@ function update()
 }
            
            function preRenderBoids() {
-			if(boids){
-					
-				
+           	
+           	for ( var i = 0; birds && i < birds.length; i ++ ) {
+           	   if(birds[i].canDeleteBird){
+           			
+           	   scene.remove( birds[ i ] );
+           	   birds.splice(i,1);
+           	   boids.splice(i,1);
+
+           	   }
+
+ 				if(birds.length==0)
+ 				{
+ 					birds = [];
+ 					boids = [];
+ 					areBirdsActive = false;
+ 				//	console.log("clearing");
+ 				}
+			}
+           	
+			if(areBirdsActive){
+						
                 for ( var i = 0, il = birds.length; i < il; i++ ) {
 
                     boid = boids[ i ];
                     boid.run( boids );
 
                     bird = birds[ i ];
+					bird.position.z-=3;
 
                     color = bird.material.color;
                     color.r = color.g = color.b = ( 500 - bird.position.z ) / 1000;
@@ -225,9 +249,17 @@ function update()
 
                     bird.phase = ( bird.phase + ( Math.max( 0, bird.rotation.z ) + 0.1 )  ) % 62.83;
                     bird.geometry.vertices[ 5 ].y = bird.geometry.vertices[ 4 ].y = Math.sin( bird.phase ) * 5;
+
+					if(bird.position.z < -150)
+					{	
+					    birds[i].canDeleteBird = true;
+					}
 				}
+              }else{
+              	
               }
-            }
+            }//preRenderBoids
+            
 function render() 
 {
 	renderer.render( scene, camera );
@@ -235,9 +267,9 @@ function render()
 
 
    function onDocumentMouseMove( event ) {
-
+  
                 var vector = new THREE.Vector3( event.clientX - SCREEN_WIDTH/2, - event.clientY + SCREEN_HEIGHT/2, 0 );
-			if(boids){
+			if(areBirdsActive){
                 for ( var i = 0, il = boids.length; i < il; i++ ) {
 
                     boid = boids[ i ];
@@ -286,8 +318,22 @@ console.log( ray );
     if ( intersects.length > 0 )
     {
         console.log("Hit @ " + toString( intersects[0].point ) );
-        boids=[];
-       initBoidsAndBirds();
+        console.log(areBirdsActive);
+        if(!areBirdsActive)
+        {
+        	console.log("Birds");
+        	//boids=[];
+       		initBoidsAndBirds();
+       		areBirdsActive =true;
+       	}else{
+    //  			areBirdsActive=false;
+ /*      		for ( var i = 0; i < 200; i ++ ) {
+                scene.remove( birds[ i ] );
+                boids[ i ]=null;
+ 				birds[i]=null;
+             }
+             */
+       	}
       //  $(".bird-canvas").load("jaxonetic/jaxblog");
 //$("#content").load("jaxblog");
    //  scene.remove(sphereMenu);

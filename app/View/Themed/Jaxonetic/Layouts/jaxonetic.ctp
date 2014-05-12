@@ -41,13 +41,13 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
          echo $this->Html->script('threejs/Three');
                   echo $this->Html->script('cannon');
            // echo $this->Html->script('PointerLockControls');
-               echo $this->Html->script('threejs/OrbitControls');
-          echo $this->Html->script('threejs/THREEx.WindowResize');
-         echo $this->Html->script('threejs/Detector');
-        echo $this->Html->script('threejs/FresnelShader');
-         echo $this->Html->script('threejs/THREEx.KeyboardState.js');
-        echo $this->Html->script('threejs/DAT.GUI.min');
-         echo $this->Html->script('threejs/SubdivisionModifier');
+               echo $this->Html->script('oimo/OrbitControls');
+          echo $this->Html->script('oimo/THREEx.WindowResize');
+         echo $this->Html->script('oimo/Detector');
+        echo $this->Html->script('oimo/FresnelShader');
+         echo $this->Html->script('oimo/THREEx.KeyboardState.js');
+        echo $this->Html->script('oimo/DAT.GUI.min');
+         echo $this->Html->script('oimo/SubdivisionModifier');
 		echo $this->fetch('script');
         
 //echo $this->Html->tag('script', '', array('src' => 'theme/Jaxonetic/fonts/helvetiker_bold.typeface.js'));
@@ -65,15 +65,9 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
        <div id="flashMessages" class="container">
            <?php echo $this->Session->flash(); ?></p>
        </div>
-			
 
-<div id="content">
-	<?php echo $this->fetch('content'); ?>
+  <div id="content"><?php echo $this->fetch('content'); ?></div>
 	
-   </div>
-	
-		
-		
 </div>
 	<?php 	  echo $this->Html->script('bootstrap.min');?>
 </body>

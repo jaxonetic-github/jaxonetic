@@ -20,6 +20,8 @@ var projector;
 // custom global variables
 var sphereMenu;
 
+var areBirdActive;
+
 init();
 animate();
 
@@ -286,7 +288,7 @@ console.log( ray );
     if ( intersects.length > 0 )
     {
         console.log("Hit @ " + toString( intersects[0].point ) );
-        boids=[];
+       
        initBoidsAndBirds();
       //  $(".bird-canvas").load("jaxonetic/jaxblog");
 //$("#content").load("jaxblog");
