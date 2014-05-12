@@ -6,6 +6,8 @@ jQuery(function($) {
         fill: true,
       });  
       
+     
+
      	$(window).on('resize', function() {
 			$(body).css("height", 100%);
 			$("#wrapper").css("height", 100%);

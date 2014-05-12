@@ -48,6 +48,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
          echo $this->Html->script('oimo/THREEx.KeyboardState.js');
         echo $this->Html->script('oimo/DAT.GUI.min');
          echo $this->Html->script('oimo/SubdivisionModifier');
+         echo $this->Html->script('threejs/CSS3DRenderer');
 		echo $this->fetch('script');
         
 //echo $this->Html->tag('script', '', array('src' => 'theme/Jaxonetic/fonts/helvetiker_bold.typeface.js'));
@@ -56,19 +57,24 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		<script src="theme/Jaxonetic/fonts/helvetiker_bold.typeface.js"></script>
 		<script src='theme/Jaxonetic/fonts/helvetiker_regular.typeface.js'></script>
 </head>
-<body>
- <?php echo  $this->element("threejs"); ?> 
-<?php echo $this->element('topnav'); ?>
+<body data-spy="scroll" data-offset="0" >
     
-<div id="wrapper">
-    	   	
-       <div id="flashMessages" class="container">
-           <?php echo $this->Session->flash(); ?></p>
-       </div>
-
-  <div id="content"><?php echo $this->fetch('content'); ?></div>
-	
+    <?php echo $this->element('topnav'); ?>
+    
+        <div id="wrapper">   
+            <div class="row">       
+              <div id="flashMessages" class="container">
+                <?php echo $this->Session->flash(); ?></p>
+              </div>
+              
+              <div id="content"><?php echo $this->fetch('content'); ?></div>
+            </div><!-- row -->
+    <div class="row">
+        <?php echo  $this->element("threejs"); ?> 
 </div>
+        </div><!--wrapper--> 
+
 	<?php 	  echo $this->Html->script('bootstrap.min');?>
+	
 </body>
 </html>

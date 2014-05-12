@@ -26,8 +26,8 @@
   <div class="collapse navbar-collapse" id="top-navbar-collapse">
     <ul class="nav   nav-pills nav-justified ">
       <li class="jax-menuitem jax-menuitem-header jaxnav-home"><?php echo $this->Html->link('home','/'); ?></li>
-      <li class="jax-menuitem jaxnav-projects  jax-menuitem-header "><?php echo $this->Html->link('Profile','/aboutme'); ?></li>
-      <li class="jax-menuitem jaxnav-news  jax-menuitem-header "><?php echo $this->Html->link('Projects','/projects'); ?></li>
+      <li class="jax-menuitem jaxnav-projects  jax-menuitem-header "><?php echo $this->Html->link('profile','/aboutme'); ?></li>
+      <li class="jax-menuitem jaxnav-news  jax-menuitem-header "><?php echo $this->Html->link('projects','/projects'); ?></li>
     </ul>
    </div>
    

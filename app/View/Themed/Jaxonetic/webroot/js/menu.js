@@ -3,43 +3,35 @@
  */
 jQuery(function($) {
 
+
+
   $(document).on('mouseleave', '.rocky-menuitem-header', function() {});
 
 
 $(document).on('hidden.bs.show','#top-navbar-collapse', function () {
   alert("collapsed  -- hidden");
 });
-
+ 
+ 
+ $('body').on({
+'mousewheel': function(e) {
+	
+    if (!$("#threeCanvas").hasClass('isRunning')) return;
+    e.preventDefault();
+    e.stopPropagation();
+    }
+});
 
   
 
-
-
-
-	$(document).on('click', '.rocky-menuitem', function() {
+	$(document).on('click', '.jax-menuitem', function() {
 		
 		
-  // 	$('.rocky-menuitem').removeClass('active-mainnav-item');
-   
-		//get the list of classes for this element
-		var classList = $(this).attr('class').split(/\s+/);
 
-		//go through them(should only be about 2-3) and find the one that starts with rockynav-
-		$(classList).each(function(index) {
-			
-			//I want the text after [rockynav-]
-			if (classList[index].substring(0, 9) === 'rockynav-') {
-				console.log(classList[index].substring(9));
-
-				
-				//keeping track of the active menuitem as we navigate pages
-				$.cookie('active-mainnav-item', classList[index].substring(9));
-			}
-		});
-		
-		$(this).addClass('active-mainnav-item');
-
-		
+		$("#threeCanvas").css('z-index', -1);
+       //	$("#threeCanvas").fadeOut();
+       	
+		$("#threeCanvas").removeClass('isRunning');
 	}); 
 
 
