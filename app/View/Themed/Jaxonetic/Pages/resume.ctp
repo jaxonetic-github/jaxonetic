@@ -42,21 +42,7 @@
 					<ul>
 					    <li>Maintained and updated sites built on top of the .NET framework.</li>
 					<li>Implemented new PHP sites based upon CakePHP, Jquery, and SASS.</li>
-					<li>Designed and Implemented a 3D virtual system using the Oculus Rift and Kinect technologies.</li>
-					</ul>
-				</dd>
-			</dl>
-
-		</div>
-		<div class="work-info">
-			<h4>Freelance          Software Developer      Salvador, Bahia Brazil</h4>
-			<dl>
-				<dt>
-					Nov2011 to Feb 2013
-				</dt>
-				<dd><ul>
-					<li>Implemented  web applications designed  to help companies be paperless by digitalizing internal forms and  processes.</li>
-					<li>Designed and implemented an Iphone/Ipad application that collected information(configurable by xml) and sent the informatino to a server and ultimately to a database.</li>
+					<li>Designed and Implemented a 3D virtual system using Unity3D, the Oculus Rift, and Kinect technologies.</li>
 					</ul>
 				</dd>
 			</dl>
@@ -70,7 +56,7 @@
 				</dt>
 				<dd><ul>
 					<li>Implemented  web applications designed  to help companies be paperless by digitalizing internal forms and  processes.</li>
-					<li>Designed and implemented an Iphone/Ipad applicatin that collected information(configurable by xml) and sent the informatino to a server and ultimately to a database.</li>
+					<li>Designed and implemented an Iphone/Ipad application that collected information(configurable by xml) and sent the informatino to a server and ultimately to a database.</li>
 					</ul>
 				</dd>
 			</dl>

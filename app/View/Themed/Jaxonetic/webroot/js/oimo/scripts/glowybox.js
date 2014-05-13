@@ -20,7 +20,7 @@ var projector;
 // custom global variables
 var sphereMenu;
 var areBirdsActive;
-
+var skyBox;
 
 init();
 animate();
@@ -41,7 +41,7 @@ function init()
 	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	scene.add(camera);
-	camera.position.set(0,100,400);
+	camera.position.set(0,100,10000);
 	camera.lookAt(scene.position);	
 	// RENDERER
 	if ( Detector.webgl )
@@ -75,7 +75,7 @@ function init()
 	
 
 	
-	setSkyBox();
+	setSkyBox( 4000, 4000, -4500 );
 	sphereMenu = addSphere(35, 32, 16,-50,10,-150);
 
     //add sphereMenu to list of event targets
@@ -88,22 +88,6 @@ function init()
          document.addEventListener( 'scroll', onDocumentScroll, false );
             
    }     
- function onDocumentScroll() {
- if($(window).scrollTop() + $(window).height() == $(document).height()) {
-       console.log("bottom!");
-       controls = new THREE.OrbitControls( camera, renderer.domElement );
-       controls.addEventListener( 'change', render );
-       container.style.zIndex =1;
-		 if (!$("#threeCanvas").hasClass('isRunning'))
-		 {
-		  $("#threeCanvas").addClass('isRunning');
-		  $("home-pane").hide();
-		 }
-   }else
-   {
-   	  //if()
-   }
- }
 
 
 	////////////
@@ -217,13 +201,13 @@ function pagethreeD(){
 	
 }
 
-	function setSkyBox(){
+	function setSkyBox(x,y,z){
 	
 		// SKYBOX/FOG
 		var imagePrefix = "theme/jaxonetic/img/dawnmountain-";
 		var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 		var imageSuffix = ".png";
-		var skyGeometry = new THREE.CubeGeometry( 220, 280, -950 );	//originally THREE.CubeGeometry( 1000, 1000, -350 );
+		var skyGeometry = new THREE.CubeGeometry( x, y, z );	//originally THREE.CubeGeometry( 1000, 1000, -350 );
 		
 		var materialArray = [];
 		for (var i = 0; i < 6; i++)
@@ -232,7 +216,7 @@ function pagethreeD(){
 				//side: THREE.BackSide
 			}));
 		var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
-		var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+		skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
 		scene.add( skyBox );
 	}
 
@@ -315,7 +299,7 @@ function update()
                     boid.run( boids );
 
                     bird = birds[ i ];
-					bird.position.z-=3;
+					bird.position.z-=1;
 
                     color = bird.material.color;
                     color.r = color.g = color.b = ( 500 - bird.position.z ) / 1000;
@@ -365,6 +349,37 @@ function render()
              }
 
            };
+           
+           
+ function onDocumentScroll() {
+  if($(window).scrollTop() + $(window).height() == $(document).height()) {
+       console.log("bottom!");
+       controls = new THREE.OrbitControls( camera, renderer.domElement );
+       controls.addEventListener( 'change', render );
+       container.style.zIndex =1;
+		 if (!$("#threeCanvas").hasClass('isRunning'))
+		 {
+		  $("#threeCanvas").addClass('isRunning');
+		 
+console.log("is Running so show birds");
+			if(!areBirdsActive)
+		        {
+		        	console.log("Birds");
+		        	//boids=[];
+		       		initBoidsAndBirds();
+		       		areBirdsActive =true;
+		       	}
+       	
+       	//change geometry of skybox 
+       	
+		 }//isRunning
+   }else
+   {
+   	  //if()
+   }
+ }
+
+           
 function onDocumentMouseDown( event ) 
 {
     // the following line would stop any other event handler from firing
@@ -400,21 +415,7 @@ console.log( ray );
     {
         console.log("Hit @ " + toString( intersects[0].point ) );
         console.log(areBirdsActive);
-        if(!areBirdsActive)
-        {
-        	console.log("Birds");
-        	//boids=[];
-       		initBoidsAndBirds();
-       		areBirdsActive =true;
-       	}else{
-    //  			areBirdsActive=false;
- /*      		for ( var i = 0; i < 200; i ++ ) {
-                scene.remove( birds[ i ] );
-                boids[ i ]=null;
- 				birds[i]=null;
-             }
-             */
-       	}
+
       //  $(".bird-canvas").load("jaxonetic/jaxblog");
 //$("#content").load("jaxblog");
    //  scene.remove(sphereMenu);
