@@ -9,7 +9,7 @@ class ProjectsController extends AppController {
 //  public $components = array( 'DebugKit.Toolbar' => array(/* array of settings */));
 
 
-  var $layout = 'jaxonetic';
+  var $layout = 'twoDLayout';
   
   public function index(){}
   

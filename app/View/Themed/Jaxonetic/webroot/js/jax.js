@@ -6,12 +6,14 @@ jQuery(function($) {
         fill: true,
       });  
       
-     
+      window.addEventListener( 'resize', onWindowResize, false );
+            
 
-     	$(window).on('resize', function() {
-			$(body).css("height", 100%);
+     	 function onWindowResize() {
+     		console.log("resizing");
+			$(body).css("height", "100%");
 			$("#wrapper").css("height", 100%);
-		});
+		};
 });
 
   

@@ -97,6 +97,7 @@ function init()
 		 if (!$("#threeCanvas").hasClass('isRunning'))
 		 {
 		  $("#threeCanvas").addClass('isRunning');
+		  $("home-pane").hide();
 		 }
    }else
    {

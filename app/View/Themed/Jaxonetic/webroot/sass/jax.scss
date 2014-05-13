@@ -48,9 +48,13 @@ h4{color:sienna}
   }  
 .navbar-toggle {float:none}
 
+@media (min-width: 960px) and(max-width: 1099px){
+ .jax-innerpage-pane{ width:64% }
+}
+
 @media (min-width: 768px){
-.navbar-inverse {background-color: transparent;border-color: #080808;margin-left:0;width: 60%;}
- .jax-innerpage-pane{ width: 54%; margin-left:$margin-standard; }
+.navbar-inverse {border-color: #080808;margin-left:0;width: 60%;}
+ .jax-innerpage-pane{ margin-left:$margin-standard; }
 }
 @media (max-width: 640px) {
  .jax-innerpage-centerpane3{width:20%}
@@ -70,32 +74,44 @@ h4{color:sienna}
    .jax-innerpage-pane{ width: 79%; display: block;margin-right: auto;margin-left: auto;}
  }
 @media (min-width: 768px) and(max-width: 960px) {
-.navbar-inverse {  background-color: #222222;border-color: #080808; margin-left:0; min-width: 250px;width: 50%;}
+.navbar-inverse {  background-color: #222222;border-color: #080808; margin-left:0; min-width: 250px;width: 60%;}
 .navbar-fixed-top, .navbar-fixed-bottom {right:0;}
 .nav{width:100%}
+.jax-innerpage-pane{ width: 66%;}
   //.navbar-header button{ display: block;margin-left: auto;    margin-right: auto;}
 }
 @media (min-width: 1100px){
 
- .jax-innerpage-pane{  margin-left:5% ;
+ .jax-innerpage-pane{  width:56%; margin-left:4% ;
  border: 3px inset rgb(171, 171, 185);
 border-radius: 20px;}
 }
+@media (min-width: 1400px){
 
+ .jax-innerpage-pane{  width:56%; margin-left:4% ;}
+}
+@media (max-width: 1600px){
+.background-2d{background-size: inherit; }
+}
 
+@media (min-width: 1600px){
+
+.background-2d{background-size: cover  }
+}
 //**************   home
 html{
   height: 100%;
 }
 
  
-
+.background-2d{position: absolute;margin-top:0 !important; background-image: url("img/me.png"); background-position:center top; background-repeat: no-repeat;}
 body {
-  #wrapper {margin-top: 60px;
+  #home-topnav{
+    .navbar-inverse { width: 100%;}
+    }
+  #wrapper {margin-top: 60px;height:100%;
       //  background-image: url("img/me.png");  background-color: transparent; 
-  height:100%;   background-size: cover; background-position: center top;
-    background-position:  top;
-    background-repeat: no-repeat;
+     
     #content{
       height:300px;
       #home-pane{height:300px;}

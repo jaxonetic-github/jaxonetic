@@ -16,10 +16,10 @@
 <p class="left-margined-paragraph">
     I am a big fan of <a href="http://www.khanacadamy.org" >The Khan Acadamy</a>.  Education 
     should be free and accessible to all. They encourage developers to write games and animations
-    using their adapted version of the ProcessingJS javascript Framework. For now, please
-     follow the link below
-    to see my live version of Pac-man called Khan-Man. Click below to see my rewrite of 
-    KhanMan, surprisingly called JaxMan, uses the official Processing.js framework.</p>
+    using their adapted version of the ProcessingJS javascript Framework. You can
+     follow the links below
+    to see my live version of Pac-man called Khan-Man or click below to see my rewrite of 
+    KhanMan, called JaxMan, uses the official Processing.js framework.</p>
 
 <ul class="list-inline jax-center-aligned">
     <li>

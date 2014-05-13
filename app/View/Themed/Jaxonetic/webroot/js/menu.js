@@ -4,7 +4,16 @@
 jQuery(function($) {
 
 
+    //  window.addEventListener( 'resize', onWindowResize, false );
+            
 
+     	 function onWindowResize() {
+     		console.log("resizing");
+			$(".background-2d").css("height", "100%");
+			$("#wrapper").css("height", "100%");
+		};
+		
+		$(window).on("resize",onWindowResize);
   $(document).on('mouseleave', '.rocky-menuitem-header', function() {});
 
 

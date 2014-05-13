@@ -58,9 +58,11 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		<script src='theme/Jaxonetic/fonts/helvetiker_regular.typeface.js'></script>
 </head>
 <body data-spy="scroll" data-offset="0" >
-    
-    <?php echo $this->element('topnav'); ?>
-    
+    <div id="home-topnav">
+     <?php echo $this->element('topnav'); ?>
+           
+    </div>
+
         <div id="wrapper">   
             <div class="row">       
               <div id="flashMessages" class="container">
@@ -73,6 +75,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
         <?php echo  $this->element("threejs"); ?> 
 </div>
         </div><!--wrapper--> 
+       
 
 	<?php 	  echo $this->Html->script('bootstrap.min');?>
 	

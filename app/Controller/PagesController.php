@@ -43,8 +43,12 @@ class PagesController extends AppController {
     var $layout = 'jaxonetic';
     
     public function index(){} 
-    public function aboutme(){}
-    public function projects(){}  
+    public function aboutme(){
+         $this->layout = "twoDLayout";
+    }
+    public function projects(){
+        $this->layout = "twoDLayout";
+    }  
     public function blog(){}
     public function resume(){
     }
