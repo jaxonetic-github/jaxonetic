@@ -6,11 +6,11 @@
 <?php $this->Html->scriptEnd(); ?>
 
 
-<?php echo $this->element('ThreejsScripts/glowbox'); ?>
+<?php echo $this->element('ThreejsScripts/interactive'); ?>
 
 
  <div id="threeCanvas" class=""  /></div>
 
-<?php     echo $this->Html->script('oimo/scripts/glowybox');?>
+<?php     echo $this->Html->script('oimo/scripts/interactive');?>
 
  

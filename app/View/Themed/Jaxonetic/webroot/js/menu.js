@@ -14,7 +14,7 @@ jQuery(function($) {
 		};
 		
 		$(window).on("resize",onWindowResize);
-  $(document).on('mouseleave', '.rocky-menuitem-header', function() {});
+ 
 
 
 $(document).on('hidden.bs.show','#top-navbar-collapse', function () {

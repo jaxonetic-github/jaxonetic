@@ -80,6 +80,11 @@ function init()
 
     //add sphereMenu to list of event targets
     targetList.push(sphereMenu);
+ sayAt("Under Major Construction, obviously.", -1200 , -1400, 100, -Math.PI /10,0,Math.PI/60 );
+ sayAt("Come close, drag your mouse and use your mousewheel.", -1700 , -1600, 100, -Math.PI /10,0,Math.PI/60 );
+ sayAt("Come close, and try to turn around", -1700 , -1800, 100, -Math.PI /10,0,Math.PI/60 );
+
+sayAt("Click ball to exit and scroll to the top.", -1700 , -2000, 100, -Math.PI /10,0,Math.PI/60 );
 
 	console.log(sphereMenu);
         // when the mouse down, 
@@ -90,6 +95,42 @@ function init()
          
             
    }     
+
+    ///////////
+    // ADD  TEXT
+    ///////////
+    function sayAt(text, leftRatio, top, depth, xRotation, yRotation, zRotation){
+    	
+    	
+        // add 3D text
+    var materialFront = new THREE.MeshBasicMaterial( { color: 0x028482 } );
+    var materialSide = new THREE.MeshBasicMaterial( { color: 0x889898 } );
+    var materialArray = [ materialFront, materialSide ];
+    var textGeom = new THREE.TextGeometry( text, 
+    {
+        size: 96, height: 30, curveSegments: 33,
+        font: "helvetiker", weight: "normal", style: "normal",
+        bevelThickness: 1, bevelSize: 1, bevelEnabled: true,
+        material: 0, extrudeMaterial: 0
+    });
+    // font: helvetiker, gentilis, droid sans, droid serif, optimer
+    // weight: normal, bold
+    
+    var textMaterial = new THREE.MeshFaceMaterial(materialArray);
+    var textMesh = new THREE.Mesh(textGeom, textMaterial );
+    
+    textGeom.computeBoundingBox();
+    var textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x;
+    
+    textMesh.position.set( leftRatio , top, depth );
+    textMesh.rotation.x = xRotation;
+    textMesh.rotation.y = yRotation;
+    textMesh.rotation.z = zRotation;
+    
+    scene.add(textMesh);
+    // done adding Text
+    
+    }
 
 
 	////////////
@@ -262,9 +303,13 @@ function animate()
 	update();
 }
 
+function isRunning(){	 
+	 	return $("#threeCanvas").hasClass('isRunning');
+}
+
 function update()
 {
-	if(controls)
+	if(controls && isRunning())
 		controls.update();
 	moonGlow.material.uniforms.viewVector.value = 
 		new THREE.Vector3().subVectors( camera.position, moonGlow.position );
@@ -274,7 +319,7 @@ function update()
     
 
            function preRenderBoids() {
-           	
+           	/*
            	for ( var i = 0; birds && i < birds.length; i ++ ) {
            	   if(birds[i].canDeleteBird){
            			
@@ -292,7 +337,7 @@ function update()
  				//	console.log("clearing");
  				}
 			}
-           	
+           	*/
 			if(areBirdsActive){
 						
                 for ( var i = 0, il = birds.length; i < il; i++ ) {
@@ -311,11 +356,12 @@ function update()
 
                     bird.phase = ( bird.phase + ( Math.max( 0, bird.rotation.z ) + 0.1 )  ) % 62.83;
                     bird.geometry.vertices[ 5 ].y = bird.geometry.vertices[ 4 ].y = Math.sin( bird.phase ) * 5;
-
-					if(bird.position.z < -150)
+					/*
+					if( bird.position.z < -150)
 					{	
 					    birds[i].canDeleteBird = true;
 					}
+					*/
 				}
               }else{
               	
@@ -359,7 +405,7 @@ function render()
        controls = new THREE.OrbitControls( camera, renderer.domElement );
        controls.addEventListener( 'change', render );
        container.style.zIndex =1;
-		 if (!$("#threeCanvas").hasClass('isRunning'))
+		 if (!isRunning())
 		 {
 		  $("#threeCanvas").addClass('isRunning');
 		 
@@ -424,7 +470,10 @@ console.log( ray );
     {
         console.log("Hit @ " + toString( intersects[0].point ) );
         console.log(areBirdsActive);
-
+ $("#threeCanvas").removeClass('isRunning');
+  $("body").animate({ scrollTop: 0 }, 600);
+        
+   
       //  $(".bird-canvas").load("jaxonetic/jaxblog");
 //$("#content").load("jaxblog");
    //  scene.remove(sphereMenu);
