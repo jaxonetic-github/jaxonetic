@@ -14,7 +14,7 @@ App::uses('AppController', 'Controller');
  * @license  http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link     http://www.croogo.org
  */
-class JaxContactController extends AppController {
+class JaxcontactController extends AppController {
 
 var $layout = 'twoDLayout';
   public $helpers = array('Html');
