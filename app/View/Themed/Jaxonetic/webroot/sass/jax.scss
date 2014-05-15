@@ -110,8 +110,8 @@ html{
   height: 100%;
 }
 
- 
-.background-2d{position: absolute;margin-top:0 !important; background-image: url("img/me.png"); background-position:center top; background-repeat: no-repeat;}
+
+.background-2d{position: absolute;margin-top:0 !important;background-color:black; background-image: url("img/me.png"); background-position:center top; background-repeat: no-repeat;}
 body {
   #home-topnav{
     .navbar-inverse { width: 100%;}
@@ -153,11 +153,11 @@ footer{text-align:center}
  border:2px inset sienna;padding: 15px;
     iframe{padding-bottom: $margin-standard;}
 };
-.jax-innerpage-centerpane{min-width:400px;width:70%; background-color:$overlay-color; display:block;  margin:auto; border-radius:20px;
+.jax-innerpage-centerpane{width:400px; background-color:$overlay-color; display:block;  margin:auto; border-radius:20px;
  border:2px inset sienna;padding: 15px;margin-top:20px;margin-bottom:20px;
  
  }
-.jax-innerpage-centerpane2{text-align:center;min-width:250px;width:53%; background-color:$overlay-color; display:block;  margin:auto; border-radius:20px;
+.jax-innerpage-centerpane2{text-align:center;width:350px; background-color:$overlay-color; display:block;  margin:auto; border-radius:20px;
  border:2px inset sienna;padding: 15px;margin-top:20px;margin-bottom:20px;
  
  }
@@ -190,11 +190,11 @@ position: relative;
 .jax-menuitem{
   a{ font-family: fantasy; font-size: 25px; color:$topnav-text-color;}
 }
-
+.canvas-container{z-index:-1; position:absolute;top: 0;
 #threeCanvas{z-index:0; position:absolute;
  width:100%;// height:500px; position:absolute; left:0; margin:0; }//background-color:rgba(200,200,200,.4)}
 canvas{position:relative;}
-}
+}}
 
 //***********  resume   ************/
 #resume{background-color:$overlay-color; margin:0; color:$overlay-text-color;

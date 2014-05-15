@@ -216,6 +216,7 @@ html {
 .background-2d {
   position: absolute;
   margin-top: 0 !important;
+  background-color: black;
   background-image: url("img/me.png");
   background-position: center top;
   background-repeat: no-repeat;
@@ -285,8 +286,7 @@ body footer {
 
 /* line 156, ../sass/jax.scss */
 .jax-innerpage-centerpane {
-  min-width: 400px;
-  width: 70%;
+  width: 400px;
   background-color: rgba(212, 200, 175, 0.7);
   display: block;
   margin: auto;
@@ -300,8 +300,7 @@ body footer {
 /* line 160, ../sass/jax.scss */
 .jax-innerpage-centerpane2 {
   text-align: center;
-  min-width: 250px;
-  width: 53%;
+  width: 350px;
   background-color: rgba(212, 200, 175, 0.7);
   display: block;
   margin: auto;
@@ -370,14 +369,20 @@ body footer {
   color: sienna;
 }
 
+/* line 193, ../sass/jax.scss */
+.canvas-container {
+  z-index: -1;
+  position: absolute;
+  top: 0;
+}
 /* line 194, ../sass/jax.scss */
-#threeCanvas {
+.canvas-container #threeCanvas {
   z-index: 0;
   position: absolute;
   width: 100%;
 }
 /* line 196, ../sass/jax.scss */
-#threeCanvas canvas {
+.canvas-container #threeCanvas canvas {
   position: relative;
 }
 

@@ -21,8 +21,10 @@ var projector;
 var sphereMenu;
 var areBirdsActive;
 var skyBox;
+var planeMesh;
 
 init();
+ preRenderBoids();
 animate();
 
 // FUNCTIONS 		
@@ -41,7 +43,7 @@ function init()
 	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	scene.add(camera);
-	camera.position.set(0,100,10000);
+	camera.position.set(0,100,6900);
 	camera.lookAt(scene.position);	
 	// RENDERER
 	if ( Detector.webgl )
@@ -55,8 +57,23 @@ function init()
 	THREEx.WindowResize(renderer, camera);
 	//THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
 	// CONTROLS
-	
+	 controls = new THREE.OrbitControls( camera, renderer.domElement );
+      controls.addEventListener( 'change', render );
    //window.addEventListener( 'change', render, false );
+   
+   
+	var planeMaterial   = new THREE.MeshBasicMaterial({color: 0xffffff, opacity: 0.5, side: THREE.DoubleSide });
+	var planeWidth = 10000;
+    var planeHeight = 10000;
+	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight );
+	 planeMesh= new THREE.Mesh( planeGeometry, planeMaterial );
+	planeMesh.position.y += 0;
+	planeMesh.position.z = 900;
+	// add it to the standard (WebGL) scene
+	scene.add(planeMesh);
+	
+   
+   
 	// LIGHT
 	var light = new THREE.PointLight(0xffffff);
 	light.position.set(0,250,0);
@@ -80,6 +97,7 @@ function init()
 
     //add sphereMenu to list of event targets
     targetList.push(sphereMenu);
+    
  sayAt("Under Major Construction, obviously.", -1200 , -1400, 100, -Math.PI /10,0,Math.PI/60 );
  sayAt("Come close, drag your mouse and use your mousewheel.", -1700 , -1600, 100, -Math.PI /10,0,Math.PI/60 );
  sayAt("Come close, and try to turn around", -1700 , -1800, 100, -Math.PI /10,0,Math.PI/60 );
@@ -188,61 +206,6 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ)
 	return moon;
 }
 
-function pagethreeD(){
-	
-
-	var planeMaterial   = new THREE.MeshBasicMaterial({color: 0x000000, opacity: 0.1, side: THREE.DoubleSide });
-	var planeWidth = 360;
-    var planeHeight = 120;
-	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight );
-	var planeMesh= new THREE.Mesh( planeGeometry, planeMaterial );
-	planeMesh.position.y += planeHeight/2;
-	// add it to the standard (WebGL) scene
-	scene.add(planeMesh);
-	
-	// create a new scene to hold CSS
-	cssScene = new THREE.Scene();
-	// create the iframe to contain webpage
-	var element	= document.createElement('iframe')
-	// webpage to be loaded into iframe
-	element.src	= "http://www.gatech.edu";
-	// width of iframe in pixels
-	var elementWidth = 1024;
-	// force iframe to have same relative dimensions as planeGeometry
-	var aspectRatio = planeHeight / planeWidth;
-	var elementHeight = elementWidth * aspectRatio;
-	element.style.width  = elementWidth + "px";
-	element.style.height = elementHeight + "px";
-	console.log(element);
-	// create a CSS3DObject to display element
-	var cssObject = new THREE.CSS3DObject( element );
-	// synchronize cssObject position/rotation with planeMesh position/rotation 
-	cssObject.position = planeMesh.position;
-	cssObject.rotation = planeMesh.rotation;
-	// resize cssObject to same size as planeMesh (plus a border)
-	var percentBorder = 0.05;
-	cssObject.scale.x /= (1 + percentBorder) * (elementWidth / planeWidth);
-	cssObject.scale.y /= (1 + percentBorder) * (elementWidth / planeWidth);
-	cssScene.add(cssObject);
-	
-	// create a renderer for CSS
-	rendererCSS	= new THREE.CSS3DRenderer();
-	rendererCSS.setSize( window.innerWidth, window.innerHeight );
-	rendererCSS.domElement.style.position = 'absolute';
-	rendererCSS.domElement.style.top	  = 0;
-	rendererCSS.domElement.style.margin	  = 0;
-	rendererCSS.domElement.style.padding  = 0;
-	document.body.appendChild( rendererCSS.domElement );
-	// when window resizes, also resize this renderer
-	THREEx.WindowResize(rendererCSS, camera);
- //camera.lookAt(cssScene.position);
-	renderer.domElement.style.position = 'absolute';
-	renderer.domElement.style.top      = 0;
-	// make sure original renderer appears on top of CSS renderer
-	renderer.domElement.style.zIndex   = 3;
-	rendererCSS.domElement.appendChild( renderer.domElement );
-	
-}
 
 	function setSkyBox(x,y,z){
 	
@@ -297,20 +260,38 @@ function initBoidsAndBirds(){
 
 function animate() 
 {
-    requestAnimationFrame( animate );
-    preRenderBoids();
-	render();		
-	update();
+	
+	    requestAnimationFrame( animate );
+	   
+	   
+		render();		
+		update();
+	
 }
 
-function isRunning(){	 
-	 	return $("#threeCanvas").hasClass('isRunning');
+function initialWhitePanelMovement(){
+	if(planeMesh.position.z>-2380){
+		console.log(planeMesh.position);
+		planeMesh.position.z-=10;
+	}else
+	{
+		scene.remove(planeMesh);
+	}
+}
+
+function isRunning(){	
+	//console.log($("#threeCanvas").hasClass('isRunning'));
+
+	return $("#threeCanvas").hasClass('isRunning');
 }
 
 function update()
 {
-	if(controls && isRunning())
+	
+	if(controls )
 		controls.update();
+		
+		
 	moonGlow.material.uniforms.viewVector.value = 
 		new THREE.Vector3().subVectors( camera.position, moonGlow.position );
 	crateGlow.material.uniforms.viewVector.value = 
@@ -370,6 +351,10 @@ function update()
             
 function render() 
 {
+	if(isRunning()){
+		//console.log("render white pane moving ::>>"+isRunning());
+	    initialWhitePanelMovement();
+	   }
 	renderer.render( scene, camera );
 //	rendererCSS.render( cssScene, camera );
 	
@@ -402,14 +387,12 @@ function render()
  function onDocumentScroll() {
   if($(window).scrollTop() + $(window).height() == $(document).height()) {
        console.log("bottom!");
-       controls = new THREE.OrbitControls( camera, renderer.domElement );
-       controls.addEventListener( 'change', render );
+      
        container.style.zIndex =1;
 		 if (!isRunning())
 		 {
-		  $("#threeCanvas").addClass('isRunning');
 		 
-console.log("is Running so show birds");
+           console.log("is Running so show birds");
 			if(!areBirdsActive)
 		        {
 		        	console.log("Birds");
@@ -418,7 +401,7 @@ console.log("is Running so show birds");
 		       		areBirdsActive =true;
 		       	}
        	
-       	//change geometry of skybox 
+       			//change geometry of skybox 
        	
 		 }//isRunning
    }else
@@ -431,8 +414,8 @@ console.log("is Running so show birds");
   
   function pauseAnimation(){
   	
-  	console.log("mouse left...pausing");
-  	$("#threeCanvas").removeClass('isRunning')
+  //	console.log("mouse left...pausing");
+ 	$("#threeCanvas").removeClass('isRunning')
   }
            
 function onDocumentMouseDown( event ) 
@@ -454,25 +437,35 @@ function onDocumentMouseDown( event )
     var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
   //  console.log(vector.normalize());
     projector.unprojectVector( vector, camera );
-     console.log(vector);
-     console.log(camera.position);
+     //console.log(vector);
+     //console.log(camera.position);
      vectorsub = vector.sub( camera.position );
-     console.log( vectorsub );
+     //console.log( vectorsub );
     var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
-console.log( ray );
+//console.log( ray );
     // create an array containing all objects in the scene with which the ray intersects
     var intersects = ray.intersectObjects( targetList );
-    console.log(mouse.x + "," + mouse.y+"-----");
+    //console.log(mouse.x + "," + mouse.y+"-----");
    // console.log( sphereMenu.position);
     //console.log();
     // if there is one (or more) intersections
     if ( intersects.length > 0 )
     {
-        console.log("Hit @ " + toString( intersects[0].point ) );
-        console.log(areBirdsActive);
- $("#threeCanvas").removeClass('isRunning');
-  $("body").animate({ scrollTop: 0 }, 600);
-        
+    	//console.log(intersects[0]);
+        console.log("Hit @ "/* + toString( intersects[0].point ) */);
+        //console.log(areBirdsActive);
+ 		//$("#threeCanvas").removeClass('isRunning');
+ 		// $("body, html").animate({ scrollTop: 0 }, 600);
+        if(!areBirdsActive)
+		        {
+		        	console.log("Birds");
+		        	//boids=[];
+		       		initBoidsAndBirds();
+		       		areBirdsActive =true;
+		       	}
+       	
+       			//change geometry of skybox 
+       	
    
       //  $(".bird-canvas").load("jaxonetic/jaxblog");
 //$("#content").load("jaxblog");

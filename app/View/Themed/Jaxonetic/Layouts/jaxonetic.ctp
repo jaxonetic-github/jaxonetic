@@ -31,31 +31,28 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		echo $this->Html->meta('author',    'jaxonetic');
 		
         echo $this->Html->css("bootstrap");
-		echo $this->Html->css("jumbotron");
+		echo $this->Html->css("animate");
 		echo $this->Html->css("jax" );
 
             echo $this->fetch(
         'meta');
 		echo $this->fetch('css');
 		echo $this->Html->script('jquery-2.0.2.min');
-         echo $this->Html->script('threejs/Three');
-                  echo $this->Html->script('cannon');
+                     echo $this->Html->script('threejs/Three');
+                   echo $this->Html->script('fonts/helvetiker_regular.typeface');
+         echo $this->Html->script('fonts/helvetiker_bold.typeface');
+          echo $this->Html->script("menu");
+ //menu active/inactive javascript
+
+                //  echo $this->Html->script('cannon');
            // echo $this->Html->script('PointerLockControls');
-               echo $this->Html->script('oimo/OrbitControls');
-          echo $this->Html->script('oimo/THREEx.WindowResize');
-         echo $this->Html->script('oimo/Detector');
-        echo $this->Html->script('oimo/FresnelShader');
-         echo $this->Html->script('oimo/THREEx.KeyboardState.js');
-        echo $this->Html->script('oimo/DAT.GUI.min');
-         echo $this->Html->script('oimo/SubdivisionModifier');
-         echo $this->Html->script('threejs/CSS3DRenderer');
+
 		echo $this->fetch('script');
         
 //echo $this->Html->tag('script', '', array('src' => 'theme/Jaxonetic/fonts/helvetiker_bold.typeface.js'));
 
 		?>
-		<script src="theme/Jaxonetic/fonts/helvetiker_bold.typeface.js"></script>
-		<script src='theme/Jaxonetic/fonts/helvetiker_regular.typeface.js'></script>
+
 </head>
 <body >
     <div id="home-topnav">
@@ -63,21 +60,20 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
            
     </div>
 
-        <div id="wrapper">   
-            <div class="row">       
-              <div id="flashMessages" class="container">
+        <div id="wrapper"> 
+            <div id="flashMessages" class="container">
                 <?php echo $this->Session->flash(); ?></p>
               </div>
-              
-              <div id="content"><?php echo $this->fetch('content'); ?></div>
-            </div><!-- row -->
-    <div class="row">
-        <?php echo  $this->element("threejs"); ?> 
-</div>
+            <?php echo $this->fetch('content'); ?>  
+            
         </div><!--wrapper--> 
        
+       
+<?php           
 
-	<?php 	  echo $this->Html->script('bootstrap.min');?>
+    echo $this->fetch('scriptBottom'); ?>
+
+
 	
 </body>
 </html>

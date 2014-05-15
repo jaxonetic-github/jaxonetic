@@ -15,6 +15,10 @@ class ProjectsController extends AppController {
   
  
   public function jaxman(){}
-    
+   
+  public function blog(){
+      $this->layout = false;   
+  } 
+  
  }
 ?>

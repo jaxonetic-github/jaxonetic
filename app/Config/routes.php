@@ -32,7 +32,7 @@ Router::connect('/projects', array('controller' => 'projects', 'action' => 'inde
 Router::connect('/jaxman', array('controller' => 'projects', 'action' => 'jaxman'));
 Router::connect('/resume', array('controller' => 'pages', 'action' => 'resume'));
 Router::connect('/resume_as_pdf', array('controller' => 'pages', 'action' => 'resumeAsPdf'));
-Router::connect('/jaxblog', array('controller' => 'jaxblog', 'action' => 'index'));
+Router::connect('/jaxblog', array('controller' => 'projects', 'action' => 'blog'));
 CakePlugin::routes();
 Router::parseExtensions('json', 'rss', 'pdf');
 CroogoRouter::localize();

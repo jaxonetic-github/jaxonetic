@@ -10,8 +10,10 @@ THREE.OrbitControls = function ( object, domElement ) {
 	this.object = object;
 	this.domElement = ( domElement !== undefined ) ? domElement : document;
 
+	
 	// API
-
+	this.freezeBrowser= false; //flag to prevent page from scrolling //zo
+    
 	this.enabled = true;
 
 	this.center = new THREE.Vector3();
@@ -321,6 +323,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 		if ( scope.userZoom === false ) return;
 
 		var delta = 0;
+        event.preventDefault();
 
 		if ( event.wheelDelta ) { // WebKit / Opera / Explorer 9
 
@@ -342,6 +345,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		}
 
+		
 	}
 
 	function onKeyDown( event ) {

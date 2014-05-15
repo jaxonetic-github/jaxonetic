@@ -1,4 +1,9 @@
-<?php echo $this->element('header'); ?>
+  <?php echo $this->element('ThreejsScripts/interactive'); ?>
+
+<div class="row top-content">       
+              <div id="content"><?php echo $this->element('header'); ?></div>
+              <div class="canvas-container"> <?php echo  $this->element("threejs"); ?></div>
+</div><!-- row -->
 
 
 

@@ -11,11 +11,15 @@
              <li>We Touch In ...</li>
              <li>We Learn In ...</li>
              <li>The Future Will Be In ...</li>
-             <li>Scroll down to see me transform this site into ...</li>
+             <li>Click the 3D image to start the animation</li>
             </ul>   
           </li>
-          <li> <?php echo $this->Html->image('3d_3dtext.png', array('alt' => '3D')); ?></li>
-         
+          <li>
+
+<?php echo $this->Html->image('3d_3dtext.png', array( 'id'=>'start-animation', 'alt' => '3D')); ?>
+    
+          </li>
+ 
          </ul>
         
        

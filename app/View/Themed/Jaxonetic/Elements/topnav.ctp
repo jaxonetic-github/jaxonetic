@@ -1,13 +1,5 @@
 
 
-<?php
- echo $this->Html->script("jquery.cookie");
- 
- //menu active/inactive javascript
- echo $this->Html->script('menu');
- 
-?>
-
 
 <nav  class="navbar-fixed-top " role="navigation">
     <div class="container-fluid navbar-inverse">
@@ -34,3 +26,7 @@
    
    </div><!--container-fluid  -->
 </nav>
+
+
+<?php  echo $this->Html->script("jquery.cookie", array('block' => 'scriptBottom'));
+ echo $this->Html->script("menu", array('block' => 'scriptBottom')); ?>
