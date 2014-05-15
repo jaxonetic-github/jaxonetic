@@ -6,7 +6,7 @@
 			</p>
 		</div>
 
-		<h2>Contact Me:</h2>
+		<h3>Contact Me:</h3>
 		<div class="contact-form center-block">
 			<?php
             echo $this -> Form -> create('Message', array('url' => array( 'controller' => 'jaxcontact', 'action' => 'save' ) ));

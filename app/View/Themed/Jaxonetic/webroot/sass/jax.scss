@@ -151,6 +151,7 @@ footer{text-align:center}
 //change  to leftpane
 .jax-innerpage-pane{min-width:500px; background-color:$overlay-color;  margin-top:60px; border-radius:20px;
  border:2px inset sienna;padding: 15px;
+ h3{color:sienna}
     iframe{padding-bottom: $margin-standard;}
 };
 .jax-innerpage-centerpane{width:400px; background-color:$overlay-color; display:block;  margin:auto; border-radius:20px;

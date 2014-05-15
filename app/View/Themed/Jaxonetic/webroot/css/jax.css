@@ -280,11 +280,15 @@ body footer {
   padding: 15px;
 }
 /* line 154, ../sass/jax.scss */
+.jax-innerpage-pane h3 {
+  color: sienna;
+}
+/* line 155, ../sass/jax.scss */
 .jax-innerpage-pane iframe {
   padding-bottom: 25px;
 }
 
-/* line 156, ../sass/jax.scss */
+/* line 157, ../sass/jax.scss */
 .jax-innerpage-centerpane {
   width: 400px;
   background-color: rgba(212, 200, 175, 0.7);
@@ -297,7 +301,7 @@ body footer {
   margin-bottom: 20px;
 }
 
-/* line 160, ../sass/jax.scss */
+/* line 161, ../sass/jax.scss */
 .jax-innerpage-centerpane2 {
   text-align: center;
   width: 350px;
@@ -311,7 +315,7 @@ body footer {
   margin-bottom: 20px;
 }
 
-/* line 165, ../sass/jax.scss */
+/* line 166, ../sass/jax.scss */
 .jax-innerpage-centerpane3 {
   min-width: 100px;
   width: 15%;
@@ -325,114 +329,114 @@ body footer {
   margin-bottom: 20px;
 }
 
-/* line 170, ../sass/jax.scss */
+/* line 171, ../sass/jax.scss */
 .btn-primary {
   background-color: sienna;
 }
 
-/* line 171, ../sass/jax.scss */
+/* line 172, ../sass/jax.scss */
 .modal-content {
   position: relative;
   background-color: rgba(212, 200, 175, 0.7);
 }
 
-/* line 178, ../sass/jax.scss */
+/* line 179, ../sass/jax.scss */
 .modal-header {
   background-color: darkslategray;
   border-radius: 10px 10px 0 0;
   border-bottom: none;
 }
 
-/* line 181, ../sass/jax.scss */
+/* line 182, ../sass/jax.scss */
 .jax-project-topnav {
   margin-top: 10px;
 }
 
-/* line 184, ../sass/jax.scss */
+/* line 185, ../sass/jax.scss */
 .jax-project-topnav, .jaxtopnav {
   margin-top: 100px;
 }
-/* line 185, ../sass/jax.scss */
+/* line 186, ../sass/jax.scss */
 .jax-project-topnav .dropdown-menu, .jaxtopnav .dropdown-menu {
   margin-top: -1px;
   background-color: lightslategrey;
 }
-/* line 186, ../sass/jax.scss */
+/* line 187, ../sass/jax.scss */
 .jax-project-topnav .jax-dropdownmenulevelone-active, .jaxtopnav .jax-dropdownmenulevelone-active {
   background-color: #EEEEEE;
 }
 
-/* line 191, ../sass/jax.scss */
+/* line 192, ../sass/jax.scss */
 .jax-menuitem a {
   font-family: fantasy;
   font-size: 25px;
   color: sienna;
 }
 
-/* line 193, ../sass/jax.scss */
+/* line 194, ../sass/jax.scss */
 .canvas-container {
   z-index: -1;
   position: absolute;
   top: 0;
 }
-/* line 194, ../sass/jax.scss */
+/* line 195, ../sass/jax.scss */
 .canvas-container #threeCanvas {
   z-index: 0;
   position: absolute;
   width: 100%;
 }
-/* line 196, ../sass/jax.scss */
+/* line 197, ../sass/jax.scss */
 .canvas-container #threeCanvas canvas {
   position: relative;
 }
 
-/* line 200, ../sass/jax.scss */
+/* line 201, ../sass/jax.scss */
 #resume {
   background-color: rgba(212, 200, 175, 0.7);
   margin: 0;
   color: #251313;
 }
-/* line 201, ../sass/jax.scss */
+/* line 202, ../sass/jax.scss */
 #resume h3, #resume h4 {
   display: block;
   margin: auto;
 }
-/* line 202, ../sass/jax.scss */
+/* line 203, ../sass/jax.scss */
 #resume .section {
   padding: 10px 25px 25px 25px;
 }
-/* line 203, ../sass/jax.scss */
+/* line 204, ../sass/jax.scss */
 #resume dt {
   color: sienna;
 }
-/* line 204, ../sass/jax.scss */
+/* line 205, ../sass/jax.scss */
 #resume dd {
   margin-left: 25px;
 }
 
-/* line 209, ../sass/jax.scss */
+/* line 210, ../sass/jax.scss */
 #home {
   margin: 25px;
 }
 
-/* line 213, ../sass/jax.scss */
+/* line 214, ../sass/jax.scss */
 .contact-form {
   width: 60%;
 }
-/* line 214, ../sass/jax.scss */
+/* line 215, ../sass/jax.scss */
 .contact-form label {
   float: left;
   color: sienna;
 }
-/* line 215, ../sass/jax.scss */
+/* line 216, ../sass/jax.scss */
 .contact-form input {
   width: 100%;
 }
-/* line 216, ../sass/jax.scss */
+/* line 217, ../sass/jax.scss */
 .contact-form textarea {
   width: 100%;
 }
-/* line 217, ../sass/jax.scss */
+/* line 218, ../sass/jax.scss */
 .contact-form .submit {
   width: 25%;
 }
