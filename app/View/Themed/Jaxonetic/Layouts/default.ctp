@@ -40,7 +40,7 @@
 <body>
     <div id="wrapper">
         
-<?php echo $this->element('header'); ?>
+<?php echo $this->element('topnav'); ?>
             
 <!--
         <div id="nav">
@@ -68,7 +68,7 @@
         <div id="footer">
             <div class="container_16">
                 
-   <?php       echo $this->element('footer_common');  ?>
+    
 
                 <div class="grid_8 left">
                     Powered by <a href="http://www.croogo.org">Croogo</a>.

@@ -23,14 +23,18 @@ var areBirdsActive;
 var skyBox;
 var planeMesh;
 
+var introPanelReceded, introCameraUpdated, introCameraTurned;
+
 init();
- preRenderBoids();
+initBoidsAndBirds();
 animate();
 
 // FUNCTIONS 		
 function init() 
 {
-	
+	introCameraTurned = false;
+	introCameraUpdated = false;
+	introPanelReceded = false;
 	areBirdsActive = false;
 		
 	// SCENE
@@ -44,7 +48,7 @@ function init()
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	scene.add(camera);
 	camera.position.set(0,100,6900);
-	camera.lookAt(scene.position);	
+	//camera.lookAt(scene.position);	
 	// RENDERER
 	if ( Detector.webgl )
 		renderer = new THREE.WebGLRenderer( {antialias:true} );
@@ -98,21 +102,16 @@ function init()
     //add sphereMenu to list of event targets
     targetList.push(sphereMenu);
     
- sayAt("Under Major Construction, obviously.", -1200 , -1400, 100, -Math.PI /10,0,Math.PI/60 );
- sayAt("Come close, drag your mouse and use your mousewheel.", -1700 , -1600, 100, -Math.PI /10,0,Math.PI/60 );
- sayAt("Come close, and try to turn around", -1700 , -1800, 100, -Math.PI /10,0,Math.PI/60 );
 
-sayAt("Click ball to exit and scroll to the top.", -1700 , -2000, 100, -Math.PI /10,0,Math.PI/60 );
-
-	console.log(sphereMenu);
         // when the mouse down, 
           document.addEventListener( 'mousedown', onDocumentMouseDown, false );
           document.addEventListener( 'mousemove', onDocumentMouseMove, false );
          document.addEventListener( 'scroll', onDocumentScroll, false );
-         document.addEventListener( 'mouseleave', pauseAnimation, false );
+      //   document.addEventListener( 'mouseleave', pauseAnimation, false );
          
             
-   }     
+   }   
+     
 
     ///////////
     // ADD  TEXT
@@ -187,7 +186,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ)
 	moonGlow.scale.multiplyScalar(1.2);
 	scene.add( moonGlow );
 	
-	var cubeGeom = new THREE.CubeGeometry(150,150,150,2,2,2);
+	var cubeGeom = new THREE.BoxGeometry(150,150,150,2,2,2);
 	var crateTexture = THREE.ImageUtils.loadTexture( 'theme/jaxonetic/img/crate.png' );
 	var crateMaterial = new THREE.MeshBasicMaterial( { map: crateTexture } );
     this.crate = new THREE.Mesh(cubeGeom, crateMaterial);
@@ -196,6 +195,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ)
 
 	var smoothCubeGeom = cubeGeom.clone();
 	var modifier = new THREE.SubdivisionModifier( 2 );
+
 	modifier.modify( smoothCubeGeom ); 
 
 	this.crateGlow = new THREE.Mesh( smoothCubeGeom, customMaterial.clone() );
@@ -213,7 +213,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ)
 		var imagePrefix = "theme/jaxonetic/img/dawnmountain-";
 		var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 		var imageSuffix = ".png";
-		var skyGeometry = new THREE.CubeGeometry( x, y, z );	//originally THREE.CubeGeometry( 1000, 1000, -350 );
+		var skyGeometry = new THREE.BoxGeometry( x, y, z );	//originally THREE.CubeGeometry( 1000, 1000, -350 );
 		
 		var materialArray = [];
 		for (var i = 0; i < 6; i++)
@@ -253,9 +253,9 @@ function initBoidsAndBirds(){
                     bird.phase = Math.floor( Math.random() * 62.83 );
                     bird.position = boids[ i ].position;
                     scene.add( bird );
-
-
                 }
+                
+                
 }
 
 function animate() 
@@ -263,19 +263,64 @@ function animate()
 	
 	    requestAnimationFrame( animate );
 	   
-	   
+	    preRenderBoids();
 		render();		
 		update();
 	
 }
 
+function cameraZoomZ(){
+	if( camera.position.z >=-1500){
+		var distance = new THREE.Vector3(0, 0, -10); 
+controls.object.position.add( distance ); 
+controls.center.add( distance ); 
+		
+	}
+	//camera.position.z-=15;
+	else{
+			areBirdsActive  = true;
+
+		introCameraUpdated = true;
+		//console.log(controls.object.rotation);
+		controls.center = new THREE.Vector3 (0,0,3000);
+		underConstruction();
+		//camera.lookAt(0,50,6900);
+		//camera.rotation.x = -Math.PI/2;
+	}
+}
+
+		function underConstruction(){
+	sayAt("Under Major Construction, obviously.", 1000 , 900, 2000,0, Math.PI,0 );
+ sayAt("To navigate, drag your mouse and use your mousewheel.", 1400 , 700, 2000,0, Math.PI ,0);
+
+
+}
+function cameraRotateZ(){
+	
+	if( camera.rotation.x >=300){
+		var distance = new THREE.Vector3(0, 0, -10); 
+controls.object.position.add( distance ); 
+controls.center.add( distance ); 
+		
+	}
+	//camera.position.z-=15;
+	else{
+		introCameraUpdated = true;
+		//camera.lookAt(0,50,6900);
+		//camera.rotation.x = -Math.PI/2;
+	}
+}
+
+
 function initialWhitePanelMovement(){
-	if(planeMesh.position.z>-2380){
-		console.log(planeMesh.position);
+	if( planeMesh.position.z>-2380){
+	//	console.log(planeMesh.position);
 		planeMesh.position.z-=10;
+			
 	}else
 	{
 		scene.remove(planeMesh);
+		introPanelReceded = true;
 	}
 }
 
@@ -353,7 +398,8 @@ function render()
 {
 	if(isRunning()){
 		//console.log("render white pane moving ::>>"+isRunning());
-	    initialWhitePanelMovement();
+	    if(!introPanelReceded)initialWhitePanelMovement();
+	    if(introPanelReceded && !introCameraUpdated)cameraZoomZ();
 	   }
 	renderer.render( scene, camera );
 //	rendererCSS.render( cssScene, camera );
@@ -453,14 +499,14 @@ function onDocumentMouseDown( event )
     {
     	//console.log(intersects[0]);
         console.log("Hit @ "/* + toString( intersects[0].point ) */);
-        //console.log(areBirdsActive);
+        console.log(areBirdsActive);
  		//$("#threeCanvas").removeClass('isRunning');
  		// $("body, html").animate({ scrollTop: 0 }, 600);
         if(!areBirdsActive)
 		        {
 		        	console.log("Birds");
 		        	//boids=[];
-		       		initBoidsAndBirds();
+		       		
 		       		areBirdsActive =true;
 		       	}
        	

@@ -207,3 +207,13 @@ canvas{position:relative;}
 
 //***********  home
 #home{margin:$margin-standard}
+
+//********* Contact Form
+
+.contact-form{width:60%;
+  label{float:left; color:sienna}
+  input{width:100%}
+  textarea{width:100%}
+  .submit{width:25%}
+
+}

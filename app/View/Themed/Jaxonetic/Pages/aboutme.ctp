@@ -6,7 +6,7 @@
     at all the trophies I have accumulated and call me an athlete.
     Martial artists call me Senpai. Capoeiristas call me Pantera. Quando passar a rua de baixo,
     tudo mundo me chama Goma de engomar. My students here in Brazil call me professor or teacher.
-    When I play my 4 string Ibanez bass people call me a musician.</p>
+    When I play my 4 string Ibanez bass, people call me a musician.</p>
     
 <h4>... Professionally:</h4>
 <p class="left-margined-paragraph">I have over 10 years of experience gathering requirements,

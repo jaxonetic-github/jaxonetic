@@ -31,16 +31,15 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		echo $this->Html->meta('author',    'jaxonetic');
 		
         echo $this->Html->css("bootstrap");
-		echo $this->Html->css("animate");
-		echo $this->Html->css("jax" );
-
+		echo $this->Html->css("animate");//quick animations
+		echo $this->Html->css("jax" );//general site css
+        
+        echo $this->Html->css("pace" );//page loading css
             echo $this->fetch(
         'meta');
 		echo $this->fetch('css');
 		echo $this->Html->script('jquery-2.0.2.min');
-                     echo $this->Html->script('threejs/Three');
-                   echo $this->Html->script('fonts/helvetiker_regular.typeface');
-         echo $this->Html->script('fonts/helvetiker_bold.typeface');
+
           echo $this->Html->script("menu");
  //menu active/inactive javascript
 

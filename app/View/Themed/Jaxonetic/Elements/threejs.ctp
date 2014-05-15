@@ -53,7 +53,9 @@ void main()
     <?php
 
      echo $this->Html->script('bootstrap.min', array('block' => 'scriptBottom'));
-
+                     echo $this->Html->script('oimo/three.min');
+                   echo $this->Html->script('fonts/helvetiker_regular.typeface');
+         echo $this->Html->script('fonts/helvetiker_bold.typeface');
                 echo $this->Html->script('oimo/Detector', array('block' => 'scriptBottom'));
                        echo $this->Html->script('oimo/THREEx.WindowResize', array('block' => 'scriptBottom'));
                                 echo $this->Html->script('oimo/THREEx.KeyboardState.js', array('block' => 'scriptBottom'));

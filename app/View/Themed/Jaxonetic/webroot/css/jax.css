@@ -414,3 +414,25 @@ body footer {
 #home {
   margin: 25px;
 }
+
+/* line 213, ../sass/jax.scss */
+.contact-form {
+  width: 60%;
+}
+/* line 214, ../sass/jax.scss */
+.contact-form label {
+  float: left;
+  color: sienna;
+}
+/* line 215, ../sass/jax.scss */
+.contact-form input {
+  width: 100%;
+}
+/* line 216, ../sass/jax.scss */
+.contact-form textarea {
+  width: 100%;
+}
+/* line 217, ../sass/jax.scss */
+.contact-form .submit {
+  width: 25%;
+}
