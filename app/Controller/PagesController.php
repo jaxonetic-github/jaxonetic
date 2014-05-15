@@ -37,7 +37,7 @@ class PagesController extends AppController {
  * @var array
  */
  public $components = array('Auth');
-	public $uses = array();
+	public $uses = array('Contacts.Contact', 'Contacts.Message');
 	public $helpers = array('Html','Js');
     
     var $layout = 'jaxonetic';
@@ -48,7 +48,8 @@ class PagesController extends AppController {
     }
     public function projects(){
         $this->layout = "twoDLayout";
-    }  
+    }
+
     public function blog(){}
     public function resume(){
     }
