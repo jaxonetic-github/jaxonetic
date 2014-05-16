@@ -40,17 +40,17 @@ class PagesController extends AppController {
 	public $uses = array('Contacts.Contact', 'Contacts.Message');
 	public $helpers = array('Html','Js');
     
-    var $layout = 'jaxonetic';
+    var $layout = 'twoDLayout';
     
-    public function index(){} 
-    public function aboutme(){
-         $this->layout = "twoDLayout";
-    }
-    public function projects(){
-        $this->layout = "twoDLayout";
-    }
+    public function index(){
+      
 
-    public function blog(){}
+    }
+    
+    public function aboutme(){
+       
+    }
+  
     public function resume(){
     }
     
