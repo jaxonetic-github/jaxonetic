@@ -17,7 +17,7 @@ class ProjectsController extends AppController {
   public function jaxman(){}
    
   public function interactive(){
-      $this->layout = interactive;   
+      $this->layout = "interactive";   
   } 
   
  }
