@@ -19,7 +19,7 @@
     using their adapted version of the ProcessingJS javascript Framework. You can
      follow the links below
     to see my live version of Pac-man called Khan-Man or click below to see my rewrite of 
-    KhanMan, called JaxMan, uses the official Processing.js framework.</p>
+    KhanMan, called JaxMan, which uses the official Processing.js framework.</p>
 
 <ul class="list-inline jax-center-aligned">
     <li>
