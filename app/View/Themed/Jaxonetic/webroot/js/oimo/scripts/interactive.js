@@ -74,7 +74,7 @@ function init()
 	planeMesh.position.y += 0;
 	planeMesh.position.z = 900;
 	// add it to the standard (WebGL) scene
-	scene.add(planeMesh);
+	//scene.add(planeMesh);
 	
    
    
@@ -278,16 +278,19 @@ controls.center.add( distance );
 	}
 	//camera.position.z-=15;
 	else{
-			areBirdsActive  = true;
+		areBirdsActive  = true;
 
 		introCameraUpdated = true;
 		//console.log(controls.object.rotation);
-		controls.center = new THREE.Vector3 (0,0,3000);
+		//controls.center = new THREE.Vector3 (0,0,3000);
 		underConstruction();
 		//camera.lookAt(0,50,6900);
 		//camera.rotation.x = -Math.PI/2;
+		//skybox.rotation.z+=Math.PI/2;
+		
 	}
 }
+
 
 		function underConstruction(){
 	sayAt("Under Major Construction, obviously.", 1000 , 900, 2000,0, Math.PI,0 );
@@ -335,7 +338,6 @@ function update()
 	
 	if(controls )
 		controls.update();
-		
 		
 	moonGlow.material.uniforms.viewVector.value = 
 		new THREE.Vector3().subVectors( camera.position, moonGlow.position );
@@ -400,6 +402,7 @@ function render()
 		//console.log("render white pane moving ::>>"+isRunning());
 	    if(!introPanelReceded)initialWhitePanelMovement();
 	    if(introPanelReceded && !introCameraUpdated)cameraZoomZ();
+	    controls.rotateRight(Math.PI/40);
 	   }
 	renderer.render( scene, camera );
 //	rendererCSS.render( cssScene, camera );

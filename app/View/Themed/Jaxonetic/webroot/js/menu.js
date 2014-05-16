@@ -26,11 +26,11 @@ function bringCanvasToFront(){
 	 $(".canvas-container").css('z-index', 1);
 }
 	$(document).on('click', '#start-animation', function() {
-		 $("#content").addClass("animated  rotateOut");
-	//   
-	   console.log("starting");
-	   
-	   $("#threeCanvas").addClass('isRunning');
+		
+		// $("#content").addClass("animated  rotateOut");
+	//   33333333333
+//	   console.log("starting");
+		 
 	  
 	  //  $("#content").addClass("animated rotateIn");
 	   // $(".bottom-content").removeClass('bottom-content');
@@ -40,12 +40,30 @@ function bringCanvasToFront(){
 	
 	$(document).on('click', '.jax-menuitem', function() {
 		
-		
+  // 	$('.rocky-menuitem').removeClass('active-mainnav-item');
+   
+		//get the list of classes for this element
+		var classList = $(this).attr('class').split(/\s+/);
 
-		$("#threeCanvas").css('z-index', -1);
-       //	$("#threeCanvas").fadeOut();
+		//go through them(should only be about 2-3) and find the one that starts with rockynav-
+		$(classList).each(function(index) {
+			console.log(classList[index].substring(0, 6));
+			//I want the text after [rockynav-]
+			if (classList[index].substring(0, 6) === 'jaxnav-') {
+				console.log(classList[index].substring(6));
+
+				
+				//keeping track of the active menuitem as we navigate pages
+				$.cookie('active-mainnav-item', classList[index].substring(6));
+				$("#content").load(classList[index].substring(6));
+			}
+		});
+		
+		$(this).addClass('active-mainnav-item');
+ 
+
        	
-		$("#threeCanvas").removeClass('isRunning');
+		//$("#threeCanvas").removeClass('isRunning');
 	}); 
 
 
