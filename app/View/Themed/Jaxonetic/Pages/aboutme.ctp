@@ -1,7 +1,7 @@
 <div id="jax-profile" class="jax-innerpage-pane">
 <h3 class="jax-center-aligned">About Me...</h3>
 
-<h4>... Personally:</h4><p class="left-margined-paragraph">My family calls me Alonzo.  Some Friends call me Zo.
+<h4>... Personally:</h4><p class="left-margined-paragraph">My family calls me Alonzo.  Some friends call me Zo.
     Georgia Tech calls me an alumnus and a Computer Engineer graduate of Dec 1999. You might look
     at all the trophies I have accumulated and call me an athlete.
     Martial artists call me Senpai. Capoeiristas call me Pantera. Quando passar a rua de baixo,
@@ -26,11 +26,6 @@
      </div>
 
 
-<h4>... Psychologically:</h4>
-<p class="left-margined-paragraph">Here is pretty good summary of my introvertive personality</p>
-   
-    
-<iframe class="center-block" width="420" height="315" src="//www.youtube.com/embed/c23CKN0fbcQ" frameborder="0" allowfullscreen></iframe>
 
 </div>
 

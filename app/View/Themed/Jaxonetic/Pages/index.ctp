@@ -9,7 +9,7 @@
         <div class="alert alert-info alert-dismissable">
   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
   <strong>Heads Up!</strong> Much of the content in this site uses current technology and requires your browser 
-        or your Malware protectors (e.g. Avast) to be uptodate to function correctly.
+        or your Malware protectors (e.g. Avast) to be up-to-date to function correctly.
 </div>
 
         

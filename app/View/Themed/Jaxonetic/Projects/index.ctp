@@ -14,7 +14,7 @@
 <div class="project-item">    
 <h4>... Khan Man:</h4>
 <p class="left-margined-paragraph">
-    I am a big fan of <a href="http://www.khanacadamy.org" >The Khan Acadamy</a>.  Education 
+    I am a big fan of <a href="http://www.khanacadamy.org" >The Khan Academy</a>.  Education 
     should be free and accessible to all. They encourage developers to write games and animations
     using their adapted version of the ProcessingJS javascript Framework. You can
      follow the links below
@@ -49,7 +49,7 @@
     <li>
         <a href="https://www.khanacademy.org/cs/khan-man/5835976181022720"
                 target="_blank"><button class="btn btn-primary btn-lg"  >
-  Play KhanMan at Khan Acadamy
+  Play KhanMan at Khan Academy
 </button></a>
        
     </li>
