@@ -318,12 +318,11 @@ THREE.OrbitControls = function ( object, domElement ) {
 	}
 
 	function onMouseWheel( event ) {
-
 		if ( scope.enabled === false ) return;
 		if ( scope.userZoom === false ) return;
 
 		var delta = 0;
-        event.preventDefault();
+       event.preventDefault();
 
 		if ( event.wheelDelta ) { // WebKit / Opera / Explorer 9
 

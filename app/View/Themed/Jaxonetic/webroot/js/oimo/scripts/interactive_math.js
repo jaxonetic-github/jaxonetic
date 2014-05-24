@@ -6,7 +6,7 @@
 
 // MAIN
 	var SCREEN_WIDTH,	 SCREEN_HEIGHT ;
-var GRID_DOT_SIZE= .4;
+
 // standard global variables
 var container, scene,cssScene, camera, rendererCSS, cameraControls, skyBoxControls, stats;
 var keyboard = new THREEx.KeyboardState();
@@ -31,9 +31,6 @@ var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 var imageSuffix = ".png";
 var brickImage = "/jaxonetic/theme/jaxonetic/img/brick.png";
 
-//
-    var gridYZ, gridXZ ,gridXY;
-    
 var dflt_texture5;
 var dflt_texture4;
 var dflt_texture3;
@@ -70,7 +67,7 @@ dflt_texture0 =  THREE.ImageUtils.loadTexture(imagePrefix + directions[0] + imag
 	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	scene.add(camera);
-	camera.position.set(0,0,100);
+	camera.position.set(0,0,1000);
 	//camera.lookAt(scene.position);	
 	// RENDERER
 	if ( Detector.webgl )
@@ -80,7 +77,6 @@ dflt_texture0 =  THREE.ImageUtils.loadTexture(imagePrefix + directions[0] + imag
 	renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	container = document.getElementById( 'threeCanvas' );
 	container.appendChild( renderer.domElement );
-	//console.log($(container).css("height"));
 	// EVENTS
 	THREEx.WindowResize(renderer, camera);
 	//THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
@@ -92,18 +88,16 @@ dflt_texture0 =  THREE.ImageUtils.loadTexture(imagePrefix + directions[0] + imag
    
    
 	var planeMaterial   = new THREE.MeshBasicMaterial({color: 0xffffff, opacity: 0.5, side: THREE.DoubleSide });
-	var planeWidth = 10;
-    var planeHeight = 10;
+	var planeWidth = 10000;
+    var planeHeight = 10000;
 	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight );
 	 planeMesh= new THREE.Mesh( planeGeometry, planeMaterial );
-	planeMesh.position.x += planeWidth/2;
-	planeMesh.position.y += planeHeight/2;
-	//planeMesh.position.z += .01;
-	planeMesh.name="xyPlane";
+	planeMesh.position.y += 0;
+	planeMesh.position.z = 900;
 	// add it to the standard (WebGL) scene
-	scene.add(planeMesh);
-	targetList.push(planeMesh);
-   console.log("length:planemesh>>"+targetList.length);
+	//scene.add(planeMesh);
+	
+   
    
 	// LIGHT
 	var light = new THREE.PointLight(0xffffff);
@@ -120,7 +114,7 @@ dflt_texture0 =  THREE.ImageUtils.loadTexture(imagePrefix + directions[0] + imag
 	floor.rotation.x = Math.PI / 2;
 	//scene.add(floor);
 	
-setSkyDome();
+
    showXYZPlane();
 
     
@@ -134,16 +128,16 @@ setSkyDome();
     scene.add(rightarrow);
 
 	*/
-	//setSkyBox( 4000, 4000, -4500 );
+	setSkyBox( 4000, 4000, -4500 );
 	//skyBoxControls = new THREE.OrbitControls( skyBox, renderer.domElement );
 	//skyBoxControls.addEventListener( 'change', render );
 	      
-	sphereMenu = addSphere(5, 32, 16,0,0,0);
+	sphereMenu = addSphere(35, 32, 16,0,0,0);
 
     //add sphereMenu to list of event targets
     targetList.push(sphereMenu);
     
-console.log("length:>>"+targetList.length);
+
         // when the mouse down, 
           document.addEventListener( 'mousedown', onDocumentMouseDown, false );
           document.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -153,68 +147,45 @@ console.log("length:>>"+targetList.length);
             
    }   
    
-
-     
+   
     ///////////
     // Show Grid
-    // default shows a 20x20 grid
     ///////////     
-         function showXZGrid(){
-    gridXZ = new THREE.GridHelper(10, 1);
-    gridXZ.setColors( new THREE.Color(0x006600), new THREE.Color(0x006600) );
-    gridXZ.position.set( 10,0,10 );
-    scene.add(gridXZ);
-    for(var i=0; i<=10; i++){
-    //	sayAt("XZ green", 0,-20,0,-Math.PI/2,0,0, 0x006600);
-    }
-    sayAt("XZ green", 0,-20,0,-Math.PI/2,0,0, 0x006600);
-   }
- 
-      function showXYGrid(){
-   gridXY = new THREE.GridHelper(10, 1);
-    gridXY.position.set( 10,10,0 );
-    gridXY.rotation.x = Math.PI/2;
-    gridXY.setColors( new THREE.Color(0x000066), new THREE.Color(0x000066) );
-    scene.add(gridXY);
-    
-    for(var i=0; i<=10; i++){
-   		sayAt(i, i,-2,0,0,0,0,0xaaaaaa );
-    }  
-     sayAt("XY blue", 0,-20,0,0,0,0,0x000066 );
-    //  targetList.push(gridXY);
-   }
-        function showYZGrid(){
-   gridYZ = new THREE.GridHelper(10, 1);
-    gridYZ.position.set( 0,10,10 );
-    gridYZ.rotation.z = Math.PI/2;
-    gridYZ.setColors( new THREE.Color(0x660000), new THREE.Color(0x660000) );
-    scene.add(gridYZ);
-    
-     sayAt("YZ marroon", 0,-20,0,0,Math.PI/2,0, 0x660000);
-   }  
-   
      function showXYZPlane(){
    var axes = new THREE.AxisHelper(100);
     axes.position.set(0,0,0);
-   //scene.add(axes);
+   scene.add(axes);
    
+    var gridXZ = new THREE.GridHelper(100, 10);
+    gridXZ.setColors( new THREE.Color(0x006600), new THREE.Color(0x006600) );
+    gridXZ.position.set( 100,0,100 );
+    scene.add(gridXZ);
+    
+    
+    var gridXY = new THREE.GridHelper(100, 10);
+    gridXY.position.set( 100,100,0 );
+    gridXY.rotation.x = Math.PI/2;
+    gridXY.setColors( new THREE.Color(0x000066), new THREE.Color(0x000066) );
+    scene.add(gridXY);
 
-  //showXZGrid();
-showXYGrid();
  	
-//showYZGrid();
+    var gridYZ = new THREE.GridHelper(100, 10);
+    gridYZ.position.set( 0,100,100 );
+    gridYZ.rotation.z = Math.PI/2;
+    gridYZ.setColors( new THREE.Color(0x660000), new THREE.Color(0x660000) );
+    scene.add(gridYZ);
+    sayAt("YZ marroon", 0,-200,0,0,Math.PI/2,0, 0x660000);
+ 	sayAt("XZ green", 0,-200,0,-Math.PI/2,0,0, 0x006600);
+    sayAt("XY blue", 0,-200,0,0,0,0,0x000066 );
 
 
-
-  }
-function showArrowFromOriginTo(endPoint){
     // direction (normalized), origin, length, color(hex)
     var origin = new THREE.Vector3(0,0,0);
-   //console.log( Math.sMath.pow(endPoint.x,2)+ Math.pow(endPoint.y,2));
-    var direction = new THREE.Vector3().subVectors(endPoint , origin).normalize();
-    var arrow = new THREE.ArrowHelper(direction, origin,Math.sqrt ( Math.pow(endPoint.x,2)+ Math.pow(endPoint.y,2)), 0x884400);
+    var terminus  = new THREE.Vector3(75,75,75);
+    var direction = new THREE.Vector3().subVectors(terminus , origin).normalize();
+    var arrow = new THREE.ArrowHelper(direction, origin, 80, 0x884400);
     scene.add(arrow);
-}
+  }
 
     ///////////
     // ADD  TEXT
@@ -232,10 +203,10 @@ function showArrowFromOriginTo(endPoint){
     var materialArray = [ materialFront, materialSide ];
     var textGeom = new THREE.TextGeometry( text, 
     {
-        size: 1, height: .2, curveSegments: 33,
+        size: 96, height: 30, curveSegments: 33,
         font: "helvetiker", weight: "normal", style: "normal",
         bevelThickness: 0, bevelSize: 0, bevelEnabled: false,
-        material: 0, extrudeMaterial: 0
+        material: 0, extrudeMaterial: 1
     });
     // font: helvetiker, gentilis, droid sans, droid serif, optimer
     // weight: normal, bold
@@ -260,14 +231,7 @@ function showArrowFromOriginTo(endPoint){
 	////////////
 	// addSphere 
 	////////////
-function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ, showCoords){
-	if(showCoords===undefined){
-		showCoords = false;	
-	}
-	if(showCoords){
-		sayAt("("+positionX.toFixed(2)+","+  positionY.toFixed(2)+") ", positionX, positionY+radius, positionZ, 0, 0, 0, 0xaaaa66 );
-	}
-	
+function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ){
 	console.log(positionX+" "+positionY +" "+ positionZ);
 	var sphereGeom = new THREE.SphereGeometry(radius, geometryY, geometryZ);
     
@@ -276,8 +240,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
     var moon = new THREE.Mesh(sphereGeom, moonMaterial);
 	moon.position.set(positionX, positionY, positionZ);
     scene.add(moon);
-        moon.name="moon"+targetList.length;
-    /**
+    
 	// create custom material from the shader code above
 	//   that is within specially labeled script tags
 	var customMaterial = new THREE.ShaderMaterial( 
@@ -317,49 +280,12 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
     crateGlow.position = crate.position;
 	crateGlow.scale.multiplyScalar(1.5);
 	//scene.add( crateGlow );
-	*/
+	
 	return moon;
 }
 
 
-		function setSkyDome(){
-			scene.fog = new THREE.Fog( 0xffffff, 1000, 10000 );
-			
-				// LIGHTS
-
-				var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.475 );
-				directionalLight.position.set( 100, 100, -100 );
-				scene.add( directionalLight );
-
-
-				var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 1.25 );
-				hemiLight.color.setHSL( 0.6, 1, 0.75 );
-				hemiLight.groundColor.setHSL( 0.1, 0.8, 0.7 );
-				hemiLight.position.y = 500;
-				scene.add( hemiLight );
-
-			
-				// SKYDOME
-
-				var vertexShader = document.getElementById( 'vertexShader' ).textContent;
-				var fragmentShader = document.getElementById( 'fragmentShader' ).textContent;
-				var uniforms = {
-					topColor: 	 { type: "c", value: new THREE.Color( 0x0077ff ) },
-					bottomColor: { type: "c", value: new THREE.Color( 0xffffff ) },
-					offset:		 { type: "f", value: 400 },
-					exponent:	 { type: "f", value: 0.6 }
-				}
-				uniforms.topColor.value.copy( hemiLight.color );
-
-				scene.fog.color.copy( uniforms.bottomColor.value );
-
-				var skyGeo = new THREE.SphereGeometry( 4000, 32, 15 );
-				var skyMat = new THREE.ShaderMaterial( { vertexShader: vertexShader, fragmentShader: fragmentShader, uniforms: uniforms, side: THREE.BackSide } );
-
-				var sky = new THREE.Mesh( skyGeo, skyMat );
-				scene.add( sky );
-			}
-			
+		
 	function setSkyBox(x,y,z){
 	
 		var skyGeometry = new THREE.BoxGeometry( x, y, z );	//originally THREE.CubeGeometry( 1000, 1000, -350 );
@@ -430,6 +356,23 @@ var revolutions = 0;
 		var imagePrefix = "/jaxonetic/theme/jaxonetic/img/dawnmountain-";
 		var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 
+function cameraRotateZ(){
+
+  //	console.log(ctr +" "+Math.PI +" "+ (ctr % (Math.PI*2)===0));
+	if( ctr % (Math.PI*2)){
+		revolutions+=1;
+	//	console.log("rev::>"+revolutions);
+	}
+	if(revolutions==1){
+//		skyBox.material.materials[0].map =  THREE.ImageUtils.loadTexture(imagePrefix + directions[revolutions] + imageSuffix  );
+	}
+	if( ctr < Math.PI){
+		console.log(ctr+" "+Math.PI/2+" -->"+( ctr < Math.PI/2));
+		ctr+=Math.PI/38;
+		cameraControls.rotateRight(Math.PI/38);
+	}
+ 
+}
 
 
 function initialWhitePanelMovement(){
@@ -453,19 +396,17 @@ function isRunning(){
 function update()
 {
 	
-
+	if(skyBoxControls){
+		//console.log("skycontrols");
+		skyBoxControls.update();
+	}
 	if(cameraControls )
 		cameraControls.update();
-		/*
-	if(moonGlow !== undefined){	
-		moonGlow.material.uniforms.viewVector.value = 
+		
+	moonGlow.material.uniforms.viewVector.value = 
 		new THREE.Vector3().subVectors( camera.position, moonGlow.position );
-	}
-	if(crateGlow !== undefined){
 	crateGlow.material.uniforms.viewVector.value = 
 		new THREE.Vector3().subVectors( camera.position, crateGlow.position );
-	}
-	*/
 }
     
 
@@ -584,8 +525,8 @@ function cameraZoomZ(){
 	
 	//camera.position.z-=15;
 	}else{
-		
-//console.log(camera.position);
+		areBirdsActive  = true;
+console.log(camera.position);
 		introCameraUpdated = true;
 		//console.log(cameraControls.object.rotation);
 		//cameraControls.center = new THREE.Vector3 (0,0,3000);
@@ -673,13 +614,12 @@ function onDocumentMouseDown( event )
     // (such as the mouse's TrackballControls)
      event.preventDefault();
     
-   // console.log("Click.");
+    console.log("Click.");
     
     // update the mouse variable
-    mouse.x = ( event.clientX / SCREEN_WIDTH ) * 2 - 1;
-    mouse.y = - ( event.clientY / SCREEN_HEIGHT ) * 2 + 1;
+    mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     
-   	 
     // find intersections
 
     // create a Ray with origin at the mouse position
@@ -688,32 +628,22 @@ function onDocumentMouseDown( event )
   //  console.log(vector.normalize());
     projector.unprojectVector( vector, camera );
      //console.log(vector);
-     console.log(camera.position);
+     //console.log(camera.position);
      vectorsub = vector.sub( camera.position );
-     var direction = vectorsub.normalize();//direction from camera to click position
-	var distance = - camera.position.z / direction.z;
-
-	var pos = camera.position.clone().add( direction.multiplyScalar( distance ) );
-	console.log(pos);
-	//console.log(pos.normalize());
-    var ray = new THREE.Raycaster( camera.position, pos );
-    //scene.add(ray);
-	console.log( ray );
+     //console.log( vectorsub );
+    var ray = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+//console.log( ray );
     // create an array containing all objects in the scene with which the ray intersects
     var intersects = ray.intersectObjects( targetList );
-    //mouse.x = (event.clientX - (window.innerWidth*0.5))-(container.width*0.5);
     //console.log(mouse.x + "," + mouse.y+"-----");
-    showArrowFromOriginTo(pos);
-    
-   targetList.push( addSphere(GRID_DOT_SIZE, 32, 16,pos.x,pos.y,0, true));
    // console.log( sphereMenu.position);
-    console.log(targetList.length);
+    //console.log();
     // if there is one (or more) intersections
     if ( intersects.length > 0 )
     {
     	//console.log(intersects[0]);
         console.log("Hit @ "/* + toString( intersects[0].point ) */);
-        //console.log(areBirdsActive);
+        console.log(areBirdsActive);
  		//$("#threeCanvas").removeClass('isRunning');
  		// $("body, html").animate({ scrollTop: 0 }, 600);
         if(!areBirdsActive)
@@ -721,7 +651,7 @@ function onDocumentMouseDown( event )
 		        	console.log("Birds");
 		        	//boids=[];
 		       		
-		       	//	areBirdsActive =true;
+		       		areBirdsActive =true;
 		       	}
        	
        			//change geometry of skybox 

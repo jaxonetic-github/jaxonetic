@@ -1,9 +1,16 @@
 /* line 6, ../sass/jax.scss */
+iframe {
+  zoom: 1;
+  filter: alpha(opacity=90);
+  opacity: 0.9;
+}
+
+/* line 10, ../sass/jax.scss */
 #bottom-content {
   margin-top: 150px;
 }
 
-/* line 8, ../sass/jax.scss */
+/* line 12, ../sass/jax.scss */
 .margined-paragraph {
   margin-bottom: 30px;
   margin-left: auto;
@@ -11,40 +18,40 @@
   width: 66%;
 }
 
-/* line 13, ../sass/jax.scss */
+/* line 17, ../sass/jax.scss */
 .left-margined-paragraph {
   margin-bottom: 30px;
   margin-left: 25px;
   margin-right: 25px;
 }
 
-/* line 18, ../sass/jax.scss */
+/* line 22, ../sass/jax.scss */
 .carousel-inner {
   text-align: center;
 }
 
-/* line 23, ../sass/jax.scss */
+/* line 27, ../sass/jax.scss */
 #flashMessages {
   color: #008080;
   font-size: 22px;
 }
 
-/* line 26, ../sass/jax.scss */
+/* line 30, ../sass/jax.scss */
 .uppercased {
   text-transform: uppercase;
 }
 
-/* line 27, ../sass/jax.scss */
+/* line 31, ../sass/jax.scss */
 .capitalized {
   text-transform: capitalize;
 }
 
-/* line 28, ../sass/jax.scss */
+/* line 32, ../sass/jax.scss */
 .active-mainnav-item, .active {
   background-color: rgba(210, 210, 210, 0.8);
 }
 
-/* line 29, ../sass/jax.scss */
+/* line 33, ../sass/jax.scss */
 .jax-img-responsive {
   display: block;
   height: auto;
@@ -52,7 +59,7 @@
   margin: auto;
 }
 
-/* line 32, ../sass/jax.scss */
+/* line 36, ../sass/jax.scss */
 .jax-project-img-responsive {
   display: block;
   height: auto;
@@ -60,93 +67,93 @@
   margin: auto;
 }
 
-/* line 36, ../sass/jax.scss */
+/* line 40, ../sass/jax.scss */
 .jax-center-aligned {
   text-align: center;
 }
 
-/* line 37, ../sass/jax.scss */
+/* line 41, ../sass/jax.scss */
 a {
   color: #295377;
 }
 
-/* line 38, ../sass/jax.scss */
+/* line 42, ../sass/jax.scss */
 h3 {
   color: darkslategray;
 }
 
-/* line 39, ../sass/jax.scss */
+/* line 43, ../sass/jax.scss */
 h4 {
   color: sienna;
 }
 
-/* line 43, ../sass/jax.scss */
+/* line 47, ../sass/jax.scss */
 .row {
   margin-top: 60px;
 }
 
-/* line 45, ../sass/jax.scss */
+/* line 49, ../sass/jax.scss */
 .navbar-default {
   background-color: transparent;
   border: none;
 }
 
-/* line 49, ../sass/jax.scss */
+/* line 53, ../sass/jax.scss */
 .navbar-toggle {
   float: none;
 }
 
 @media (min-width: 960px) and (max-width: 1099px) {
-  /* line 52, ../sass/jax.scss */
+  /* line 56, ../sass/jax.scss */
   .jax-innerpage-pane {
     width: 64%;
   }
 }
 @media (min-width: 768px) {
-  /* line 56, ../sass/jax.scss */
-  .navbar-inverse {
+  /* line 60, ../sass/jax.scss */
+  #tres-d-topnav .navbar-inverse {
     border-color: #080808;
     margin-left: 0;
-    width: 60%;
+    width: 10%;
   }
 
-  /* line 57, ../sass/jax.scss */
+  /* line 63, ../sass/jax.scss */
   .jax-innerpage-pane {
     margin-left: 25px;
   }
 }
 @media (max-width: 640px) {
-  /* line 60, ../sass/jax.scss */
+  /* line 66, ../sass/jax.scss */
   .jax-innerpage-centerpane3 {
     width: 20%;
   }
 
-  /* line 61, ../sass/jax.scss */
+  /* line 67, ../sass/jax.scss */
   .navbar-fixed-top, .navbar-fixed-bottom {
     width: 100%;
   }
 
-  /* line 65, ../sass/jax.scss */
+  /* line 71, ../sass/jax.scss */
   .navbar-inverse {
     width: 100%;
     border-color: #080808;
   }
 }
 @media (max-width: 768px) {
-  /* line 76, ../sass/jax.scss */
+  /* line 82, ../sass/jax.scss */
   .navbar-fixed-top, .navbar-fixed-bottom {
     right: auto;
     width: 100%;
   }
 
-  /* line 80, ../sass/jax.scss */
+  /* line 86, ../sass/jax.scss */
   .navbar-toggle {
     display: block;
     margin-right: auto;
     margin-left: auto;
   }
 
-  /* line 81, ../sass/jax.scss */
+  /* line 87, ../sass/jax.scss */
   .jax-innerpage-pane {
     width: 79%;
     display: block;
@@ -155,7 +162,7 @@ h4 {
   }
 }
 @media (min-width: 768px) and (max-width: 960px) {
-  /* line 84, ../sass/jax.scss */
+  /* line 90, ../sass/jax.scss */
   .navbar-inverse {
     background-color: #222222;
     border-color: #080808;
@@ -164,23 +171,23 @@ h4 {
     width: 60%;
   }
 
-  /* line 85, ../sass/jax.scss */
+  /* line 91, ../sass/jax.scss */
   .navbar-fixed-top, .navbar-fixed-bottom {
     right: 0;
   }
 
-  /* line 86, ../sass/jax.scss */
+  /* line 92, ../sass/jax.scss */
   .nav {
     width: 100%;
   }
 
-  /* line 87, ../sass/jax.scss */
+  /* line 93, ../sass/jax.scss */
   .jax-innerpage-pane {
     width: 66%;
   }
 }
 @media (min-width: 1100px) {
-  /* line 92, ../sass/jax.scss */
+  /* line 98, ../sass/jax.scss */
   .jax-innerpage-pane {
     width: 56%;
     margin-left: 4%;
@@ -189,30 +196,30 @@ h4 {
   }
 }
 @media (min-width: 1400px) {
-  /* line 98, ../sass/jax.scss */
+  /* line 104, ../sass/jax.scss */
   .jax-innerpage-pane {
     width: 56%;
     margin-left: 4%;
   }
 }
 @media (max-width: 1600px) {
-  /* line 101, ../sass/jax.scss */
+  /* line 107, ../sass/jax.scss */
   .background-2d {
     background-size: inherit;
   }
 }
 @media (min-width: 1600px) {
-  /* line 106, ../sass/jax.scss */
+  /* line 112, ../sass/jax.scss */
   .background-2d {
     background-size: cover;
   }
 }
-/* line 109, ../sass/jax.scss */
+/* line 115, ../sass/jax.scss */
 html {
   height: 100%;
 }
 
-/* line 114, ../sass/jax.scss */
+/* line 120, ../sass/jax.scss */
 .background-2d {
   position: absolute;
   margin-top: 0 !important;
@@ -222,7 +229,7 @@ html {
   background-repeat: no-repeat;
 }
 
-/* line 115, ../sass/jax.scss */
+/* line 121, ../sass/jax.scss */
 body {
   color: #251313;
   padding: 0;
@@ -233,44 +240,44 @@ body {
   background-repeat: no-repeat;
   height: 100%;
 }
-/* line 117, ../sass/jax.scss */
+/* line 123, ../sass/jax.scss */
 body #home-topnav .navbar-inverse {
   width: 100%;
 }
-/* line 120, ../sass/jax.scss */
+/* line 126, ../sass/jax.scss */
 body .home-banner {
   width: 365px;
   display: block;
   margin: auto;
 }
-/* line 121, ../sass/jax.scss */
+/* line 127, ../sass/jax.scss */
 body .home-banner li {
   vertical-align: middle;
 }
-/* line 122, ../sass/jax.scss */
+/* line 128, ../sass/jax.scss */
 body .home-banner li img {
   vertical-align: baseline;
   margin-left: -180px;
 }
-/* line 126, ../sass/jax.scss */
+/* line 132, ../sass/jax.scss */
 body #wrapper {
-  margin-top: 60px;
+  padding-top: 70px;
   height: 100%;
 }
-/* line 129, ../sass/jax.scss */
+/* line 135, ../sass/jax.scss */
 body #wrapper #content {
   height: 300px;
 }
-/* line 131, ../sass/jax.scss */
+/* line 137, ../sass/jax.scss */
 body #wrapper #content #home-pane {
   width: 300px;
 }
-/* line 147, ../sass/jax.scss */
+/* line 153, ../sass/jax.scss */
 body footer {
   text-align: center;
 }
 
-/* line 152, ../sass/jax.scss */
+/* line 158, ../sass/jax.scss */
 .jax-innerpage-pane {
   min-width: 500px;
   background-color: rgba(212, 200, 175, 0.7);
@@ -279,16 +286,16 @@ body footer {
   border: 2px inset sienna;
   padding: 15px;
 }
-/* line 154, ../sass/jax.scss */
+/* line 160, ../sass/jax.scss */
 .jax-innerpage-pane h3 {
   color: sienna;
 }
-/* line 155, ../sass/jax.scss */
+/* line 161, ../sass/jax.scss */
 .jax-innerpage-pane iframe {
   padding-bottom: 25px;
 }
 
-/* line 157, ../sass/jax.scss */
+/* line 163, ../sass/jax.scss */
 .jax-innerpage-centerpane {
   width: 400px;
   background-color: rgba(212, 200, 175, 0.7);
@@ -301,7 +308,7 @@ body footer {
   margin-bottom: 20px;
 }
 
-/* line 161, ../sass/jax.scss */
+/* line 167, ../sass/jax.scss */
 .jax-innerpage-centerpane2 {
   text-align: center;
   width: 350px;
@@ -315,7 +322,7 @@ body footer {
   margin-bottom: 20px;
 }
 
-/* line 166, ../sass/jax.scss */
+/* line 172, ../sass/jax.scss */
 .jax-innerpage-centerpane3 {
   min-width: 100px;
   width: 15%;
@@ -329,114 +336,114 @@ body footer {
   margin-bottom: 20px;
 }
 
-/* line 171, ../sass/jax.scss */
+/* line 177, ../sass/jax.scss */
 .btn-primary {
   background-color: sienna;
 }
 
-/* line 172, ../sass/jax.scss */
+/* line 178, ../sass/jax.scss */
 .modal-content {
   position: relative;
   background-color: rgba(212, 200, 175, 0.7);
 }
 
-/* line 179, ../sass/jax.scss */
+/* line 185, ../sass/jax.scss */
 .modal-header {
   background-color: darkslategray;
   border-radius: 10px 10px 0 0;
   border-bottom: none;
 }
 
-/* line 182, ../sass/jax.scss */
+/* line 188, ../sass/jax.scss */
 .jax-project-topnav {
   margin-top: 10px;
 }
 
-/* line 185, ../sass/jax.scss */
+/* line 191, ../sass/jax.scss */
 .jax-project-topnav, .jaxtopnav {
   margin-top: 100px;
 }
-/* line 186, ../sass/jax.scss */
+/* line 192, ../sass/jax.scss */
 .jax-project-topnav .dropdown-menu, .jaxtopnav .dropdown-menu {
   margin-top: -1px;
   background-color: lightslategrey;
 }
-/* line 187, ../sass/jax.scss */
+/* line 193, ../sass/jax.scss */
 .jax-project-topnav .jax-dropdownmenulevelone-active, .jaxtopnav .jax-dropdownmenulevelone-active {
   background-color: #EEEEEE;
 }
 
-/* line 192, ../sass/jax.scss */
+/* line 198, ../sass/jax.scss */
 .jax-menuitem a {
   font-family: fantasy;
   font-size: 25px;
   color: sienna;
 }
 
-/* line 194, ../sass/jax.scss */
+/* line 200, ../sass/jax.scss */
 .canvas-container {
-  z-index: -1;
+  z-index: 0;
   position: absolute;
   top: 0;
 }
-/* line 195, ../sass/jax.scss */
+/* line 201, ../sass/jax.scss */
 .canvas-container #threeCanvas {
   z-index: 0;
   position: absolute;
   width: 100%;
 }
-/* line 197, ../sass/jax.scss */
+/* line 203, ../sass/jax.scss */
 .canvas-container #threeCanvas canvas {
   position: relative;
 }
 
-/* line 201, ../sass/jax.scss */
+/* line 207, ../sass/jax.scss */
 #resume {
   background-color: rgba(212, 200, 175, 0.7);
   margin: 0;
   color: #251313;
 }
-/* line 202, ../sass/jax.scss */
+/* line 208, ../sass/jax.scss */
 #resume h3, #resume h4 {
   display: block;
   margin: auto;
 }
-/* line 203, ../sass/jax.scss */
+/* line 209, ../sass/jax.scss */
 #resume .section {
   padding: 10px 25px 25px 25px;
 }
-/* line 204, ../sass/jax.scss */
+/* line 210, ../sass/jax.scss */
 #resume dt {
   color: sienna;
 }
-/* line 205, ../sass/jax.scss */
+/* line 211, ../sass/jax.scss */
 #resume dd {
   margin-left: 25px;
 }
 
-/* line 210, ../sass/jax.scss */
+/* line 216, ../sass/jax.scss */
 #home {
   margin: 25px;
 }
 
-/* line 214, ../sass/jax.scss */
+/* line 220, ../sass/jax.scss */
 .contact-form {
   width: 60%;
 }
-/* line 215, ../sass/jax.scss */
+/* line 221, ../sass/jax.scss */
 .contact-form label {
   float: left;
   color: sienna;
 }
-/* line 216, ../sass/jax.scss */
+/* line 222, ../sass/jax.scss */
 .contact-form input {
   width: 100%;
 }
-/* line 217, ../sass/jax.scss */
+/* line 223, ../sass/jax.scss */
 .contact-form textarea {
   width: 100%;
 }
-/* line 218, ../sass/jax.scss */
+/* line 224, ../sass/jax.scss */
 .contact-form .submit {
   width: 25%;
 }

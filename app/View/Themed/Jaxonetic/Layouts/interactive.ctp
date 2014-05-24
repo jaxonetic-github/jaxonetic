@@ -40,7 +40,7 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		echo $this->fetch('css');
 		echo $this->Html->script('jquery-2.0.2.min');
 
-          echo $this->Html->script("menu");
+         
  //menu active/inactive javascript
 
                 //  echo $this->Html->script('cannon');
@@ -54,8 +54,8 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 
 </head>
 <body >
-    <div id="home-topnav">
-     <?php echo $this->element('topnav'); ?>
+    <div id="tres-d-topnav">
+     <?php echo $this->element('tresdnav'); ?>
            
     </div>
 

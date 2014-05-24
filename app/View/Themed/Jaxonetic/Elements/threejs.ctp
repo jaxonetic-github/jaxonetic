@@ -17,7 +17,7 @@
     ?>
 </div>
 -->
-<!-- ---------------- Custom Shader Code ------------------------ -->
+<!-- ---------------- Glow Shader Code ------------------------ -->
 <script id="vertexShader" type="x-shader/x-vertex">
 uniform vec3 viewVector;
 uniform float c;
@@ -44,16 +44,64 @@ void main()
 }
 </script>
 <!-- ----------------------------------------------------------- -->
+        <script type="x-shader/x-fragment" id="fragmentShaderDepth">
 
+            uniform sampler2D texture;
+            varying vec2 vUV;
 
+            vec4 pack_depth( const in float depth ) {
 
+                const vec4 bit_shift = vec4( 256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0 );
+                const vec4 bit_mask  = vec4( 0.0, 1.0 / 256.0, 1.0 / 256.0, 1.0 / 256.0 );
+                vec4 res = fract( depth * bit_shift );
+                res -= res.xxyz * bit_mask;
+                return res;
+
+            }
+
+            void main() {
+
+                vec4 pixel = texture2D( texture, vUV );
+
+                if ( pixel.a < 0.5 ) discard;
+
+                gl_FragData[ 0 ] = pack_depth( gl_FragCoord.z );
+
+            }
+        </script>
+
+        <script type="x-shader/x-vertex" id="vertexShaderDepth">
+
+            varying vec2 vUV;
+
+            void main() {
+
+                vUV = 0.75 * uv;
+
+                vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+                gl_Position = projectionMatrix * mvPosition;
+
+            }
+
+        </script>
+<!------------------------------------------------------->
+<!--<div id="info">Simple Cloth Simulation<br/>
+            Verlet integration with Constrains relaxation<br/>
+            Toggle: <a onclick="rotate = !rotate;">Camera</a> |
+            <a onclick="wind = !wind;">Wind</a> |
+            <a onclick="sphere.visible = !sphere.visible;">Ball</a> |
+            <a onclick="togglePins();">Pins</a>
+        </div>
+-->
    <div id="threeCanvas" class=""  /></div>
 
 
     <?php
 
      echo $this->Html->script('bootstrap.min', array('block' => 'scriptBottom'));
-                     echo $this->Html->script('oimo/three.min');
+                  //   echo $this->Html->script('oimo/three');
+                   echo $this->Html->script('threejs/three58');
                    echo $this->Html->script('fonts/helvetiker_regular.typeface');
          echo $this->Html->script('fonts/helvetiker_bold.typeface');
                 echo $this->Html->script('oimo/Detector', array('block' => 'scriptBottom'));
@@ -63,15 +111,16 @@ void main()
                        echo $this->Html->script('oimo/FresnelShader', array('block' => 'scriptBottom'));
          
                    echo $this->Html->script('oimo/OrbitControls', array('block' => 'scriptBottom'));
-
+//echo $this->Html->script('threejs/controls/TrackballControls', array('block' => 'scriptBottom'));
       
       
 
-        echo $this->Html->script('oimo/DAT.GUI.min', array('block' => 'scriptBottom'));
+        //echo $this->Html->script('oimo/DAT.GUI.min', array('block' => 'scriptBottom'));
 
-       //  echo $this->Html->script('threejs/CSS3DRenderer', array('block' => 'scriptBottom'));
-            echo $this->Html->script('../obj/Bird.js', array('block' => 'scriptBottom'));
-             echo $this->Html->script('oimo/scripts/interactive', array('block' => 'scriptBottom'));
+         echo $this->Html->script('threejs/CSS3DRenderer', array('block' => 'scriptBottom'));
+//            echo $this->Html->script('../obj/Bird', array('block' => 'scriptBottom'));
+  //           echo $this->Html->script('../obj/Cloth', array('block' => 'scriptBottom'));
+             echo $this->Html->script('oimo/scripts/threeDPage', array('block' => 'scriptBottom'));
             
              
 
