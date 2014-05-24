@@ -111,7 +111,7 @@ void main()
                        echo $this->Html->script('oimo/FresnelShader', array('block' => 'scriptBottom'));
          
                    echo $this->Html->script('oimo/OrbitControls', array('block' => 'scriptBottom'));
-//echo $this->Html->script('threejs/controls/TrackballControls', array('block' => 'scriptBottom'));
+echo $this->Html->script('threejs/controls/TrackballControls', array('block' => 'scriptBottom'));
       
       
 
