@@ -253,9 +253,9 @@ class JaxLocation extends JaxEntity{
 
 //-----------------------  PELLOT 
 
-class JaxPellot extends JaxEntity{
+class JaxPellet extends JaxEntity{
  	int value;
-	JaxPellot(int column, int row, int value){
+	JaxPellet(int column, int row, int value){
 	    super(column, row, null);
 	    this.value = value;
 	}
@@ -272,11 +272,11 @@ class JaxPellot extends JaxEntity{
 
 
 
-//-----------------------------  Power Pellot
+//-----------------------------  Power Pellet
 
-class JaxPowerPellot extends JaxPellot {
+class JaxPowerPellet extends JaxPellet {
 
-   JaxPowerPellot(column, row,value){
+   JaxPowerPellet(column, row,value){
     super(column,row,value);   
    
    }
@@ -298,7 +298,7 @@ class JaxWorld {
 
 	JaxLocation[]  gridMap;
 	int score = 0;
-	int pellotCounter;
+	int pelletCounter;
 	JaxEnemy[] enemies;
 	boolean isGameOver;
 	int level;
@@ -308,7 +308,7 @@ class JaxWorld {
 	JaxWorld(){
 	    this.gridMap = new JaxLocation[GRIDSIZE];
 	    this.score = 0;
-	    this.pellotCounter = INITIAL_NUM_OF_PELLOTS;//92 normal pellots + 4 power pellots. from zero not 1
+	    this.pelletCounter = INITIAL_NUM_OF_PELLOTS;//92 normal pellets + 4 power pellets. from zero not 1
 	    this.enemies = new JaxEnemy[4];
 	    this.isGameOver = false;
 	    this.level = 0;
@@ -323,7 +323,7 @@ class JaxWorld {
  * Sort of a Brute force way to set up the World.
  *
  */
-  void  initNormalPellots(){
+  void  initNormalPellets(){
   for(var column=0; column<GRIDSIZE ; column+=1)
   {
     this.gridMap[column] = new JaxLocation[GRIDSIZE];
@@ -348,29 +348,29 @@ class JaxWorld {
         if(row === 9){//far bottom
             sWall = true;
         }
-     this.gridMap[column][row] = new JaxLocation(new JaxPellot(column, row ,PELLOT_VALUE), column,row,nWall, sWall,eWall,wWall);
+     this.gridMap[column][row] = new JaxLocation(new JaxPellet(column, row ,PELLOT_VALUE), column,row,nWall, sWall,eWall,wWall);
     }
   }    
 
-//remove the 4 pellots in the middle of the enemies home...no use feeding the enemy:-)
+//remove the 4 pellets in the middle of the enemies home...no use feeding the enemy:-)
 this.gridMap[4][4].internalObject = null;
 this.gridMap[4][5].internalObject = null;
 this.gridMap[5][4].internalObject = null;
 this.gridMap[5][5].internalObject = null;
-}//initnormal pellots
+}//initnormal pellets
 
 /*
- * Add Power pellots to the four corners
+ * Add Power pellets to the four corners
  *
  */
-  void initPowerPellots(){
-    this.gridMap[0][0] = new JaxLocation( new JaxPowerPellot(0,0,POWERPELLOT_VALUE),
+  void initPowerPellets(){
+    this.gridMap[0][0] = new JaxLocation( new JaxPowerPellet(0,0,POWERPELLOT_VALUE),
                                                         0,0,true, false,false,true);
-    this.gridMap[0][9] = new JaxLocation(new JaxPowerPellot(0,9,POWERPELLOT_VALUE),
+    this.gridMap[0][9] = new JaxLocation(new JaxPowerPellet(0,9,POWERPELLOT_VALUE),
                                                        0,9, false, true,false,true);
-    this.gridMap[9][0] = new JaxLocation(new JaxPowerPellot(9,0,POWERPELLOT_VALUE),
+    this.gridMap[9][0] = new JaxLocation(new JaxPowerPellet(9,0,POWERPELLOT_VALUE),
                                                        9,0, true, false,true,false);
-    this.gridMap[9][9] = new JaxLocation(new JaxPowerPellot(9,9,POWERPELLOT_VALUE),
+    this.gridMap[9][9] = new JaxLocation(new JaxPowerPellet(9,9,POWERPELLOT_VALUE),
                                                       9,9,  false, true,true,false);
    }
 
@@ -437,8 +437,8 @@ this.gridMap[5][5].internalObject = null;
      * the order is important because of the brute force way
      * I am initializing the grid.  If order is not respected
      */
-    this.initNormalPellots();
-    this.initPowerPellots();
+    this.initNormalPellets();
+    this.initPowerPellets();
     this.initEnemies();
     
     this.jaxMan   = new JaxMan(JAXMAN_INITIAL_X,JAXMAN_INITIAL_Y);
@@ -460,15 +460,15 @@ this.gridMap[5][5].internalObject = null;
      * the order is important because of the brute force way
      * I am initializing the grid.  If order is not respected
      */
-    this.initNormalPellots();
-    this.initPowerPellots();
+    this.initNormalPellets();
+    this.initPowerPellets();
     this.initEnemies();
     
     this.jaxMan   = new JaxMan(JAXMAN_INITIAL_X,JAXMAN_INITIAL_Y);
     this.gridMap[this.jaxMan.x][this.jaxMan.y] =new JaxLocation(new JaxMan(JAXMAN_INITIAL_X,JAXMAN_INITIAL_Y),
                             this.jaxMan.x,this.jaxMan.y, false, false,false,false);
    
-    this.pellotCounter = INITIAL_NUM_OF_PELLOTS;
+    this.pelletCounter = INITIAL_NUM_OF_PELLOTS;
     this.isGameOver = false;
     this.level +=1 ;
    
@@ -726,20 +726,20 @@ if(this.checkForEnemiesAt(destX, destY)){//enemy is ahead
             
             return false;
 } 
-//no "else" because it's possible that an enemy and jaxman and food and a pellot
+//no "else" because it's possible that an enemy and jaxman and food and a pellet
 //could be on the same location
-     if(  this.gridMap[destX][destY].internalObject instanceof JaxPowerPellot){
+     if(  this.gridMap[destX][destY].internalObject instanceof JaxPowerPellet){
             this.eat(jaxObject,destX, destY);
             this.score += POWERPELLOT_VALUE;
             jaxObject.invincibility += INVINCIBILITY_TIME;
-            this.pellotCounter-=1;
+            this.pelletCounter-=1;
             console.log("jaxman invincible");
         }else
-	    if(  this.gridMap[destX][destY].internalObject instanceof JaxPellot){ //If jaxman is about to eat a pellot
+	    if(  this.gridMap[destX][destY].internalObject instanceof JaxPellet){ //If jaxman is about to eat a pellet
 	        
 	        this.eat(jaxObject,destX, destY);
 	        this.score += PELLOT_VALUE;
-	        this.pellotCounter-=1;
+	        this.pelletCounter-=1;
 	    }else
 	    
 	            if(  (this.gridMap[destX][destY].internalObject ===null) &&
@@ -917,11 +917,11 @@ if(this.checkForEnemiesAt(destX, destY)){//enemy is ahead
         text("Use arrow keys to navigate.",74, 170 );
         text("You have 3 lives total.",74, 200 );
         text("Touch an enemy, lose a life.", 74, 229);
-              text("Eat a power pellot,",74, 256 );
+              text("Eat a power pellet,",74, 256 );
         text("become invincible,", 160, 280);
         text("and eat the enemies.", 142, 300);
         text("There are three levels", 74, 330);
-        text("Eat all pellots, advance a level", 74, 360);
+        text("Eat all pellets, advance a level", 74, 360);
 
 	//sketch top  X Button
      rect(301,33, 37,32,133);
@@ -1034,7 +1034,7 @@ void draw(){
    drawScoreBoard(jaxWorld.score,  jaxWorld.level, jaxWorld.kmanLivesRemaining);
 
 // check to see if at highest level  or if time to advance to next level
-   if(jaxWorld.level< MAX_LEVEL && jaxWorld.pellotCounter===0){
+   if(jaxWorld.level< MAX_LEVEL && jaxWorld.pelletCounter===0){
        //prepare the world for next level  
        jaxWorld.prepareNextLevel();
        //advance level
