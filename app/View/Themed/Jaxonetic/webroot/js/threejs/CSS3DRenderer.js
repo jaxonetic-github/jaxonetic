@@ -1,6 +1,7 @@
 /**
  * Based on http://www.emagix.net/academic/mscs-project/item/camera-sync-with-css3-and-webgl-threejs
  * @author mrdoob / http://mrdoob.com/
+ * @author mark lundin / http://mark-lundin.com/
  */
 
 THREE.CSS3DObject = function ( element ) {
@@ -8,11 +9,23 @@ THREE.CSS3DObject = function ( element ) {
 	THREE.Object3D.call( this );
 
 	this.element = element;
-	this.element.style.position = "absolute";
-	this.element.style.WebkitTransformStyle = 'preserve-3d';
-	this.element.style.MozTransformStyle = 'preserve-3d';
-	this.element.style.oTransformStyle = 'preserve-3d';
-	this.element.style.transformStyle = 'preserve-3d';
+	this.element.style.position = 'absolute';
+
+	this.addEventListener( 'removed', function ( event ) {
+
+		if ( this.element.parentNode !== null ) {
+
+			this.element.parentNode.removeChild( this.element );
+
+			for ( var i = 0, l = this.children.length; i < l; i ++ ) {
+
+				this.children[ i ].dispatchEvent( event );
+
+			}
+
+		}
+
+	} );
 
 };
 
@@ -30,40 +43,35 @@ THREE.CSS3DSprite.prototype = Object.create( THREE.CSS3DObject.prototype );
 
 THREE.CSS3DRenderer = function () {
 
-	console.log( 'THREE.CSS3DRenderer', THREE.REVISION );
+	// console.log( 'THREE.CSS3DRenderer', THREE.REVISION );
 
 	var _width, _height;
 	var _widthHalf, _heightHalf;
-	var _projector = new THREE.Projector();
 
-	var _tmpMatrix = new THREE.Matrix4();
+	var matrix = new THREE.Matrix4();
 
-	this.domElement = document.createElement( 'div' );
+	var domElement = document.createElement( 'div' );
+	domElement.style.overflow = 'hidden';
 
-	this.domElement.style.overflow = 'hidden';
+	domElement.style.WebkitTransformStyle = 'preserve-3d';
+	domElement.style.MozTransformStyle = 'preserve-3d';
+	domElement.style.oTransformStyle = 'preserve-3d';
+	domElement.style.transformStyle = 'preserve-3d';
 
-	this.domElement.style.WebkitTransformStyle = 'preserve-3d';
-	this.domElement.style.WebkitPerspectiveOrigin = '50% 50%';
+	this.domElement = domElement;
 
-	this.domElement.style.MozTransformStyle = 'preserve-3d';
-	this.domElement.style.MozPerspectiveOrigin = '50% 50%';
+	var cameraElement = document.createElement( 'div' );
 
-	this.domElement.style.oTransformStyle = 'preserve-3d';
-	this.domElement.style.oPerspectiveOrigin = '50% 50%';
+	cameraElement.style.WebkitTransformStyle = 'preserve-3d';
+	cameraElement.style.MozTransformStyle = 'preserve-3d';
+	cameraElement.style.oTransformStyle = 'preserve-3d';
+	cameraElement.style.transformStyle = 'preserve-3d';
 
-	this.domElement.style.transformStyle = 'preserve-3d';
-	this.domElement.style.perspectiveOrigin = '50% 50%';
+	domElement.appendChild( cameraElement );
 
-	// TODO: Shouldn't it be possible to remove cameraElement?
+	this.setClearColor = function () {
 
-	this.cameraElement = document.createElement( 'div' );
-
-	this.cameraElement.style.WebkitTransformStyle = 'preserve-3d';
-	this.cameraElement.style.MozTransformStyle = 'preserve-3d';
-	this.cameraElement.style.oTransformStyle = 'preserve-3d';
-	this.cameraElement.style.transformStyle = 'preserve-3d';
-
-	this.domElement.appendChild( this.cameraElement );
+	};
 
 	this.setSize = function ( width, height ) {
 
@@ -73,11 +81,12 @@ THREE.CSS3DRenderer = function () {
 		_widthHalf = _width / 2;
 		_heightHalf = _height / 2;
 
-		this.domElement.style.width = width + 'px';
-		this.domElement.style.height = height + 'px';
+		domElement.style.width = width + 'px';
+		domElement.style.height = height + 'px';;
 
-		this.cameraElement.style.width = width + 'px';
-		this.cameraElement.style.height = height + 'px';
+
+		cameraElement.style.width = width + 'px';
+		cameraElement.style.height = height + 'px';
 
 	};
 
@@ -85,7 +94,7 @@ THREE.CSS3DRenderer = function () {
 
 		return Math.abs( value ) < 0.000001 ? 0 : value;
 
-        };
+	};
 
 	var getCameraCSSMatrix = function ( matrix ) {
 
@@ -110,102 +119,118 @@ THREE.CSS3DRenderer = function () {
 			epsilon( elements[ 15 ] ) +
 		')';
 
-	}
+	};
 
-	var getObjectCSSMatrix = function ( matrix ) {
+	var getObjectCSSTransform = function(){
 
-		var elements = matrix.elements;
+		var position = new THREE.Vector3(),
+			scale 	 = new THREE.Vector3(),
+			euler 	 = new THREE.Euler(),
+			quaternion = new THREE.Quaternion(),
+			style;
 
-		return 'translate3d(-50%,-50%,0) matrix3d(' +
-			epsilon( elements[ 0 ] ) + ',' +
-			epsilon( elements[ 1 ] ) + ',' +
-			epsilon( elements[ 2 ] ) + ',' +
-			epsilon( elements[ 3 ] ) + ',' +
-			epsilon( - elements[ 4 ] ) + ',' +
-			epsilon( - elements[ 5 ] ) + ',' +
-			epsilon( - elements[ 6 ] ) + ',' +
-			epsilon( - elements[ 7 ] ) + ',' +
-			epsilon( elements[ 8 ] ) + ',' +
-			epsilon( elements[ 9 ] ) + ',' +
-			epsilon( elements[ 10 ] ) + ',' +
-			epsilon( elements[ 11 ] ) + ',' +
-			epsilon( elements[ 12 ] ) + ',' +
-			epsilon( elements[ 13 ] ) + ',' +
-			epsilon( elements[ 14 ] ) + ',' +
-			epsilon( elements[ 15 ] ) +
-		')';
+		euler._quaternion = quaternion;
+		quaternion._euler = euler;
 
-	}
+		return function ( matrix ) {
+
+			// position.copy( object.position )
+			// euler.copy( object.rotation )
+
+			matrix.decompose( position, quaternion, scale );
+			// euler.copy( object.rotation )
+
+			return 'translate3d(-50%,-50%,0) translate3d(' + epsilon(position.x) + 'px, ' + epsilon(position.y) + 'px, ' + epsilon(position.z) + 'px) '
+					+ 'rotateX(' + epsilon(euler.x) + 'rad) rotateY(' + epsilon(euler.y) + 'rad) rotateZ(' + epsilon(euler.z) + 'rad) '
+					+ 'scale3d(' + epsilon(scale.x) + ', ' + epsilon(-scale.y) + ', ' + epsilon(scale.z) + ')';
+
+		};
+
+	}()
+
+
+	var renderObject = function ( object, camera ) {
+
+		if ( object instanceof THREE.CSS3DObject ) {
+
+			var style;
+
+			if ( object instanceof THREE.CSS3DSprite ) {
+
+				// http://swiftcoder.wordpress.com/2008/11/25/constructing-a-billboard-matrix/
+
+				matrix.copy( camera.matrixWorldInverse );
+				matrix.transpose();
+				matrix.copyPosition( object.matrixWorld );
+				matrix.scale( object.scale );
+
+				matrix.elements[ 3 ] = 0;
+				matrix.elements[ 7 ] = 0;
+				matrix.elements[ 11 ] = 0;
+				matrix.elements[ 15 ] = 1;
+
+				style = getObjectCSSTransform( matrix );
+
+			} else {
+
+				style = getObjectCSSTransform( object.matrixWorld );
+
+			}
+
+			var element = object.element;
+
+			element.style.WebkitTransformStyle = 'preserve-3d';
+			element.style.MozTransformStyle = 'preserve-3d';
+			element.style.oTransformStyle = 'preserve-3d';
+			element.style.transformStyle = 'preserve-3d';
+
+			element.style.WebkitTransform = style;
+			element.style.MozTransform = style;
+			element.style.oTransform = style;
+			element.style.transform = style;
+
+
+			if ( element.parentNode !== cameraElement ) {
+
+				cameraElement.appendChild( element );
+
+			}
+
+		}
+
+		for ( var i = 0, l = object.children.length; i < l; i ++ ) {
+
+			renderObject( object.children[ i ], camera );
+
+		}
+
+	};
+
 
 	this.render = function ( scene, camera ) {
 
 		var fov = 0.5 / Math.tan( THREE.Math.degToRad( camera.fov * 0.5 ) ) * _height;
 
-		this.domElement.style.WebkitPerspective = fov + "px";
-		this.domElement.style.MozPerspective = fov + "px";
-		this.domElement.style.oPerspective = fov + "px";
-		this.domElement.style.perspective = fov + "px";
+		domElement.style.WebkitPerspective = fov + "px";
+		domElement.style.MozPerspective = fov + "px";
+		domElement.style.oPerspective = fov + "px";
+		domElement.style.perspective = fov + "px";
 
-		var objects = _projector.projectScene( scene, camera, false ).objects;
+		scene.updateMatrixWorld();
 
-		var style = "translate3d(0,0," + fov + "px)" + getCameraCSSMatrix( camera.matrixWorldInverse ) + " translate3d(" + _widthHalf + "px," + _heightHalf + "px, 0)";
+		if ( camera.parent === undefined ) camera.updateMatrixWorld();
 
-		this.cameraElement.style.WebkitTransform = style;
-		this.cameraElement.style.MozTransform = style;
-		this.cameraElement.style.oTransform = style;
-		this.cameraElement.style.transform = style;
+		camera.matrixWorldInverse.getInverse( camera.matrixWorld );
 
-		for ( var i = 0, il = objects.length; i < il; i ++ ) {
+		var style = "translate3d(0,0," + fov + "px)" + getCameraCSSMatrix( camera.matrixWorldInverse ) +
+			" translate3d(" + _widthHalf + "px," + _heightHalf + "px, 0)";
 
-			var object = objects[ i ].object;
+		cameraElement.style.WebkitTransform = style;
+		cameraElement.style.MozTransform = style;
+		cameraElement.style.oTransform = style;
+		cameraElement.style.transform = style;
 
-			if ( object instanceof THREE.CSS3DObject ) {
-
-				var element = object.element;
-
-				if ( object instanceof THREE.CSS3DSprite ) {
-
-					// http://swiftcoder.wordpress.com/2008/11/25/constructing-a-billboard-matrix/
-
-					_tmpMatrix.copy( camera.matrixWorldInverse );
-					_tmpMatrix.transpose();
-					_tmpMatrix.copyPosition( object.matrixWorld );
-					_tmpMatrix.scale( object.scale );
-
-					_tmpMatrix.elements[ 3 ] = 0;
-					_tmpMatrix.elements[ 7 ] = 0;
-					_tmpMatrix.elements[ 11 ] = 0;
-					_tmpMatrix.elements[ 15 ] = 1;
-
-					style = getObjectCSSMatrix( _tmpMatrix );
-
-				} else {
-
-					style = getObjectCSSMatrix( object.matrixWorld );
-
-				}
-
-				/*
-				element.style.WebkitBackfaceVisibility = 'hidden';
-				element.style.MozBackfaceVisibility = 'hidden';
-				element.style.oBackfaceVisibility = 'hidden';
-				element.style.backfaceVisibility = 'hidden';
-				*/
-
-				element.style.WebkitTransform = style;
-				element.style.MozTransform = style;
-				element.style.oTransform = style;
-				element.style.transform = style;
-
-				if ( element.parentNode !== this.cameraElement ) {
-
-					this.cameraElement.appendChild( element );
-
-				}
-
-			}
-
-		}
+		renderObject( scene, camera );
 
 	};
 
