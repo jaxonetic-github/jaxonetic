@@ -101,7 +101,7 @@ void main()
 
      echo $this->Html->script('bootstrap.min', array('block' => 'scriptBottom'));
                   //   echo $this->Html->script('oimo/three');
-                   echo $this->Html->script('threejs/three58');
+                   echo $this->Html->script('threejs/three.min');
                    echo $this->Html->script('fonts/helvetiker_regular.typeface');
          echo $this->Html->script('fonts/helvetiker_bold.typeface');
                 echo $this->Html->script('oimo/Detector', array('block' => 'scriptBottom'));
@@ -116,8 +116,10 @@ echo $this->Html->script('threejs/controls/TrackballControls', array('block' => 
       
 
         //echo $this->Html->script('oimo/DAT.GUI.min', array('block' => 'scriptBottom'));
-
-         echo $this->Html->script('threejs/CSS3DRenderer', array('block' => 'scriptBottom'));
+         echo $this->Html->script('threejs/RequestAnimationFrame', array('block' => 'scriptBottom'));
+                  echo $this->Html->script('threejs/controls/DragPanControls', array('block' => 'scriptBottom'));
+         echo $this->Html->script('threejs/CSS3DRenderer', array('block' => 'scriptBottom')); //gist:9620459
+                  echo $this->Html->script('tween.min', array('block' => 'scriptBottom'));
 //            echo $this->Html->script('../obj/Bird', array('block' => 'scriptBottom'));
   //           echo $this->Html->script('../obj/Cloth', array('block' => 'scriptBottom'));
              echo $this->Html->script('oimo/scripts/threeDPage', array('block' => 'scriptBottom'));
