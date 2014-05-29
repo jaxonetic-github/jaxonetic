@@ -1,7 +1,6 @@
 /**
  * Based on http://www.emagix.net/academic/mscs-project/item/camera-sync-with-css3-and-webgl-threejs
  * @author mrdoob / http://mrdoob.com/
- * @author mark lundin / http://mark-lundin.com/
  */
 
 THREE.CSS3DObject = function ( element ) {
@@ -43,7 +42,7 @@ THREE.CSS3DSprite.prototype = Object.create( THREE.CSS3DObject.prototype );
 
 THREE.CSS3DRenderer = function () {
 
-	// console.log( 'THREE.CSS3DRenderer', THREE.REVISION );
+	console.log( 'THREE.CSS3DRenderer', THREE.REVISION );
 
 	var _width, _height;
 	var _widthHalf, _heightHalf;
@@ -82,8 +81,7 @@ THREE.CSS3DRenderer = function () {
 		_heightHalf = _height / 2;
 
 		domElement.style.width = width + 'px';
-		domElement.style.height = height + 'px';;
-
+		domElement.style.height = height + 'px';
 
 		cameraElement.style.width = width + 'px';
 		cameraElement.style.height = height + 'px';
@@ -121,33 +119,30 @@ THREE.CSS3DRenderer = function () {
 
 	};
 
-	var getObjectCSSTransform = function(){
+	var getObjectCSSMatrix = function ( matrix ) {
 
-		var position = new THREE.Vector3(),
-			scale 	 = new THREE.Vector3(),
-			euler 	 = new THREE.Euler(),
-			quaternion = new THREE.Quaternion(),
-			style;
+		var elements = matrix.elements;
 
-		euler._quaternion = quaternion;
-		quaternion._euler = euler;
+		return 'translate3d(-50%,-50%,0) matrix3d(' +
+			epsilon( elements[ 0 ] ) + ',' +
+			epsilon( elements[ 1 ] ) + ',' +
+			epsilon( elements[ 2 ] ) + ',' +
+			epsilon( elements[ 3 ] ) + ',' +
+			epsilon( - elements[ 4 ] ) + ',' +
+			epsilon( - elements[ 5 ] ) + ',' +
+			epsilon( - elements[ 6 ] ) + ',' +
+			epsilon( - elements[ 7 ] ) + ',' +
+			epsilon( elements[ 8 ] ) + ',' +
+			epsilon( elements[ 9 ] ) + ',' +
+			epsilon( elements[ 10 ] ) + ',' +
+			epsilon( elements[ 11 ] ) + ',' +
+			epsilon( elements[ 12 ] ) + ',' +
+			epsilon( elements[ 13 ] ) + ',' +
+			epsilon( elements[ 14 ] ) + ',' +
+			epsilon( elements[ 15 ] ) +
+		')';
 
-		return function ( matrix ) {
-
-			// position.copy( object.position )
-			// euler.copy( object.rotation )
-
-			matrix.decompose( position, quaternion, scale );
-			// euler.copy( object.rotation )
-
-			return 'translate3d(-50%,-50%,0) translate3d(' + epsilon(position.x) + 'px, ' + epsilon(position.y) + 'px, ' + epsilon(position.z) + 'px) '
-					+ 'rotateX(' + epsilon(euler.x) + 'rad) rotateY(' + epsilon(euler.y) + 'rad) rotateZ(' + epsilon(euler.z) + 'rad) '
-					+ 'scale3d(' + epsilon(scale.x) + ', ' + epsilon(-scale.y) + ', ' + epsilon(scale.z) + ')';
-
-		};
-
-	}()
-
+	};
 
 	var renderObject = function ( object, camera ) {
 
@@ -169,26 +164,20 @@ THREE.CSS3DRenderer = function () {
 				matrix.elements[ 11 ] = 0;
 				matrix.elements[ 15 ] = 1;
 
-				style = getObjectCSSTransform( matrix );
+				style = getObjectCSSMatrix( matrix );
 
 			} else {
 
-				style = getObjectCSSTransform( object.matrixWorld );
+				style = getObjectCSSMatrix( object.matrixWorld );
 
 			}
 
 			var element = object.element;
 
-			element.style.WebkitTransformStyle = 'preserve-3d';
-			element.style.MozTransformStyle = 'preserve-3d';
-			element.style.oTransformStyle = 'preserve-3d';
-			element.style.transformStyle = 'preserve-3d';
-
 			element.style.WebkitTransform = style;
 			element.style.MozTransform = style;
 			element.style.oTransform = style;
 			element.style.transform = style;
-
 
 			if ( element.parentNode !== cameraElement ) {
 
@@ -205,7 +194,6 @@ THREE.CSS3DRenderer = function () {
 		}
 
 	};
-
 
 	this.render = function ( scene, camera ) {
 
