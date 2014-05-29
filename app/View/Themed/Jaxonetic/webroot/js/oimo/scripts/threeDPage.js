@@ -6,7 +6,7 @@
 jQuery(function($) {
 // MAIN
 	var SCREEN_WIDTH,	 SCREEN_HEIGHT ;
- 
+    var ORIGIN_POSITION = new THREE.Vector3(0,0,0);
 // standard global variables
 var container,camera, rendererCSS, controls, stats;
 var keyboard = new THREEx.KeyboardState();
@@ -49,26 +49,30 @@ var DFLT_CUBE_SIZE = 800;
 var DFLT_PAGE_HEIGHT =1000;
 
 // Scene containers info
+var brickSceneContainer;
 var graphingSceneContainer, browsingSceneContainer; 
 var graphingSceneSky, browsingSceneSky;
 var browsingSceneCenter;
 var graphingSceneCenter;
-
+var brickSceneCenter;
 
 //SCENE CONTAINER POSITIONS
 	// Cube as a matrix
 	var r = Math.PI / 2;
 	var d = 500;  //an  offset which adjusts the distance between iFrames
-	var cubePos,	cubeRot,graphingPos;	
-	var zOffset_InternetBrowsingScene = 1000;
-    var xOffset_InternetBrowsingScene = 2000;
+	var browserCubePos,	cubeRot,graphingPos, brickCubePosition;	
+	var zOffset_InternetBrowsingScene = 0;
+    var xOffset_InternetBrowsingScene = 0;
     
-  	var zOffset_InternetGraphingScene = 1000;
-    var xOffset_InternetGraphingScene = 5000;
+  	var xOffset_BrickScene = 0;
+	var zOffset_BrickScene = 0;
 
+  	var zOffset_InternetGraphingScene = 0;
+    var xOffset_InternetGraphingScene = 0;
+    
 var textureCamera;
 var welcomeTxt;
-
+var welcomeTextContainer;
 // intermediate scene for reflecting the reflection
 var screenScene, screenCamera, firstRenderTarget, finalRenderTarget;
 var inBrowsingScene;
@@ -79,8 +83,8 @@ var frameObjects = [];
 
 init();
 animate();
-setupTween(camera.position,camera.rotation,browsingSceneCenter, camera );
- 
+//setupTween(camera.position,camera.rotation,browsingSceneCenter, camera );
+ showWelcomeTween();
 // FUNCTIONS 		
 function init() 
 {
@@ -92,15 +96,18 @@ function init()
 	
 	//main scene
 	scene = new THREE.Scene();
+	brickSceneContainer = new THREE.Object3D();
 	browsingSceneContainer = new THREE.Object3D();
 	graphingSceneContainer = new THREE.Object3D();
 	cameraTunnelGroup = new THREE.Object3D();
 	// CAMERA
-	var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+	SCREEN_WIDTH = window.innerWidth;
+	SCREEN_HEIGHT = window.innerHeight;
+	
 	var VIEW_ANGLE = 70, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 10000;
 	
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
-	camera.position.set((xOffset_InternetBrowsingScene+xOffset_InternetGraphingScene)/2,0,zOffset_InternetBrowsingScene+4200);
+	//camera.position.set((xOffset_InternetBrowsingScene+xOffset_InternetGraphingScene)/2,0,zOffset_InternetBrowsingScene+4200);
 	//cameraTunnelGroup.add(camera);
 	
 	scene.add(camera);
@@ -118,17 +125,17 @@ function init()
 	container = document.getElementById( 'threeCanvas' );
 	container.appendChild( renderer.domElement );
 	initCSSRenderers();
- 	
+ 	controls = new THREE.OrbitControls( camera, renderer.domElement );
 
-	browsingSceneContainer = createInternetBrowsingScene(browsingSceneContainer);
-	camera.lookAt(browsingSceneCenter);
+	 showXYZPlane(ORIGIN_POSITION,10000,100);
+	//camera.lookAt(browsingSceneCenter);
 	//graphingSceneContainer = createGraphingScene();
 	
     sceneTargetList.push(browsingSceneContainer);
-    sceneTargetList.push(graphingSceneContainer);
+    sceneTargetList.push(brickSceneContainer);
 
-    scene.add(browsingSceneContainer);
-    scene.add(graphingSceneContainer);
+    scene.add(createInternetBrowsingScene());
+    scene.add(createBrickScene());
     
     //camera.position.set(0, 0, 107);
 
@@ -138,18 +145,12 @@ function init()
     
     	cameraTunnelGroup.traverse(hideChildren);
     	
-    	
-	
-    // 	controls = new THREE.OrbitControls( camera, renderer.domElement );
-    // 	controls.center.set((xOffset_InternetBrowsingScene+xOffset_InternetGraphingScene)/2,0,zOffset_InternetBrowsingScene);
-
-	
-	
 		// EVENTS
 		THREEx.WindowResize(renderer, camera);
 			// when window resizes, also resize this renderer
 
-		document.addEventListener('mousedown', onDocumentMouseDown, false);
+	//	document.addEventListener('mousedown', onDocumentMouseDown, false);
+	console.log("initialized");
 }
 function hideChildren(obj){
 	obj.visible=false;
@@ -206,6 +207,55 @@ function printObjectCoordinates(obj){
 
 		console.log(obj.rotation);
 }
+function showWelcomeTween(){
+	var welcomTextPlanePosition = { x : welcomeTextContainer.position.x, y:welcomeTextContainer.position.y, z:welcomeTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0 };
+    var welcomTextTargetPosition = { x : -200, y:-10, z:-800, rx:0, ry:-Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 900  };
+    
+
+    console.log("showWelcomeTween");
+    console.log(welcomTextTargetPosition);
+    console.log(browserCubePos[5]);
+	var welcomeTween	= new TWEEN.Tween(welcomTextPlanePosition);
+		welcomeTween.to(welcomTextTargetPosition, 5000)
+		.delay(0)
+		.easing(TWEEN.Easing.Exponential.InOut)
+		.onUpdate(function(){
+		console.log(welcomTextPlanePosition);
+		//	console.log(welcomTextPlanePosition.z);
+		//printObjectCoordinates();
+		//angle += Math.PI / 180;
+		//welcomeTxt.rotation.z+=Math.PI / 1800;
+		//controls.center = camera.center;
+		//controls.rotateLeft(Math.PI/50);
+		welcomeTextContainer.position.x =welcomTextPlanePosition.x;
+		welcomeTextContainer.position.y = welcomTextPlanePosition.y;
+		welcomeTextContainer.position.z = welcomTextPlanePosition.z;
+		welcomeTextContainer.rotation.y = welcomTextPlanePosition.ry;
+		controls.rotateLeft(welcomTextPlanePosition.browsingSceneContainerRotY);
+		//objectToUpdate.rotation.z = rotation.z;
+		//objectToUpdate.rotation.y = rotation.y;
+		//objectToUpdate.rotation.x = rotation.x;
+		
+		
+	}).onComplete(function(){
+		console.log("welcome text group moved to...");
+		console.log(welcomeTextContainer.position);
+	});
+	
+
+
+	console.log("welcome text group starting at...");
+	console.log(welcomeTextContainer.position);
+	console.log(welcomTextTargetPosition);
+	console.log(welcomTextPlanePosition);
+	 console.log(welcomeTxt.position);
+	// start the first
+	welcomeTween.start();	
+}
+
+/**
+ * Keeping this here for reference
+ */
 function setupTween(startPos,startRot, targetPos, objectToUpdate)
 {
 	console.log(startPos);
@@ -349,6 +399,38 @@ function setupTween(startPos,startRot, targetPos, objectToUpdate)
 		rendererCSS.domElement.appendChild( renderer.domElement );
 		THREEx.WindowResize(rendererCSS, camera);
 	}
+	//////////////
+//----------- Graphing Scene Functions	
+///////////////
+ function createBrickScene(){
+ 	brickSceneCenter = new THREE.Vector3(xOffset_BrickScene, 0,zOffset_BrickScene);
+ 	brickScene = new THREE.Object3D();
+	var skyGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1 );
+ 	var skyPosition = new THREE.Vector3( 0, 0, 0 );
+	 	
+ 		// create a new scene to hold CSS
+
+ 	brickCubePosition = [ [ xOffset_BrickScene-d, 0, zOffset_BrickScene ], [ xOffset_BrickScene+d, 0, zOffset_BrickScene ], [ xOffset_BrickScene, d, zOffset_InternetBrowsingScene ], [ xOffset_BrickScene, -d, zOffset_InternetBrowsingScene ], [ xOffset_BrickScene, 0, d+zOffset_InternetBrowsingScene ], [ xOffset_BrickScene, 0, zOffset_InternetBrowsingScene-d  ] ];
+	
+	var materialArray = [];
+	for (var i = 0; i < 6; i++)
+			materialArray.push( new THREE.MeshBasicMaterial({
+				map: THREE.ImageUtils.loadTexture( brickImage ),
+				side: THREE.FrontSide
+			}));
+	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+
+	brickSceneSky = createSkyBox(brickImage, skyGeometry, skyPosition,skyMaterial );
+	brickScene.add(brickSceneSky);
+
+	
+
+	var axes = new THREE.AxisHelper(DFLT_CUBE_SIZE/2);
+   	axes.position = brickSceneCenter;
+    brickScene.add(axes);
+    console.log("brick scene created?");
+    return brickScene;
+}	
 
 //////////////
 //----------- Graphing Scene Functions	
@@ -456,10 +538,17 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
  	///////
  function createInternetBrowsingScene(){
  	browsingSceneCenter = new THREE.Vector3(xOffset_InternetBrowsingScene, 0,zOffset_InternetBrowsingScene);
-
+    camera.position = browsingSceneCenter;
+    camera.position.z+400; 
+    
+   //  if(controls) controls.center.set(xOffset_InternetBrowsingScene,0,zOffset_InternetBrowsingScene) ;
+     //console.log(controls.center);
+   // if(controls) controls.center = browsingSceneCenter.add(new THREE.Vector3(400, 0,0));
+ 	//controls.center = new THREE.Vector3(0,0,0);
  	// create a new scene to hold CSS
 	browsingScene = new THREE.Object3D();
- 	cubePos = [ [ xOffset_InternetBrowsingScene-d, 0, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene+d, 0, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, d, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, -d, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, 0, d+zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, 0, zOffset_InternetBrowsingScene-d  ] ];
+	 
+ 	browserCubePos = [ [ xOffset_InternetBrowsingScene-d, 0, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene+d, 0, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, d, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, -d, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, 0, d+zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, 0, zOffset_InternetBrowsingScene-d  ] ];
 	cubeRot = [ [ 0, r, 0 ], [ 0, -r, 0 ], [ -r, 0, 0 ], [ r, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];	
 	var xyPlaneToZpos = 5;  // front facing side
 	var YZPlaneToXpos = 0;  //left facing right
@@ -467,7 +556,8 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	var zxPlanetoYneg = 3;  //top facing down
 	var zxPlanetoYpos = 2;  //bottom facing up
 	
-	
+	console.log(browserCubePos);     
+
 	var skyGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1 );
 		 
 	var materialArray = [];
@@ -480,9 +570,10 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	var skyPosition = new THREE.Vector3( xOffset_InternetBrowsingScene, 0, zOffset_InternetBrowsingScene );
 	browsingSceneSky = createSkyBox(brickImage, skyGeometry,skyPosition,skyMaterial);
 	//browsingScene.add(browsingSceneSky);
-	
-	
+	welcomeTextContainer = new THREE.Object3D();
+	var textAlignment = DFLT_CUBE_SIZE/(-2);
 	var phraseRotation = new THREE.Vector3(0, 0,0);
+	
 	 sayAt("Everything is still in an infancy stage.  Come back often... 05/22",
 	  browsingSceneCenter.x-30,DFLT_CUBE_SIZE*1.5,browsingSceneCenter.z,
 	  phraseRotation, 0x666006,70,10);
@@ -492,41 +583,60 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	 
 	 
 	 //Writing on the back wall
-	  phraseRotation.set(0,2*(-r),0);
+	  phraseRotation.set(-1*Math.PI/10,2*(-0),0);
 	  console.log(phraseRotation);
 	  welcomeTxt = sayAt("Welcome to my playground.  ",
-	  browsingSceneCenter.x+DFLT_CUBE_SIZE/2,50,browsingSceneCenter.z+DFLT_CUBE_SIZE/2,
-	  phraseRotation, 0x666006,25,10); 	  
-	 
-	 	  phraseRotation.set(0,2*(-r),0);
-
-	  sayAt("Hopefully you will enjoy interacting with this site",
-	  browsingSceneCenter.x+DFLT_CUBE_SIZE/2,0,browsingSceneCenter.z+DFLT_CUBE_SIZE/2,
-	  phraseRotation, 0x666006,25,10); 	 
-	 
-	 	  sayAt("as much as I enjoy building it. ",
-	  browsingSceneCenter.x+DFLT_CUBE_SIZE/2,-50,browsingSceneCenter.z+DFLT_CUBE_SIZE/2,
-	  phraseRotation, 0x666006,25,10); 	 
-	 
-	  	  
-	  sayAt("There is not much here at the moment",
-	  browsingSceneCenter.x+DFLT_CUBE_SIZE/2,-100,browsingSceneCenter.z+DFLT_CUBE_SIZE/2,
-	  phraseRotation, 0x666006,25,10); 	
+	  0,250,-0,
+	  phraseRotation, 0x666006,25,1); 	  
+	  welcomeTextContainer.add(welcomeTxt);
 	  
-	  	  sayAt("but there will be. ",
-	  browsingSceneCenter.x+DFLT_CUBE_SIZE/2,-150,browsingSceneCenter.z+DFLT_CUBE_SIZE/2,
-	  phraseRotation, 0x666006,25,10); 
+	  welcomeTextContainer.add(sayAt("Hopefully you will enjoy ",
+	  0,200,-0,
+	  phraseRotation, 0x666006,25,2)); 	 
+	 
+	 welcomeTextContainer.add(	  sayAt("interacting with this site. ",
+	  0,150,-0,
+	  phraseRotation, 0x666006,25,3)); 	 
+	 
 	  	  
-	addPageToContainer(browsingScene,"/jaxonetic/Pages/aboutme",1);
-	addPageToContainer(browsingScene,"/jaxonetic/contactme",0);
-	addPageToContainer(browsingScene,"/jaxonetic/projects",5);
-
- //controls.center =new THREE.Vector3(xOffset_InternetBrowsingScene, 0,zOffset_InternetBrowsingScene-200);
+	  welcomeTextContainer.add(sayAt("as much as I enjoy building it.",
+	  0,100,-0,
+	  phraseRotation, 0x666006,25,4)); 	
+	  
+	  	//  sayAt("but there will b",browsingSceneCenter.x+textAlignment,50,browsingSceneCenter.z,  phraseRotation, 0x666006,25,5); 
+	  	  
+	  	  var texture = new THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/me.png' );
+	var planeMaterial   = new THREE.MeshBasicMaterial({color: 0xffffff, opacity: .9,transparent:true, side: THREE.DoubleSide ,map:texture});
 	
-	var axes = new THREE.AxisHelper(1500);
+	var planeWidth = SCREEN_WIDTH;
+    var planeHeight = DFLT_PAGE_HEIGHT;
+	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight,DFLT_CUBE_SIZE);
+	var planeMesh= new THREE.Mesh( planeGeometry, planeMaterial );
+	//planeMesh.overdraw = true;
+	planeMesh.position.fromArray( browserCubePos[ 5 ]);
+	planeMesh.rotation.fromArray( cubeRot[ 5 ] );
+	//planeMesh.rotation.y = Math.PI/7;
+	//planeMesh.rotation.z = Math.PI;
+	console.log(planeMesh.rotation);
+	//planeMesh.position.x+=15;
+	// add it to the standard (WebGL) scene
+	planeMesh.name = "jax2d";
+	browsingScene.add(planeMesh);
+	//addPageToContainer(browsingScene,"/jaxonetic/Pages/aboutme",1);
+	//addPageToContainer(browsingScene,"/jaxonetic/contactme",0);
+	//addPageToContainer(browsingScene,"/jaxonetic/projects",5);
+	//addPageToContainer(browsingScene,"http://www.gatech.edu",5);
+ controls.center =new THREE.Vector3(xOffset_InternetBrowsingScene, 0,zOffset_InternetBrowsingScene-200);
+	
+	var axes = new THREE.AxisHelper(3000);
     axes.position = browsingSceneCenter;
     browsingScene.add(axes);
-   
+  camera.lookAt(axes);
+  
+ browsingScene.add(welcomeTextContainer);
+ welcomeTextContainer.position.set(0,0,-1500);
+ console.log(browserCubePos);
+ console.log(welcomeTxt.position);
     return browsingScene;
 }	
 
@@ -545,8 +655,9 @@ function animate()
 
 function update()
 {
-	if(controls) controls.update();
-	
+	if(controls){ 
+		controls.update();
+	}
 }
         
 function render() 
@@ -569,7 +680,7 @@ function render()
 			//mesh.rotation.x	+= Math.PI/2;
 			
 			//cameraTunnelGroup.position = camera.position;;
-	if(rendererCSS) rendererCSS.render( browsingCssScene, camera );
+	if(rendererCSS && browsingCssScene) rendererCSS.render( browsingCssScene, camera );
 	renderer.render( scene, camera );	
 }
 
@@ -587,7 +698,7 @@ function render()
 	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight,DFLT_CUBE_SIZE);
 	var planeMesh= new THREE.Mesh( planeGeometry, planeMaterial );
 	//planeMesh.overdraw = true;
-	planeMesh.position.fromArray( cubePos[ cubeSide ]);
+	planeMesh.position.fromArray( browserCubePos[ cubeSide ]);
 	//planeMesh.rotation.fromArray( cubeRot[ cubeSide ] );
 	planeMesh.rotation.y = Math.PI/7;
 	planeMesh.rotation.z = Math.PI;
@@ -619,7 +730,7 @@ function render()
 	// create a CSS3DObject to display element
 	var cssObject = new THREE.CSS3DObject( element );
 	// synchronize cssObject position/rotation with planeMesh position/rotation 
-	cssObject.position.fromArray( cubePos[ cubeSide ] );
+	cssObject.position.fromArray( browserCubePos[ cubeSide ] );
 	//cssObject.rotation.fromArray( cubeRot[ cubeSide ] );
 cssObject.rotation.y=Math.PI/4;
 	// resize cssObject to same size as planeMesh (plus a border)
@@ -674,16 +785,14 @@ cssObject.rotation.y=Math.PI/4;
      sayAt("YZ marroon", 0,-20,0,phraseRotation, 0x660000);
    }  
    
-     function showXYZPlane(position){
-   var axes = new THREE.AxisHelper(10000);
-    axes.position = position;
-   //scene.add(axes);
-   
-
-//  showXZGrid(position, 100);
-showXYGrid(position, 100);
- 	
-//showYZGrid(position, 100);
+   function showXYZPlane(position, size){
+      var axes = new THREE.AxisHelper(10000);
+      
+      axes.position = position;
+      scene.add(axes);
+     //  showXZGrid(position, 100);
+      showXYGrid(position, 100);
+    //showYZGrid(position, 100);
 
 
 
@@ -703,7 +812,7 @@ showXYGrid(position, 100);
 
         // add 3D text
     var materialFront = new THREE.MeshBasicMaterial( { color: frontColor } );
-    var materialSide = new THREE.MeshBasicMaterial( { color: 0x889898 } );
+    var materialSide = new THREE.MeshBasicMaterial( { color: 0x124253 } );
     var materialArray = [ materialFront, materialSide ];
     var textGeom = new THREE.TextGeometry( text, 
     {
@@ -726,7 +835,7 @@ showXYGrid(position, 100);
     textMesh.rotation.y = phraseRotation.y;
     textMesh.rotation.z = phraseRotation.z;
     
-    scene.add(textMesh);
+    //scene.add(textMesh);
     // done adding Text
     return textMesh;
     }
