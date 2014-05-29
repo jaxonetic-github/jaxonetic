@@ -46,7 +46,7 @@ var sphereMenu;
 var areBirdsActive;
 var cube;
 var DFLT_CUBE_SIZE = 800;
-var DFLT_PAGE_HEIGHT =1000;
+var DFLT_PAGE_HEIGHT =700;
 
 // Scene containers info
 var brickSceneContainer;
@@ -76,7 +76,7 @@ var welcomeTextContainer;
 // intermediate scene for reflecting the reflection
 var screenScene, screenCamera, firstRenderTarget, finalRenderTarget;
 var inBrowsingScene;
-
+var  planeMesh;
 var tube;
 var pageHtmlObjCount;
 var frameObjects = [];
@@ -104,7 +104,7 @@ function init()
 	SCREEN_WIDTH = window.innerWidth;
 	SCREEN_HEIGHT = window.innerHeight;
 	
-	var VIEW_ANGLE = 70, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 10000;
+	var VIEW_ANGLE = 60, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 5000;
 	
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	//camera.position.set((xOffset_InternetBrowsingScene+xOffset_InternetGraphingScene)/2,0,zOffset_InternetBrowsingScene+4200);
@@ -126,8 +126,8 @@ function init()
 	container.appendChild( renderer.domElement );
 	initCSSRenderers();
  	controls = new THREE.OrbitControls( camera, renderer.domElement );
-
-	 showXYZPlane(ORIGIN_POSITION,10000,100);
+	//controls.maxDistance = DFLT_CUBE_SIZE/2
+	// showXYZPlane(ORIGIN_POSITION,10000,100);
 	//camera.lookAt(browsingSceneCenter);
 	//graphingSceneContainer = createGraphingScene();
 	
@@ -207,14 +207,46 @@ function printObjectCoordinates(obj){
 
 		console.log(obj.rotation);
 }
+
+
 function showWelcomeTween(){
-	var welcomTextPlanePosition = { x : welcomeTextContainer.position.x, y:welcomeTextContainer.position.y, z:welcomeTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0 };
-    var welcomTextTargetPosition = { x : -200, y:-10, z:-800, rx:0, ry:-Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 900  };
-    
+	var welcomTextPlanePosition = { x : welcomeTextContainer.position.x, y:welcomeTextContainer.position.y, z:welcomeTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0};
+    var welcomTextTargetPosition = { x : -300, y:-10, z:-1100, rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
+     	var planePosition = { x : planeMesh.position.x, y:planeMesh.position.y, z:planeMesh.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0, cameraZ:camera.position.z  };
+    var planeTargetPosition = { x : 100, y:0, z:-1200, rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4,cameraZ:200  };
+   
 
     console.log("showWelcomeTween");
     console.log(welcomTextTargetPosition);
     console.log(browserCubePos[5]);
+    
+
+	
+var pushObjectOutTween	= new TWEEN.Tween(planePosition);
+		pushObjectOutTween.to(planeTargetPosition, 5000)
+		.delay(3000)
+		.easing(TWEEN.Easing.Cubic.InOut)
+		.onUpdate(function(){
+		//console.log(welcomTextPlanePosition);
+		//	console.log(welcomTextPlanePosition.z);
+		planeMesh.position.x = planePosition.x;
+		planeMesh.position.y = planePosition.y;
+		planeMesh.position.z = planePosition.z;
+		planeMesh.rotation.ry = planePosition.ry;
+		planeMesh.position.rz = planePosition.rz;
+		browsingSceneContainer.rotation.y = planePosition.browsingSceneContainerRotY;
+		camera.position.z = planePosition.cameraZ;
+		//controls.rotateLeft(welcomTextPlanePosition.browsingSceneContainerRotY);
+		//objectToUpdate.rotation.z = rotation.z;
+		//objectToUpdate.rotation.y = rotation.y;
+		//objectToUpdate.rotation.x = rotation.x;
+		
+		
+	}).onComplete(function(){
+		console.log("planeMesh moved to...");
+		console.log(planeMesh.position);
+	});
+	
 	var welcomeTween	= new TWEEN.Tween(welcomTextPlanePosition);
 		welcomeTween.to(welcomTextTargetPosition, 5000)
 		.delay(0)
@@ -231,7 +263,7 @@ function showWelcomeTween(){
 		welcomeTextContainer.position.y = welcomTextPlanePosition.y;
 		welcomeTextContainer.position.z = welcomTextPlanePosition.z;
 		welcomeTextContainer.rotation.y = welcomTextPlanePosition.ry;
-		controls.rotateLeft(welcomTextPlanePosition.browsingSceneContainerRotY);
+		//controls.rotateLeft(welcomTextPlanePosition.browsingSceneContainerRotY);
 		//objectToUpdate.rotation.z = rotation.z;
 		//objectToUpdate.rotation.y = rotation.y;
 		//objectToUpdate.rotation.x = rotation.x;
@@ -240,6 +272,7 @@ function showWelcomeTween(){
 	}).onComplete(function(){
 		console.log("welcome text group moved to...");
 		console.log(welcomeTextContainer.position);
+	
 	});
 	
 
@@ -250,6 +283,7 @@ function showWelcomeTween(){
 	console.log(welcomTextPlanePosition);
 	 console.log(welcomeTxt.position);
 	// start the first
+	pushObjectOutTween.start();
 	welcomeTween.start();	
 }
 
@@ -395,7 +429,7 @@ function setupTween(startPos,startRot, targetPos, objectToUpdate)
 		renderer.domElement.style.position = 'absolute';
 		renderer.domElement.style.top      = 0;
 		// make sure original renderer appears on top of CSS renderer
-		renderer.domElement.style.zIndex   = 1;
+		renderer.domElement.style.zIndex   = -1;
 		rendererCSS.domElement.appendChild( renderer.domElement );
 		THREEx.WindowResize(rendererCSS, camera);
 	}
@@ -549,7 +583,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	browsingScene = new THREE.Object3D();
 	 
  	browserCubePos = [ [ xOffset_InternetBrowsingScene-d, 0, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene+d, 0, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, d, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, -d, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, 0, d+zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, 0, zOffset_InternetBrowsingScene-d  ] ];
-	cubeRot = [ [ 0, r, 0 ], [ 0, -r, 0 ], [ -r, 0, 0 ], [ r, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];	
+	cubeRot = [ [ 0, r, 0 ]/*left facing right*/, [ 0, -r, 0 ], [ -r, 0, 0 ], [ r, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];	
 	var xyPlaneToZpos = 5;  // front facing side
 	var YZPlaneToXpos = 0;  //left facing right
 	var YZPlaneToXneg = 1;  //right facing left
@@ -611,7 +645,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	var planeWidth = SCREEN_WIDTH;
     var planeHeight = DFLT_PAGE_HEIGHT;
 	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight,DFLT_CUBE_SIZE);
-	var planeMesh= new THREE.Mesh( planeGeometry, planeMaterial );
+	 planeMesh= new THREE.Mesh( planeGeometry, planeMaterial );
 	//planeMesh.overdraw = true;
 	planeMesh.position.fromArray( browserCubePos[ 5 ]);
 	planeMesh.rotation.fromArray( cubeRot[ 5 ] );
@@ -622,10 +656,51 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	// add it to the standard (WebGL) scene
 	planeMesh.name = "jax2d";
 	browsingScene.add(planeMesh);
-	//addPageToContainer(browsingScene,"/jaxonetic/Pages/aboutme",1);
-	//addPageToContainer(browsingScene,"/jaxonetic/contactme",0);
-	//addPageToContainer(browsingScene,"/jaxonetic/projects",5);
+	addPageToContainer(browsingScene,"/jaxonetic/Pages/aboutme",1);
+	addPageToContainer(browsingScene,"/jaxonetic/contactme",3);
+	addPageToContainer(browsingScene,"/jaxonetic/projects",0);
 	//addPageToContainer(browsingScene,"http://www.gatech.edu",5);
+ 
+// params
+	var r = Math.PI / 2;
+	var d = 50;
+	var pos = [ [ d, 0, 0 ], [ -d, 0, 0 ], [ 0, d, 0 ], [ 0, -d, 0 ], [ 0, 0, d ], [ 0, 0, -d ] ];
+	var rot = [ [ 0, r, 0 ], [ 0, -r, 0 ], [ -r, 0, 0 ], [ r, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];
+
+	// cube
+	var cube = new THREE.Object3D();
+	scene.add( cube );
+
+	// sides
+	for ( var i = 0; i < 6; i ++ ) {
+
+		var element = document.createElement( 'div' );
+		element.style.width = '100px';
+		element.style.height = '100px';
+		element.style.background = new THREE.Color( Math.random() * 0xffffff ).getStyle();
+		element.style.opacity = '0.50';
+
+		var object = new THREE.CSS3DObject( element );
+		object.position.fromArray( pos[ i ] );
+		object.rotation.fromArray( rot[ i ] );
+		cube.add( object );
+
+	}
+
+	// create a new scene to hold CSS
+	if(!browsingCssScene)
+		browsingCssScene = new THREE.Scene();
+	//	browsingCssScene.add(cube);
+		
+//browsingScene.add( cube );
+//scene.add(cube);
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  controls.center =new THREE.Vector3(xOffset_InternetBrowsingScene, 0,zOffset_InternetBrowsingScene-200);
 	
 	var axes = new THREE.AxisHelper(3000);
@@ -678,9 +753,9 @@ function render()
 			//mesh.position =  camera.position;
 			//mesh.rotation =  camera.rotation;
 			//mesh.rotation.x	+= Math.PI/2;
-			
+			//if(brickSceneContainer) {brickSceneContainer.rotation.y+=.542; console.log(brickSceneContainer.rotation.y);}
 			//cameraTunnelGroup.position = camera.position;;
-	if(rendererCSS && browsingCssScene) rendererCSS.render( browsingCssScene, camera );
+	 rendererCSS.render( browsingCssScene, camera );
 	renderer.render( scene, camera );	
 }
 
@@ -689,34 +764,34 @@ function render()
 	//   and place it in the same position and rotation as a side of the polygon (for now a cube )menu
 	/////////////
 	function addPageToContainer(sceneContainer,url, cubeSide){
+	var r = Math.PI / 2;
+	var d = DFLT_CUBE_SIZE;
+	var pos = [ [ -d, 0, -800 ], [ d+ DFLT_CUBE_SIZE/3 , 0, -800 ], [ 0, d,-800 ], [ 0, -d, -800 ], [ 0, 0, d ], [ 0, 0, -d ] ];
+	var rot = [ [ 0, r/2, 0 ]/*left facing right*/, [ 0, -r/2, 0 ]/*top>bottom*/, [ -r, 0, 0 ], [-r/2, 0, 0 ]/*bottom->up*/, [ 0, 0, 0 ]/*back facing front*/, [ 0, 0, 0 ] ];
 	
-	var texture = new THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/textures/terrain/grasslight-big.jpg' );
-	var planeMaterial   = new THREE.MeshBasicMaterial({color: 0xffffff, opacity: .6, side: THREE.DoubleSide });
+	var xyPlaneToZpos = 5;  // front facing side
+	var YZPlaneToXpos = 0;  //left facing right
+	var YZPlaneToXneg = 1;  //right facing left
+	var zxPlanetoYneg = 3;  //top facing down
+	var zxPlanetoYpos = 2;  //bottom facing up
 	
-	var planeWidth = DFLT_CUBE_SIZE-200;
-    var planeHeight = DFLT_PAGE_HEIGHT;
-	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight,DFLT_CUBE_SIZE);
+	var planeMaterial   = new THREE.MeshBasicMaterial({color: 0x000000, opacity: .1, side: THREE.FrontSide });
+	var planeWidth = DFLT_CUBE_SIZE;
+    var planeHeight = DFLT_CUBE_SIZE;
+	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight );
 	var planeMesh= new THREE.Mesh( planeGeometry, planeMaterial );
-	//planeMesh.overdraw = true;
-	planeMesh.position.fromArray( browserCubePos[ cubeSide ]);
-	//planeMesh.rotation.fromArray( cubeRot[ cubeSide ] );
-	planeMesh.rotation.y = Math.PI/7;
-	planeMesh.rotation.z = Math.PI;
-	console.log(planeMesh.rotation);
-	//planeMesh.position.x+=15;
+	planeMesh.position = pos[cubeSide];
+	planeMesh.rotation = rot[cubeSide];
+	//planeMesh.position.y -= planeHeight/2;
 	// add it to the standard (WebGL) scene
-	planeMesh.name = "htmlFrame"+ (pageHtmlObjCount);
-	pageHtmlObjCount+=1;
+	//scene.add(planeMesh);
 
-	sceneContainer.add(planeMesh);
-	
-	//make this plane selectable
-	iFrameTargetList.push(planeMesh);
+
 	// create a new scene to hold CSS
 	if(!browsingCssScene)
 		browsingCssScene = new THREE.Scene();
 	// create the iframe to contain webpage
-	var element	= document.createElement('iframe')
+	var element	= document.createElement('iframe');
 	// webpage to be loaded into iframe
 	element.src	= url;
 	// width of iframe in pixels
@@ -730,11 +805,10 @@ function render()
 	// create a CSS3DObject to display element
 	var cssObject = new THREE.CSS3DObject( element );
 	// synchronize cssObject position/rotation with planeMesh position/rotation 
-	cssObject.position.fromArray( browserCubePos[ cubeSide ] );
-	//cssObject.rotation.fromArray( cubeRot[ cubeSide ] );
-cssObject.rotation.y=Math.PI/4;
+	cssObject.position.fromArray( pos[ cubeSide ] );
+	cssObject.rotation.fromArray( rot[ cubeSide ] );
 	// resize cssObject to same size as planeMesh (plus a border)
-	var percentBorder = 0; //0.05;
+	var percentBorder = .1; //0.05;
 	cssObject.scale.x /= (1 + percentBorder) * (elementWidth / planeWidth);
 	cssObject.scale.y /= (1 + percentBorder) * (elementWidth / planeWidth);
 	browsingCssScene.add(cssObject);
