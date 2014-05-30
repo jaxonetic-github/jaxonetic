@@ -1,4 +1,4 @@
-/* @pjs preload="processing_js/swallow.png,processing_js/bird-mask.png,processing_js/gluttony.png,processing_js/overkill.png, processing_js/pumpkin-mask.png, processing_js/puppet.png"; */
+/* @pjs preload="../processing_js/swallow.png,../processing_js/bird-mask.png,../processing_js/gluttony.png,../processing_js/overkill.png, ../processing_js/pumpkin-mask.png, ../processing_js/puppet.png"; */
 /******************   Global Constants   ****************/
 //offset values for positioning board...
 var HORIZONTAL_OFFSET = 5;
@@ -40,12 +40,12 @@ var infoMenuMode = false;
 var iterationPerSecond = 60;
 
 
-var JAXMAN_IMAGE = "processing_js/puppet.png";
-var ENEMY_ONE_IMAGE = "processing_js/bird-mask.png";	
-var ENEMY_TWO_IMAGE = "processing_js/gluttony.png";
-var ENEMY_THREE_IMAGE = "processing_js/overkill.png";
-var ENEMY_FOUR_IMAGE = "processing_js/pumpkin-mask.png";
-Var ENEMY_SCARED_IMAGE = "processing_js/swallow.png";
+var JAXMAN_IMAGE = "../processing_js/puppet.png";
+var ENEMY_ONE_IMAGE = "../processing_js/bird-mask.png";	
+var ENEMY_TWO_IMAGE = "../processing_js/gluttony.png";
+var ENEMY_THREE_IMAGE = "../processing_js/overkill.png";
+var ENEMY_FOUR_IMAGE = "../processing_js/pumpkin-mask.png";
+Var ENEMY_SCARED_IMAGE = "../processing_js/swallow.png";
 
 /*
  * //Unsure the importance of encapsulation with Processing.js
