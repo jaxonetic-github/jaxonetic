@@ -17,26 +17,7 @@ jQuery(function($) {
  
 
 
-$(document).on('hidden.bs.show','#top-navbar-collapse', function () {
-  alert("collapsed  -- hidden");
-});
-$('#content').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', bringCanvasToFront);
 
-function bringCanvasToFront(){
-	 $(".canvas-container").css('z-index', 1);
-}
-	$(document).on('click', '#start-animation', function() {
-		
-		// $("#content").addClass("animated  rotateOut");
-	//   33333333333
-//	   console.log("starting");
-		 
-	  
-	  //  $("#content").addClass("animated rotateIn");
-	   // $(".bottom-content").removeClass('bottom-content');
-	   
-	});
-	
 	
 	$(document).on('click', '.jax-menuitem', function() {
 		
