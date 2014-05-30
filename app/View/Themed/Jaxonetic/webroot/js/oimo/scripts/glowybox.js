@@ -62,7 +62,7 @@ function init()
 	light.position.set(0,250,0);
 	scene.add(light);
 	// FLOOR
-	var floorTexture = new THREE.ImageUtils.loadTexture( 'theme/jaxonetic/img/checkerboard.jpg' );
+	var floorTexture = new THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/checkerboard.jpg' );
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
 	floorTexture.repeat.set( 10, 10 );
 	var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
@@ -99,7 +99,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ)
 	console.log(positionX+" "+positionY +" "+ positionZ);
 	var sphereGeom = new THREE.SphereGeometry(radius, geometryY, geometryZ);
     
-	var moonTexture = THREE.ImageUtils.loadTexture( 'theme/jaxonetic/img/ball.png' );
+	var moonTexture = THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/textures/sprites/ball.png' );
 	var moonMaterial = new THREE.MeshBasicMaterial( { map: moonTexture } );
     var moon = new THREE.Mesh(sphereGeom, moonMaterial);
 	moon.position.set(positionX, positionY, positionZ);
@@ -129,20 +129,11 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ)
 	scene.add( moonGlow );
 	
 	var cubeGeom = new THREE.CubeGeometry(150,150,150,2,2,2);
-	var crateTexture = THREE.ImageUtils.loadTexture( 'theme/jaxonetic/img/crate.png' );
+	var crateTexture = THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/crate.png' );
 	var crateMaterial = new THREE.MeshBasicMaterial( { map: crateTexture } );
     this.crate = new THREE.Mesh(cubeGeom, crateMaterial);
 	crate.position.set(-150,0,-150);
    // scene.add(crate);
-
-	var smoothCubeGeom = cubeGeom.clone();
-	var modifier = new THREE.SubdivisionModifier( 2 );
-	modifier.modify( smoothCubeGeom ); 
-
-	this.crateGlow = new THREE.Mesh( smoothCubeGeom, customMaterial.clone() );
-    crateGlow.position = crate.position;
-	crateGlow.scale.multiplyScalar(1.5);
-	//scene.add( crateGlow );
 	
 	return moon;
 }
@@ -206,7 +197,7 @@ function pagethreeD(){
 	function setSkyBox(x,y,z){
 	
 		// SKYBOX/FOG
-		var imagePrefix = "theme/jaxonetic/img/dawnmountain-";
+var imagePrefix = "/jaxonetic/theme/jaxonetic/img/dawnmountain-";
 		var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 		var imageSuffix = ".png";
 		var skyGeometry = new THREE.CubeGeometry( x, y, z );	//originally THREE.CubeGeometry( 1000, 1000, -350 );
@@ -268,8 +259,7 @@ function update()
 		controls.update();
 	moonGlow.material.uniforms.viewVector.value = 
 		new THREE.Vector3().subVectors( camera.position, moonGlow.position );
-	crateGlow.material.uniforms.viewVector.value = 
-		new THREE.Vector3().subVectors( camera.position, crateGlow.position );
+	//crateGlow.material.uniforms.viewVector.value = 	new THREE.Vector3().subVectors( camera.position, crateGlow.position );
 }
     
 

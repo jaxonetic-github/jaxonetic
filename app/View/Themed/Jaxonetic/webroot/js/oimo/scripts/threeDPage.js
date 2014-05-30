@@ -58,14 +58,15 @@ var brickSceneCenter;
 
 //SCENE CONTAINER POSITIONS
 	// Cube as a matrix
+
 	var r = Math.PI / 2;
-	var d = 500;  //an  offset which adjusts the distance between iFrames
+	
 	var browserCubePos,	cubeRot,graphingPos, brickCubePosition;	
-	var zOffset_InternetBrowsingScene = 0;
-    var xOffset_InternetBrowsingScene = 0;
+	var xOffset_InternetBrowsingScene = 0;
+    var zOffset_InternetBrowsingScene = 1000;
     
   	var xOffset_BrickScene = 0;
-	var zOffset_BrickScene = 0;
+	var zOffset_BrickScene = 2000;
 
   	var zOffset_InternetGraphingScene = 0;
     var xOffset_InternetGraphingScene = 0;
@@ -104,13 +105,13 @@ function init()
 	SCREEN_WIDTH = window.innerWidth;
 	SCREEN_HEIGHT = window.innerHeight;
 	
-	var VIEW_ANGLE = 60, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 5000;
+	var VIEW_ANGLE = 40, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 15000;
 	
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	//camera.position.set((xOffset_InternetBrowsingScene+xOffset_InternetGraphingScene)/2,0,zOffset_InternetBrowsingScene+4200);
 	//cameraTunnelGroup.add(camera);
 	
-	scene.add(camera);
+	//scene.add(camera);
 	
 		// renderers
 	if ( Detector.webgl ){
@@ -126,28 +127,34 @@ function init()
 	container.appendChild( renderer.domElement );
 	initCSSRenderers();
  	controls = new THREE.OrbitControls( camera, renderer.domElement );
-	//controls.maxDistance = DFLT_CUBE_SIZE/2
-	// showXYZPlane(ORIGIN_POSITION,10000,100);
+	controls.maxDistance = DFLT_CUBE_SIZE/2
+	controls.maxPolarAngle = Math.PI/2;
+	controls.minPolarAngle = Math.PI/4;
 	//camera.lookAt(browsingSceneCenter);
 	//graphingSceneContainer = createGraphingScene();
-	
+	browsingSceneContainer =createInternetBrowsingScene();
+	//brickSceneContainer = createBrickScene();
     sceneTargetList.push(browsingSceneContainer);
-    sceneTargetList.push(brickSceneContainer);
-
-    scene.add(createInternetBrowsingScene());
-    scene.add(createBrickScene());
+  //  sceneTargetList.push(brickSceneContainer);
+browsingSceneContainer.add(camera);
+    scene.add(browsingSceneContainer);
+   // scene.add(brickSceneContainer);
     
     //camera.position.set(0, 0, 107);
 
-
+ 	var axes = new THREE.AxisHelper(5000);   
+      axes.position = ORIGIN_POSITION;
+     scene.add(axes);
+      
 	drawTunnel();
     scene.add( cameraTunnelGroup );
     
+   //browsingSceneContainer.position.z+=500;
     	cameraTunnelGroup.traverse(hideChildren);
     	
 		// EVENTS
 		THREEx.WindowResize(renderer, camera);
-			// when window resizes, also resize this renderer
+		// when window resizes, also resize this renderer
 
 	//	document.addEventListener('mousedown', onDocumentMouseDown, false);
 	console.log("initialized");
@@ -211,15 +218,15 @@ function printObjectCoordinates(obj){
 
 function showWelcomeTween(){
 	var welcomTextPlanePosition = { x : welcomeTextContainer.position.x, y:welcomeTextContainer.position.y, z:welcomeTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0};
-    var welcomTextTargetPosition = { x : -300, y:-10, z:-1100, rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
+    var welcomTextTargetPosition = { x : "-700", y:"-10", z:"-1500", rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
      	var planePosition = { x : planeMesh.position.x, y:planeMesh.position.y, z:planeMesh.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0, cameraZ:camera.position.z  };
-    var planeTargetPosition = { x : 100, y:0, z:-1200, rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4,cameraZ:200  };
+    var planeTargetPosition = { x : "+100", y:0, z:"-1300", rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4,cameraZ:"+200"  };
    
 
     console.log("showWelcomeTween");
-    console.log(welcomTextTargetPosition);
-    console.log(browserCubePos[5]);
-    
+      console.log(planePosition);  
+    console.log(welcomTextPlanePosition);
+     console.log(welcomTextTargetPosition);
 
 	
 var pushObjectOutTween	= new TWEEN.Tween(planePosition);
@@ -234,7 +241,7 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 		planeMesh.position.z = planePosition.z;
 		planeMesh.rotation.ry = planePosition.ry;
 		planeMesh.position.rz = planePosition.rz;
-		browsingSceneContainer.rotation.y = planePosition.browsingSceneContainerRotY;
+		//browsingSceneContainer.rotation.y = planePosition.browsingSceneContainerRotY;
 		camera.position.z = planePosition.cameraZ;
 		//controls.rotateLeft(welcomTextPlanePosition.browsingSceneContainerRotY);
 		//objectToUpdate.rotation.z = rotation.z;
@@ -252,7 +259,7 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 		.delay(0)
 		.easing(TWEEN.Easing.Exponential.InOut)
 		.onUpdate(function(){
-		console.log(welcomTextPlanePosition);
+		//console.log(welcomTextPlanePosition);
 		//	console.log(welcomTextPlanePosition.z);
 		//printObjectCoordinates();
 		//angle += Math.PI / 180;
@@ -490,7 +497,7 @@ function setupTween(startPos,startRot, targetPos, objectToUpdate)
 	graphingSceneSky = createSkyBox(brickImage, skyGeometry, skyPosition,skyMaterial );
 	graphingScene.add(graphingSceneSky);
 
-		showXYZPlane(graphingSceneCenter,100);
+		showXYZPlane(graphingScene,graphingSceneCenter,100);
 
 	var axes = new THREE.AxisHelper(1500);
    	axes.position = graphingSceneCenter;
@@ -571,18 +578,21 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
  	//   -- returns a THREE.Object3D representation of browsing section
  	///////
  function createInternetBrowsingScene(){
+ 	var d = 500;  //an  offset which adjusts the distance between iFrames
  	browsingSceneCenter = new THREE.Vector3(xOffset_InternetBrowsingScene, 0,zOffset_InternetBrowsingScene);
+ 	console.log(browsingSceneCenter);
     camera.position = browsingSceneCenter;
-    camera.position.z+400; 
-    
+    camera.position.z+=200; 
+    //camera.lookAt(browsingSceneCenter);
    //  if(controls) controls.center.set(xOffset_InternetBrowsingScene,0,zOffset_InternetBrowsingScene) ;
      //console.log(controls.center);
    // if(controls) controls.center = browsingSceneCenter.add(new THREE.Vector3(400, 0,0));
  	//controls.center = new THREE.Vector3(0,0,0);
  	// create a new scene to hold CSS
 	browsingScene = new THREE.Object3D();
-	 
- 	browserCubePos = [ [ xOffset_InternetBrowsingScene-d, 0, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene+d, 0, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, d, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, -d, zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, 0, d+zOffset_InternetBrowsingScene ], [ xOffset_InternetBrowsingScene, 0, zOffset_InternetBrowsingScene-d  ] ];
+	 browsingScene.position = browsingSceneCenter;
+ 	browserCubePos = [ [ browsingSceneCenter.x-d, browsingSceneCenter.y, browsingSceneCenter.z ], [ browsingSceneCenter.x+d, browsingSceneCenter.y, browsingSceneCenter.z ], [ browsingSceneCenter.x, browsingSceneCenter.y+d, browsingSceneCenter.z ], [ browsingSceneCenter.x, browsingSceneCenter.y-d, browsingSceneCenter.z ], [ browsingSceneCenter.x, 0, d+browsingSceneCenter.z ], [ browsingSceneCenter.x, 0, browsingSceneCenter.z-d  ] ];
+	//controls.center.fromArray(browsingSceneCenter);
 	cubeRot = [ [ 0, r, 0 ]/*left facing right*/, [ 0, -r, 0 ], [ -r, 0, 0 ], [ r, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];	
 	var xyPlaneToZpos = 5;  // front facing side
 	var YZPlaneToXpos = 0;  //left facing right
@@ -601,7 +611,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 				side: THREE.DoubleSide
 			}));
 	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
-	var skyPosition = new THREE.Vector3( xOffset_InternetBrowsingScene, 0, zOffset_InternetBrowsingScene );
+	var skyPosition = new THREE.Vector3( browsingSceneCenter.x, 0, browsingSceneCenter.z );
 	browsingSceneSky = createSkyBox(brickImage, skyGeometry,skyPosition,skyMaterial);
 	//browsingScene.add(browsingSceneSky);
 	welcomeTextContainer = new THREE.Object3D();
@@ -620,21 +630,21 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	  phraseRotation.set(-1*Math.PI/10,2*(-0),0);
 	  console.log(phraseRotation);
 	  welcomeTxt = sayAt("Welcome to my playground.  ",
-	  0,250,-0,
+	  browsingSceneCenter.x,browsingSceneCenter.y+250,0,
 	  phraseRotation, 0x666006,25,1); 	  
 	  welcomeTextContainer.add(welcomeTxt);
 	  
 	  welcomeTextContainer.add(sayAt("Hopefully you will enjoy ",
-	  0,200,-0,
+	  browsingSceneCenter.x, browsingSceneCenter.y+200,0,
 	  phraseRotation, 0x666006,25,2)); 	 
 	 
 	 welcomeTextContainer.add(	  sayAt("interacting with this site. ",
-	  0,150,-0,
+	  browsingSceneCenter.x,browsingSceneCenter.y+150,0,
 	  phraseRotation, 0x666006,25,3)); 	 
 	 
 	  	  
 	  welcomeTextContainer.add(sayAt("as much as I enjoy building it.",
-	  0,100,-0,
+	  browsingSceneCenter.x,browsingSceneCenter.y+100,0,
 	  phraseRotation, 0x666006,25,4)); 	
 	  
 	  	//  sayAt("but there will b",browsingSceneCenter.x+textAlignment,50,browsingSceneCenter.z,  phraseRotation, 0x666006,25,5); 
@@ -642,8 +652,8 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	  	  var texture = new THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/me.png' );
 	var planeMaterial   = new THREE.MeshBasicMaterial({color: 0xffffff, opacity: .9,transparent:true, side: THREE.DoubleSide ,map:texture});
 	
-	var planeWidth = SCREEN_WIDTH;
-    var planeHeight = DFLT_PAGE_HEIGHT;
+	var planeWidth = DFLT_CUBE_SIZE;
+    var planeHeight = DFLT_PAGE_HEIGHT-100;
 	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight,DFLT_CUBE_SIZE);
 	 planeMesh= new THREE.Mesh( planeGeometry, planeMaterial );
 	//planeMesh.overdraw = true;
@@ -651,14 +661,15 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	planeMesh.rotation.fromArray( cubeRot[ 5 ] );
 	//planeMesh.rotation.y = Math.PI/7;
 	//planeMesh.rotation.z = Math.PI;
-	console.log(planeMesh.rotation);
+	console.log(planeMesh.position);
 	//planeMesh.position.x+=15;
 	// add it to the standard (WebGL) scene
 	planeMesh.name = "jax2d";
 	browsingScene.add(planeMesh);
-	addPageToContainer(browsingScene,"/jaxonetic/Pages/aboutme",1);
-	addPageToContainer(browsingScene,"/jaxonetic/contactme",3);
-	addPageToContainer(browsingScene,"/jaxonetic/projects",0);
+	browsingScene.add(welcomeTextContainer);
+	addPageToContainer(browsingScene,"/jaxonetic/Pages/aboutme/nolayout",1);
+	addPageToContainer(browsingScene,"/jaxonetic/Jaxcontact/index/nolayout",3);
+	addPageToContainer(browsingScene,"/jaxonetic/Projects/index/nolayout",0);
 	//addPageToContainer(browsingScene,"http://www.gatech.edu",5);
  
 // params
@@ -691,25 +702,21 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	if(!browsingCssScene)
 		browsingCssScene = new THREE.Scene();
 	//	browsingCssScene.add(cube);
-		
-//browsingScene.add( cube );
-//scene.add(cube);
- 
- 
- 
- 
- 
- 
- 
- controls.center =new THREE.Vector3(xOffset_InternetBrowsingScene, 0,zOffset_InternetBrowsingScene-200);
+
+
+ //controls.center =new THREE.Vector3(xOffset_InternetBrowsingScene, 0,zOffset_InternetBrowsingScene-200);
 	
-	var axes = new THREE.AxisHelper(3000);
-    axes.position = browsingSceneCenter;
-    browsingScene.add(axes);
-  camera.lookAt(axes);
+	var axis = new THREE.AxisHelper(DFLT_CUBE_SIZE/4);
+    
+    browsingScene.add(axis);
+    axis.position = new THREE.Vector3(0, 0,zOffset_InternetBrowsingScene);
+    if(controls){
+    	controls.center = axis.position;
+    }
+  //camera.lookAt(axes);
   
- browsingScene.add(welcomeTextContainer);
- welcomeTextContainer.position.set(0,0,-1500);
+
+ //welcomeTextContainer.position.set(0,0,0);
  console.log(browserCubePos);
  console.log(welcomeTxt.position);
     return browsingScene;
@@ -765,10 +772,11 @@ function render()
 	/////////////
 	function addPageToContainer(sceneContainer,url, cubeSide){
 	var r = Math.PI / 2;
-	var d = DFLT_CUBE_SIZE;
-	var pos = [ [ -d, 0, -800 ], [ d+ DFLT_CUBE_SIZE/3 , 0, -800 ], [ 0, d,-800 ], [ 0, -d, -800 ], [ 0, 0, d ], [ 0, 0, -d ] ];
+	var d = 700;
+ 	var z = DFLT_PAGE_HEIGHT+500;
+	var pos = [ [ browsingSceneCenter.x-d, browsingSceneCenter.y, 2*browsingSceneCenter.z-z ], [ browsingSceneCenter.x+d , browsingSceneCenter.y, 2*browsingSceneCenter.z-z ], [ browsingSceneCenter.x, browsingSceneCenter.y+d,2*browsingSceneCenter.z-z ], [ browsingSceneCenter.x, browsingSceneCenter.y-d, 2*browsingSceneCenter.z-z], [ browsingSceneCenter.x, browsingSceneCenter.y, 2*browsingSceneCenter.z+d ], [ browsingSceneCenter.x, browsingSceneCenter.y, 2*browsingSceneCenter.z-d ] ];
 	var rot = [ [ 0, r/2, 0 ]/*left facing right*/, [ 0, -r/2, 0 ]/*top>bottom*/, [ -r, 0, 0 ], [-r/2, 0, 0 ]/*bottom->up*/, [ 0, 0, 0 ]/*back facing front*/, [ 0, 0, 0 ] ];
-	
+	//var pos = [ [ -d, 0, -z ], [ d+ DFLT_CUBE_SIZE/3 , 0, -z ], [ 0, d,-z ], [ 0, -d, -z], [ 0, 0, d ], [ 0, 0, -d ] ];
 	var xyPlaneToZpos = 5;  // front facing side
 	var YZPlaneToXpos = 0;  //left facing right
 	var YZPlaneToXneg = 1;  //right facing left
@@ -776,15 +784,15 @@ function render()
 	var zxPlanetoYpos = 2;  //bottom facing up
 	
 	var planeMaterial   = new THREE.MeshBasicMaterial({color: 0x000000, opacity: .1, side: THREE.FrontSide });
-	var planeWidth = DFLT_CUBE_SIZE;
+	var planeWidth = 600;
     var planeHeight = DFLT_CUBE_SIZE;
 	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight );
-	var planeMesh= new THREE.Mesh( planeGeometry, planeMaterial );
-	planeMesh.position = pos[cubeSide];
-	planeMesh.rotation = rot[cubeSide];
-	//planeMesh.position.y -= planeHeight/2;
+	var framePlaneMesh= new THREE.Mesh( planeGeometry, planeMaterial );
+	framePlaneMesh.position = pos[cubeSide];
+	framePlaneMesh.rotation = rot[cubeSide];
+	//framePlaneMesh.position.y -= planeHeight/2;
 	// add it to the standard (WebGL) scene
-	//scene.add(planeMesh);
+	sceneContainer.add(framePlaneMesh);
 
 
 	// create a new scene to hold CSS
@@ -795,7 +803,7 @@ function render()
 	// webpage to be loaded into iframe
 	element.src	= url;
 	// width of iframe in pixels
-	var elementWidth = DFLT_CUBE_SIZE;
+	var elementWidth = planeWidth;
 	// force iframe to have same relative dimensions as planeGeometry
 	var aspectRatio = planeHeight / planeWidth;
 	var elementHeight = elementWidth * aspectRatio;
@@ -804,11 +812,11 @@ function render()
 	
 	// create a CSS3DObject to display element
 	var cssObject = new THREE.CSS3DObject( element );
-	// synchronize cssObject position/rotation with planeMesh position/rotation 
+	// synchronize cssObject position/rotation with framePlaneMesh position/rotation 
 	cssObject.position.fromArray( pos[ cubeSide ] );
 	cssObject.rotation.fromArray( rot[ cubeSide ] );
-	// resize cssObject to same size as planeMesh (plus a border)
-	var percentBorder = .1; //0.05;
+	// resize cssObject to same size as framePlaneMesh (plus a border)
+	var percentBorder = 0; //0.05;
 	cssObject.scale.x /= (1 + percentBorder) * (elementWidth / planeWidth);
 	cssObject.scale.y /= (1 + percentBorder) * (elementWidth / planeWidth);
 	browsingCssScene.add(cssObject);
@@ -821,26 +829,26 @@ function render()
     // Show Grid
     // default shows a 20x20 grid
     ///////////     
-         function showXZGrid(position, size){
-         	var phraseRotation = new THREE.Vector3(-Math.PI/2,0,0);
+   function showXZGrid(container,position, size){
+     var phraseRotation = new THREE.Vector3(-Math.PI/2,0,0);
     gridXZ = new THREE.GridHelper(size, 10);
     gridXZ.setColors( new THREE.Color(0x006600), new THREE.Color(0x006600) );
     gridXZ.color1=new THREE.Color(0x006600) ;
     gridXZ.position.set( size,0,size );
-    scene.add(gridXZ);
+    container.add(gridXZ);
     for(var i=0; i<=size; i++){
     //	sayAt("XZ green", 0,-20,0,phraseRotation, 0x006600);
     }
     sayAt("XZ green", 0,-20,0,-Math.PI/2,0,0, 0x006600);
    }
  
-      function showXYGrid(position, size){
+      function showXYGrid(container,position, size){
       	var phraseRotation = new THREE.Vector3(0, 0,0);
-   gridXY = new THREE.GridHelper(size, 10);
+    gridXY = new THREE.GridHelper(size, 10);
     gridXY.position.set( position.x+size,position.y+size,position.z );
     gridXY.rotation.x = Math.PI/2;
     gridXY.setColors( new THREE.Color(0x000066), new THREE.Color(0x000066) );
-    scene.add(gridXY);
+    container.add(gridXY);
     
     for(var i=0; i<=size; i++){
    		sayAt(i, i,-2,0,phraseRotation,0xaaaaaa );
@@ -848,22 +856,22 @@ function render()
      sayAt("XY blue", 0,-20,0,phraseRotation,0x000066 );
     //  iFrameTargetList.push(gridXY);
    }
-        function showYZGrid(position,size){
+        function showYZGrid(container,position,size){
         	var phraseRotation = new THREE.Vector3(0,Math.PI/2,0);
    gridYZ = new THREE.GridHelper(size, 10);
     gridYZ.position.set( 0,size,size );
     gridYZ.rotation.z = Math.PI/2;
     gridYZ.setColors( new THREE.Color(0x660000), new THREE.Color(0x660000) );
-    scene.add(gridYZ);
+    container.add(gridYZ);
     
      sayAt("YZ marroon", 0,-20,0,phraseRotation, 0x660000);
    }  
    
-   function showXYZPlane(position, size){
+   function showXYZPlane(container,position, size){
       var axes = new THREE.AxisHelper(10000);
       
       axes.position = position;
-      scene.add(axes);
+      container.add(axes);
      //  showXZGrid(position, 100);
       showXYGrid(position, 100);
     //showYZGrid(position, 100);
@@ -945,7 +953,7 @@ function render()
              //   intersects[ 0 ].object.material.transparent = true;
              //   intersects[ 0 ].object.material.opacity = 0.1;
 
-/**    Pointer
+//    Pointer
                 var points = [];
                 var origin = raycaster.ray.origin.clone();
                 //console.log(origin);
@@ -960,8 +968,9 @@ function render()
                 scene.add(tube);
 
 				//
-                */
-              
+                
+              controls.center = intersects[ 0 ].point;
+              console.log(intersects[ 0 ].point);
                if(inBrowsingScene){
 			//	         		renderer.domElement.style.zIndex   = -1;
 				         		console.log("browsing");
@@ -988,5 +997,7 @@ function render()
             	console.log("scene Selected");
             }
         }
+        
+   
 
 });

@@ -142,7 +142,7 @@ camera.lookAt(cube.position);
 		renderer.domElement.style.position = 'absolute';
 		renderer.domElement.style.top      = 0;
 		// make sure original renderer appears on top of CSS renderer
-		renderer.domElement.style.zIndex   = 1;
+		renderer.domElement.style.zIndex   = -1;
 		rendererCSS.domElement.appendChild( renderer.domElement );
 		
 	}
@@ -196,7 +196,7 @@ function render()
 	var cssObject = new THREE.CSS3DObject( element );
 	// synchronize cssObject position/rotation with planeMesh position/rotation 
 	cssObject.position.fromArray( cubePos[ cubeSide ] );
-	cssObject.rotation.fromArray( cubeRot[ cubeSide ] );
+	cssObject.rotation.fromArray( cubeRot[ 2 ] );
 
 	cube.add(cssObject);
 	//frameObjects.push(cssObject);
