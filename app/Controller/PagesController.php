@@ -40,19 +40,23 @@ class PagesController extends AppController {
 	public $uses = array('Contacts.Contact', 'Contacts.Message');
 	public $helpers = array('Html','Js');
     
-    var $layout = 'twoDLayout';
+    var $layout = "twoDLayout";
     
-    public function index(){
-      
-
+    public function index(){}
+    
+    
+    //////////
+    //Will Route these better, later
+    ////////
+    public function aboutme($noLayout = null){
+      if($noLayout){
+          $this->layout = "interactiveInnerPage";
+      }       
     }
     
-    public function aboutme(){
-       
-    }
   
-    public function resume(){
-    }
+  
+    public function resume(){}
     
     public function resumeAsPdf(){
         $this->layout = "pdf";

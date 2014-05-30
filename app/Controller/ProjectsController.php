@@ -11,7 +11,11 @@ class ProjectsController extends AppController {
 
   var $layout = 'twoDLayout';
   
-  public function index(){}
+  public function index($noLayout = null){
+      if($noLayout){
+          $this->layout = "interactiveInnerPage";
+      }       
+  }
   
  
   public function jaxman(){}

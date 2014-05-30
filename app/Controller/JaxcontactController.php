@@ -33,7 +33,11 @@ var $layout = 'twoDLayout';
  */
 	public $uses = array('Contacts.Contact', 'Contacts.Message');
 
-  public function index(){}
+  public function index($noLayout = null){
+      if($noLayout){
+          $this->layout = "interactiveInnerPage";
+      }       
+  }
 
 
 

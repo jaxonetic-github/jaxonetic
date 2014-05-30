@@ -52,19 +52,15 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 		?>
 
 </head>
-<body >
-      
-  <div id="wrapper" >   
-            <div class="row">       
-              <div id="flashMessages" class="container">
-              <p>  <?php echo $this -> Session -> flash(); ?></p>
-              </div>
+<body class="threeD-body">
+  <div class="threeD-content jax-center-aligned">
+            
               
               <div id="content"><?php echo $this -> fetch('content'); ?></div>
-            </div><!-- row -->
+        
   
-        </div><!--wrapper--> 
-     
+      
+    </div> 
     <?php     echo $this -> Html -> script('bootstrap.min'); ?>
    
 	
