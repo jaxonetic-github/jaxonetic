@@ -84,23 +84,25 @@ var frameObjects = [];
 
 init();
 animate();
-//setupTween(camera.position,camera.rotation,browsingSceneCenter, camera );
+
  showWelcomeTween();
+ 
 // FUNCTIONS 		
 function init() 
 {
-	inBrowsingScene = false;
+
 	pageHtmlObjCount = 0;
-	projector = new THREE.Projector();
-	
-	
 	
 	//main scene
 	scene = new THREE.Scene();
+	
+	//Containers for Scene groupings
 	brickSceneContainer = new THREE.Object3D();
 	browsingSceneContainer = new THREE.Object3D();
 	graphingSceneContainer = new THREE.Object3D();
+	
 	cameraTunnelGroup = new THREE.Object3D();
+	
 	// CAMERA
 	SCREEN_WIDTH = window.innerWidth;
 	SCREEN_HEIGHT = window.innerHeight;
@@ -108,25 +110,13 @@ function init()
 	var VIEW_ANGLE = 40, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 15000;
 	
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
-	//camera.position.set((xOffset_InternetBrowsingScene+xOffset_InternetGraphingScene)/2,0,zOffset_InternetBrowsingScene+4200);
+	projector = new THREE.Projector();
+	
 	//cameraTunnelGroup.add(camera);
 	
-	//scene.add(camera);
-	
-		// renderers
-	if ( Detector.webgl ){
-		renderer = new THREE.WebGLRenderer( {antialias:true} );
-		//renderer.setClearColor( 0x000000, 1 );
-	}else{
-		Detector.addGetWebGLMessage();
-				return true;
-	}
-	renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-	
-	container = document.getElementById( 'threeCanvas' );
-	container.appendChild( renderer.domElement );
-	initCSSRenderers();
+	initRenderers();
  	controls = new THREE.OrbitControls( camera, renderer.domElement );
+ 	//limit movement in Browsing Scene
 	controls.maxDistance = DFLT_CUBE_SIZE/2
 	controls.maxPolarAngle = Math.PI/2;
 	controls.minPolarAngle = Math.PI/4;
@@ -149,22 +139,23 @@ browsingSceneContainer.add(camera);
 	drawTunnel();
     scene.add( cameraTunnelGroup );
     
-   //browsingSceneContainer.position.z+=500;
+
     	cameraTunnelGroup.traverse(hideChildren);
     	
 		// EVENTS
 		THREEx.WindowResize(renderer, camera);
-		// when window resizes, also resize this renderer
 
-	//	document.addEventListener('mousedown', onDocumentMouseDown, false);
-	console.log("initialized");
+		document.addEventListener('mousedown', onDocumentMouseDown, false);
 }
+
 function hideChildren(obj){
 	obj.visible=false;
 }
+
 function showChildren(obj){
 	obj.visible=true;
 }
+
 		function drawTunnel(){	
 			light1	= new THREE.DirectionalLight( 0xff8000, 1.5 );
 			light2	= new THREE.PointLight( 0x44FFAA, 15, 25 );
@@ -203,24 +194,42 @@ function positionTunnel(){
 
 
 // ## =========================
-
-// ## Tween.js Setup (Start here)
-
+// ## Tweens
 // ## =========================
 
-function printObjectCoordinates(obj){
-		if(!obj || obj===undefined){obj = camera;}
-	console.log(obj.position);
 
-		console.log(obj.rotation);
+function cameraResetTween(){
+	
+
+    var cameraPosition = { x : camera.position.x, y:camera.position.y, z:camera.position.z, rx:camera.rotation.x, ry:camera.rotation.y,rz:camera.rotation.z};
+    var cameraTargetPosition = { x : browsingSceneCenter.x, y:browsingSceneCenter.y, z:1400, rx:0, ry:0,rz:0};
+  		console.log(cameraPosition);
+			console.log(cameraTargetPosition); 
+   
+    var resetTween	= new TWEEN.Tween(cameraPosition);
+		resetTween.to(cameraTargetPosition, 5000)
+		.delay(1000)
+		.easing(TWEEN.Easing.Linear.None)
+		.onUpdate(function(){
+	
+		camera.position.x = cameraPosition.x;
+		camera.position.y = cameraPosition.y;
+		camera.position.z = cameraPosition.z;
+	
+        camera.lookAt(ORIGIN_POSITION);
+	}).onComplete(function(){
+		console.log("camera moved to...");
+		console.log(camera.position);
+	});
+	
+	resetTween.start();
+	
 }
-
-
 function showWelcomeTween(){
 	var welcomTextPlanePosition = { x : welcomeTextContainer.position.x, y:welcomeTextContainer.position.y, z:welcomeTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0};
-    var welcomTextTargetPosition = { x : "-700", y:"-10", z:"-1500", rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
+    var welcomTextTargetPosition = { x :-300, y:20, z:-500, rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
      	var planePosition = { x : planeMesh.position.x, y:planeMesh.position.y, z:planeMesh.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0, cameraZ:camera.position.z  };
-    var planeTargetPosition = { x : "+100", y:0, z:"-1300", rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4,cameraZ:"+200"  };
+    var planeTargetPosition = { x : "+50", y:0, z:"-1300", rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4,cameraZ:"+200"  };
    
 
     console.log("showWelcomeTween");
@@ -231,7 +240,7 @@ function showWelcomeTween(){
 	
 var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 		pushObjectOutTween.to(planeTargetPosition, 5000)
-		.delay(3000)
+		.delay(1000)
 		.easing(TWEEN.Easing.Cubic.InOut)
 		.onUpdate(function(){
 		//console.log(welcomTextPlanePosition);
@@ -242,13 +251,8 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 		planeMesh.rotation.ry = planePosition.ry;
 		planeMesh.position.rz = planePosition.rz;
 		//browsingSceneContainer.rotation.y = planePosition.browsingSceneContainerRotY;
-		camera.position.z = planePosition.cameraZ;
-		//controls.rotateLeft(welcomTextPlanePosition.browsingSceneContainerRotY);
-		//objectToUpdate.rotation.z = rotation.z;
-		//objectToUpdate.rotation.y = rotation.y;
-		//objectToUpdate.rotation.x = rotation.x;
-		
-		
+		//camera.position.z = planePosition.cameraZ;
+
 	}).onComplete(function(){
 		console.log("planeMesh moved to...");
 		console.log(planeMesh.position);
@@ -259,22 +263,11 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 		.delay(0)
 		.easing(TWEEN.Easing.Exponential.InOut)
 		.onUpdate(function(){
-		//console.log(welcomTextPlanePosition);
-		//	console.log(welcomTextPlanePosition.z);
-		//printObjectCoordinates();
-		//angle += Math.PI / 180;
-		//welcomeTxt.rotation.z+=Math.PI / 1800;
-		//controls.center = camera.center;
-		//controls.rotateLeft(Math.PI/50);
+
 		welcomeTextContainer.position.x =welcomTextPlanePosition.x;
 		welcomeTextContainer.position.y = welcomTextPlanePosition.y;
 		welcomeTextContainer.position.z = welcomTextPlanePosition.z;
 		welcomeTextContainer.rotation.y = welcomTextPlanePosition.ry;
-		//controls.rotateLeft(welcomTextPlanePosition.browsingSceneContainerRotY);
-		//objectToUpdate.rotation.z = rotation.z;
-		//objectToUpdate.rotation.y = rotation.y;
-		//objectToUpdate.rotation.x = rotation.x;
-		
 		
 	}).onComplete(function(){
 		console.log("welcome text group moved to...");
@@ -282,146 +275,28 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 	
 	});
 	
-
-
-	console.log("welcome text group starting at...");
-	console.log(welcomeTextContainer.position);
-	console.log(welcomTextTargetPosition);
-	console.log(welcomTextPlanePosition);
-	 console.log(welcomeTxt.position);
 	// start the first
 	pushObjectOutTween.start();
 	welcomeTween.start();	
 }
 
-/**
- * Keeping this here for reference
- */
-function setupTween(startPos,startRot, targetPos, objectToUpdate)
-{
-	console.log(startPos);
-	console.log(startRot);
-	console.log(targetPos);
-	console.log(objectToUpdate);
-		//start position will be the camera position.
-	 var position = objectToUpdate.position;
-	 var rotation = { x : startRot.x, y: startRot.y, z:startRot.z+r/4 };
-	var toBrowsingSceneCenter = { x : browsingSceneCenter.x, y: browsingSceneCenter.y, z:(zOffset_InternetBrowsingScene-300) };
-	var toBrowsingSceneCenterRotation = { x : 0, y: 0, z:2*r };	
-	var duration = 4000; //ms
-	var tiltRotation;
-	var angle, angleend;
-	// 
-	var update	= function(){
-	//	console.log("Update");
-		objectToUpdate.position.x = position.x;
-		objectToUpdate.position.y = position.y;
-		objectToUpdate.position.z = position.z;
-		camera.lookAt(browsingSceneCenter);
-	
-	}
-	var tiltUpdate = function(){
-	//	console.log("tiltUpdate::");
-		//	console.log(this.angle);
-		//printObjectCoordinates();
-		//angle += Math.PI / 180;
-		//objectToUpdate.rotation.y=angle*Math.PI / 180;
-		//controls.center = camera.center;
-		//controls.rotateLeft(Math.PI/50);
-		//objectToUpdate.rotation.z = rotation.z;
-		//objectToUpdate.rotation.y = rotation.y;
-		//objectToUpdate.rotation.x = rotation.x;
-		
-		
-	}
-	var tiltComplete	= function(){
-		//if(controls)	controls.enabled = true;
-		console.log("Tilt complete");
-		printObjectCoordinates();
-		//camera.rotation.y = this
-			     	//controls
- 		//controls = new THREE.OrbitControls( camera, renderer.domElement );
- 		//controls.center = welcomeTxt.position;
- 	
-		//controls.minDistance =-700;
-		//controls.maxDistance =400;
-			
-	}	
-	var reActivateControls	= function(){
-		//if(controls)	controls.enabled = true;
-		console.log("Tween complete");
-		
-		//if(controls) 	controls.center =browsingSceneCenter;
-			//camera.rotation.y = r;
-		inBrowsingScene = true;
-		// build the tween to go backward
-		// tiltRotation =camera.rotation;
-		console.log(camera.rotation.x);
-		console.log(camera.rotation.y);
-		console.log(camera.rotation.z);
-		//camera.lookAt(welcomeTxt.position);
-		console.log("angle"+angle);
-		
-	
-		
-			     	//controls
- 		//controls = new THREE.OrbitControls( camera, renderer.domElement );
- 		//controls.center = camera.position;
- 	
-		//controls.minDistance =-700;
-		//controls.maxDistance =400;
-			
-	}	
-	
-	// remove previous tweens if needed
-	//TWEEN.removeAll();
-
-	// convert the string from dat-gui into tween.js functions 
-	var easing	= TWEEN.Easing.Sinusoidal.InOut;
-	angle={ x : 0, y: 0, z:0 };
-		angleend = { x : 0, y: 0, z:10 };
-	// build the tween to go ahead
-	var tweenHead	= new TWEEN.Tween(position)
-		.to(toBrowsingSceneCenter, duration)
-		.delay(0)
-		.easing(easing)
-		.onUpdate(update)
-		.onComplete(reActivateControls);
-	
-	var tweenTilt	= new TWEEN.Tween(angle)
-		.to(angleend, 5000)
-		.delay(0)
-		.easing(TWEEN.Easing.Linear.None)
-		.onUpdate(function(){
-		//console.log("tiltUpdate::");
-			//console.log(angle);
-		//printObjectCoordinates();
-		//angle += Math.PI / 180;
-		welcomeTxt.rotation.z+=Math.PI / 1800;
-		//controls.center = camera.center;
-		//controls.rotateLeft(Math.PI/50);
-		//objectToUpdate.rotation.z = rotation.z;
-		//objectToUpdate.rotation.y = rotation.y;
-		//objectToUpdate.rotation.x = rotation.x;
-		
-		
-	}).onComplete(tiltComplete);
-	//	tweenTilt.start();
-
-	// after tweenHead do tweenBack
-	tweenHead.chain(tweenTilt);
-
-	console.log(objectToUpdate.position);
-	console.log(position.z);
-	// start the first
-	tweenHead.start();
-}
 
 // ## =========================
 // ## Tween.js Setup (End here)
 // ## =========================
 
-	function initCSSRenderers(){
+	function initRenderers(){
+		// renderers
+	if ( Detector.webgl ){
+		renderer = new THREE.WebGLRenderer( {antialias:true} );
+	}else{
+		Detector.addGetWebGLMessage();
+				return true;
+	}
+	renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+	
+	container = document.getElementById( 'threeCanvas' );
+	container.appendChild( renderer.domElement );
 	
 			// create a renderer for CSS
 		rendererCSS	= new THREE.CSS3DRenderer();
@@ -436,12 +311,13 @@ function setupTween(startPos,startRot, targetPos, objectToUpdate)
 		renderer.domElement.style.position = 'absolute';
 		renderer.domElement.style.top      = 0;
 		// make sure original renderer appears on top of CSS renderer
-		renderer.domElement.style.zIndex   = -1;
+		//set to -1 to make iframes visible.
+		renderer.domElement.style.zIndex   = 1;
 		rendererCSS.domElement.appendChild( renderer.domElement );
 		THREEx.WindowResize(rendererCSS, camera);
 	}
 	//////////////
-//----------- Graphing Scene Functions	
+//----------- Brick Scene Functions	
 ///////////////
  function createBrickScene(){
  	brickSceneCenter = new THREE.Vector3(xOffset_BrickScene, 0,zOffset_BrickScene);
@@ -615,6 +491,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	browsingSceneSky = createSkyBox(brickImage, skyGeometry,skyPosition,skyMaterial);
 	//browsingScene.add(browsingSceneSky);
 	welcomeTextContainer = new THREE.Object3D();
+	welcomeTextContainer.position = new THREE.Vector3(-900, 200, -2000 );
 	var textAlignment = DFLT_CUBE_SIZE/(-2);
 	var phraseRotation = new THREE.Vector3(0, 0,0);
 	
@@ -711,7 +588,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
     browsingScene.add(axis);
     axis.position = new THREE.Vector3(0, 0,zOffset_InternetBrowsingScene);
     if(controls){
-    	controls.center = axis.position;
+    	controls.center = new THREE.Vector3(0, 0,zOffset_InternetBrowsingScene-200);;
     }
   //camera.lookAt(axes);
   
@@ -935,9 +812,26 @@ function render()
 	}
 	
 
+	$(document).on('click', '#home-threed-menuitem', function() {
+		
+ 
+				console.log("home clicked");
+
+
+	}); 
 
     function onDocumentMouseDown(event) {
-
+			
+			if(event.target.id === "html-browsing-menuitem"){
+				//unmask iFrames
+				renderer.domElement.style.zIndex   = -1;
+			}else
+			if(event.target.id === "home-threed-menuitem"){
+				//mask iFrames
+				renderer.domElement.style.zIndex   = 1;
+				cameraResetTween();	
+			}
+			
 			
             var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
             projector.unprojectVector(vector, camera);
