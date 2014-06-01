@@ -6,6 +6,11 @@ iframe {
   border: none;
 }
 
+/* line 7, ../sass/jax.scss */
+iframe:hover {
+  border: 2px solid sienna;
+}
+
 /* line 8, ../sass/jax.scss */
 #bottom-content {
   margin-top: 150px;
@@ -375,88 +380,94 @@ body footer {
 }
 
 /* line 198, ../sass/jax.scss */
+.jax-threed-menu {
+  background-color: transparent;
+}
+
+/* line 199, ../sass/jax.scss */
 .canvas-container {
   z-index: 0;
   position: absolute;
   top: 0;
 }
-/* line 199, ../sass/jax.scss */
+/* line 200, ../sass/jax.scss */
 .canvas-container #threeCanvas {
   z-index: 0;
   position: absolute;
   width: 100%;
 }
-/* line 201, ../sass/jax.scss */
+/* line 202, ../sass/jax.scss */
 .canvas-container #threeCanvas canvas {
   position: relative;
 }
 
-/* line 208, ../sass/jax.scss */
+/* line 209, ../sass/jax.scss */
 #resume {
   background-color: rgba(212, 200, 175, 0.7);
   margin: 0;
   color: #251313;
 }
-/* line 209, ../sass/jax.scss */
+/* line 210, ../sass/jax.scss */
 #resume h3, #resume h4 {
   display: block;
   margin: auto;
 }
-/* line 210, ../sass/jax.scss */
+/* line 211, ../sass/jax.scss */
 #resume .section {
   padding: 10px 25px 25px 25px;
 }
-/* line 211, ../sass/jax.scss */
+/* line 212, ../sass/jax.scss */
 #resume dt {
   color: sienna;
 }
-/* line 212, ../sass/jax.scss */
+/* line 213, ../sass/jax.scss */
 #resume dd {
   margin-left: 25px;
 }
 
-/* line 217, ../sass/jax.scss */
+/* line 218, ../sass/jax.scss */
 #home {
   margin: 25px;
 }
 
-/* line 221, ../sass/jax.scss */
+/* line 222, ../sass/jax.scss */
 .contact-form {
   width: 60%;
 }
-/* line 222, ../sass/jax.scss */
+/* line 223, ../sass/jax.scss */
 .contact-form label {
   float: left;
   color: sienna;
 }
-/* line 223, ../sass/jax.scss */
+/* line 224, ../sass/jax.scss */
 .contact-form input {
   width: 100%;
 }
-/* line 224, ../sass/jax.scss */
+/* line 225, ../sass/jax.scss */
 .contact-form textarea {
   width: 100%;
 }
-/* line 225, ../sass/jax.scss */
+/* line 226, ../sass/jax.scss */
 .contact-form .submit {
   width: 25%;
 }
 
-/* line 229, ../sass/jax.scss */
+/* line 231, ../sass/jax.scss */
 #tres-d-topnav {
   z-index: 9000;
   position: absolute;
   width: 100%;
 }
-/* line 230, ../sass/jax.scss */
+/* line 232, ../sass/jax.scss */
 #tres-d-topnav .nav {
   width: inherit;
 }
-/* line 231, ../sass/jax.scss */
+/* line 233, ../sass/jax.scss */
 #tres-d-topnav .nav a {
   color: #B8C8D6;
+  text-align: right;
 }
-/* line 232, ../sass/jax.scss */
+/* line 234, ../sass/jax.scss */
 #tres-d-topnav .nav .menu-toggle {
   position: relative;
   float: right;
@@ -471,17 +482,17 @@ body footer {
   border-radius: 4px;
 }
 
-/* line 241, ../sass/jax.scss */
+/* line 243, ../sass/jax.scss */
 .threeD-body {
   background-color: transparent !important;
 }
 
-/* line 242, ../sass/jax.scss */
+/* line 244, ../sass/jax.scss */
 .threeD-content {
   position: absolute;
   top: 0;
 }
-/* line 243, ../sass/jax.scss */
+/* line 245, ../sass/jax.scss */
 .threeD-content .jax-innerpage-pane {
   display: block;
   margin-right: auto;
@@ -493,7 +504,7 @@ body footer {
   border: 2px inset sienna;
   padding: 15px;
 }
-/* line 245, ../sass/jax.scss */
+/* line 247, ../sass/jax.scss */
 .threeD-content .jax-innerpage-pane h3 {
   color: sienna;
 }

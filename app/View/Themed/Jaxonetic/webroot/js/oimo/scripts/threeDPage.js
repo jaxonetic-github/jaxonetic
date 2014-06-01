@@ -7,6 +7,8 @@ jQuery(function($) {
 // MAIN
 	var SCREEN_WIDTH,	 SCREEN_HEIGHT ;
     var ORIGIN_POSITION = new THREE.Vector3(0,0,0);
+    var SCENE_CONTAINER_INITIAL_POSITION = new THREE.Vector3(0,0,1000);
+    
 // standard global variables
 var container,camera, rendererCSS, controls, stats;
 var keyboard = new THREEx.KeyboardState();
@@ -52,9 +54,7 @@ var DFLT_PAGE_HEIGHT =700;
 var brickSceneContainer;
 var graphingSceneContainer, browsingSceneContainer; 
 var graphingSceneSky, browsingSceneSky;
-var browsingSceneCenter;
-var graphingSceneCenter;
-var brickSceneCenter;
+
 
 //SCENE CONTAINER POSITIONS
 	// Cube as a matrix
@@ -62,14 +62,8 @@ var brickSceneCenter;
 	var r = Math.PI / 2;
 	
 	var browserCubePos,	cubeRot,graphingPos, brickCubePosition;	
-	var xOffset_InternetBrowsingScene = 0;
-    var zOffset_InternetBrowsingScene = 1000;
-    
-  	var xOffset_BrickScene = 0;
-	var zOffset_BrickScene = 2000;
 
-  	var zOffset_InternetGraphingScene = 0;
-    var xOffset_InternetGraphingScene = 0;
+
     
 var textureCamera;
 var welcomeTxt;
@@ -116,18 +110,16 @@ function init()
 	
 	initRenderers();
  	controls = new THREE.OrbitControls( camera, renderer.domElement );
- 	//limit movement in Browsing Scene
-	controls.maxDistance = DFLT_CUBE_SIZE/2
-	controls.maxPolarAngle = Math.PI/2;
-	controls.minPolarAngle = Math.PI/4;
-	//camera.lookAt(browsingSceneCenter);
-	//graphingSceneContainer = createGraphingScene();
-	browsingSceneContainer =createInternetBrowsingScene();
+
+	graphingSceneContainer = createGraphingScene();
+	browsingSceneContainer =createInternetBrowsingScene(true);
 	//brickSceneContainer = createBrickScene();
     sceneTargetList.push(browsingSceneContainer);
   //  sceneTargetList.push(brickSceneContainer);
-browsingSceneContainer.add(camera);
+	browsingSceneContainer.add(camera);
+    //graphingSceneContainer.add(camera);
     scene.add(browsingSceneContainer);
+    scene.add(graphingSceneContainer);
    // scene.add(brickSceneContainer);
     
     //camera.position.set(0, 0, 107);
@@ -202,7 +194,7 @@ function cameraResetTween(){
 	
 
     var cameraPosition = { x : camera.position.x, y:camera.position.y, z:camera.position.z, rx:camera.rotation.x, ry:camera.rotation.y,rz:camera.rotation.z};
-    var cameraTargetPosition = { x : browsingSceneCenter.x, y:browsingSceneCenter.y, z:1400, rx:0, ry:0,rz:0};
+    var cameraTargetPosition = { x : SCENE_CONTAINER_INITIAL_POSITION.x, y:SCENE_CONTAINER_INITIAL_POSITION.y, z:1400, rx:0, ry:0,rz:0};
   		console.log(cameraPosition);
 			console.log(cameraTargetPosition); 
    
@@ -320,14 +312,14 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 //----------- Brick Scene Functions	
 ///////////////
  function createBrickScene(){
- 	brickSceneCenter = new THREE.Vector3(xOffset_BrickScene, 0,zOffset_BrickScene);
+ 	var brickSceneCenter = SCENE_CONTAINER_INITIAL_POSITION.clone;
  	brickScene = new THREE.Object3D();
 	var skyGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1 );
  	var skyPosition = new THREE.Vector3( 0, 0, 0 );
 	 	
  		// create a new scene to hold CSS
 
- 	brickCubePosition = [ [ xOffset_BrickScene-d, 0, zOffset_BrickScene ], [ xOffset_BrickScene+d, 0, zOffset_BrickScene ], [ xOffset_BrickScene, d, zOffset_InternetBrowsingScene ], [ xOffset_BrickScene, -d, zOffset_InternetBrowsingScene ], [ xOffset_BrickScene, 0, d+zOffset_InternetBrowsingScene ], [ xOffset_BrickScene, 0, zOffset_InternetBrowsingScene-d  ] ];
+ 	brickCubePosition = [ [ brickSceneCenter-d, 0, zOffset_BrickScene ], [ xOffset_BrickScene+d, 0, zOffset_BrickScene ], [ xOffset_BrickScene, d, SCENE_CONTAINER_INITIAL_POSITION.z ], [ xOffset_BrickScene, -d, SCENE_CONTAINER_INITIAL_POSITION.z ], [ xOffset_BrickScene, 0, d+SCENE_CONTAINER_INITIAL_POSITION.z ], [ xOffset_BrickScene, 0, SCENE_CONTAINER_INITIAL_POSITION.z-d  ] ];
 	
 	var materialArray = [];
 	for (var i = 0; i < 6; i++)
@@ -353,21 +345,26 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 //----------- Graphing Scene Functions	
 ///////////////
  function createGraphingScene(){
- 	graphingSceneCenter = new THREE.Vector3(xOffset_InternetGraphingScene, 0,zOffset_InternetGraphingScene);
+ 	var d = 500;
+ 	var graphingSceneCenter = SCENE_CONTAINER_INITIAL_POSITION.clone();
+ 	console.log("material");
+ 	console.log(graphingSceneCenter);
  	graphingScene = new THREE.Object3D();
-	var skyGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1 );
- 	var skyPosition = new THREE.Vector3( xOffset_InternetGraphingScene, 0, zOffset_InternetGraphingScene );
+	var skyGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*3, DFLT_CUBE_SIZE*3, DFLT_CUBE_SIZE*3 );
+ 	var skyPosition = new THREE.Vector3( SCENE_CONTAINER_INITIAL_POSITION.x, 0, SCENE_CONTAINER_INITIAL_POSITION.z );
 	 	
  		// create a new scene to hold CSS
 
- 	graphingPos = [ [ xOffset_InternetGraphingScene-d, 0, zOffset_InternetGraphingScene ], [ xOffset_InternetGraphingScene+d, 0, zOffset_InternetGraphingScene ], [ xOffset_InternetGraphingScene, d, zOffset_InternetBrowsingScene ], [ xOffset_InternetGraphingScene, -d, zOffset_InternetBrowsingScene ], [ xOffset_InternetGraphingScene, 0, d+zOffset_InternetBrowsingScene ], [ xOffset_InternetGraphingScene, 0, zOffset_InternetBrowsingScene-d  ] ];
+ 	graphingPos = [ [ SCENE_CONTAINER_INITIAL_POSITION.x-d, 0, SCENE_CONTAINER_INITIAL_POSITION.z ], [ SCENE_CONTAINER_INITIAL_POSITION.x+d, 0, SCENE_CONTAINER_INITIAL_POSITION.z ], [ SCENE_CONTAINER_INITIAL_POSITION.x, d, SCENE_CONTAINER_INITIAL_POSITION.z ], [ SCENE_CONTAINER_INITIAL_POSITION.x, -d, SCENE_CONTAINER_INITIAL_POSITION.z ], [ SCENE_CONTAINER_INITIAL_POSITION.x, 0, d+SCENE_CONTAINER_INITIAL_POSITION.z ], [ SCENE_CONTAINER_INITIAL_POSITION.x, 0, SCENE_CONTAINER_INITIAL_POSITION.z-d  ] ];
 	
 	var materialArray = [];
-	for (var i = 0; i < 6; i++)
-			materialArray.push( new THREE.MeshBasicMaterial({
+	for (var i = 0; i < 6; i++){
+		var material = new THREE.MeshBasicMaterial({
 				map: THREE.ImageUtils.loadTexture( brickImage ),
-				side: THREE.DoubleSide
-			}));
+				side: THREE.BackSide
+		});
+			materialArray.push( material);
+}
 	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
 
 	graphingSceneSky = createSkyBox(brickImage, skyGeometry, skyPosition,skyMaterial );
@@ -382,70 +379,6 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
     return graphingScene;
 }	
 	
-	////////////
-	// addSphere 
-	////////////
-function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ, showCoords){
-	if(showCoords===undefined){
-		showCoords = false;	
-	}
-	if(showCoords){
-		sayAt("("+positionX.toFixed(2)+","+  positionY.toFixed(2)+") ", positionX, positionY+radius, positionZ, 0, 0, 0, 0xaaaa66 );
-	}
-	
-	console.log(positionX+" "+positionY +" "+ positionZ);
-	var sphereGeom = new THREE.SphereGeometry(radius, geometryY, geometryZ);
-    
-	var moonTexture = THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/textures/sprites/ball.png' );
-	var moonMaterial = new THREE.MeshBasicMaterial( { map: moonTexture } );
-    var moon = new THREE.Mesh(sphereGeom, moonMaterial);
-	moon.position.set(positionX, positionY, positionZ);
-    graphingSceneContainer.add(moon);
-        moon.name="moon"+targetList.length;
-    /**
-	// create custom material from the shader code above
-	//   that is within specially labeled script tags
-	var customMaterial = new THREE.ShaderMaterial( 
-	{
-	    uniforms: 
-		{ 
-			"c":   { type: "f", value: 1.0 },
-			"p":   { type: "f", value: 1.4 },
-			glowColor: { type: "c", value: new THREE.Color(0xffff00) },
-			viewVector: { type: "v3", value: camera.position }
-		},
-		vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
-		fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
-		side: THREE.FrontSide,
-		blending: THREE.AdditiveBlending,
-		transparent: true
-	}   );
-		
-	this.moonGlow = new THREE.Mesh( sphereGeom.clone(), customMaterial.clone() );
-    moonGlow.position = moon.position;
-	moonGlow.scale.multiplyScalar(1.2);
-	scene.add( moonGlow );
-	
-	var cubeGeom = new THREE.BoxGeometry(150,150,150,2,2,2);
-	var crateTexture = THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/crate.png' );
-	var crateMaterial = new THREE.MeshBasicMaterial( { map: crateTexture } );
-    this.crate = new THREE.Mesh(cubeGeom, crateMaterial);
-	crate.position.set(-150,0,-150);
-   // scene.add(crate);
-
-	var smoothCubeGeom = cubeGeom.clone();
-	var modifier = new THREE.SubdivisionModifier( 2 );
-
-	modifier.modify( smoothCubeGeom ); 
-
-	this.crateGlow = new THREE.Mesh( smoothCubeGeom, customMaterial.clone() );
-    crateGlow.position = crate.position;
-	crateGlow.scale.multiplyScalar(1.5);
-	//scene.add( crateGlow );
-	*/
-	return moon;
-}
-
 
 //-----------End Graphing Functions
 
@@ -453,18 +386,11 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
  	//Internet Browsing Scene
  	//   -- returns a THREE.Object3D representation of browsing section
  	///////
- function createInternetBrowsingScene(){
+ function createInternetBrowsingScene(setupControlLimits){
  	var d = 500;  //an  offset which adjusts the distance between iFrames
- 	browsingSceneCenter = new THREE.Vector3(xOffset_InternetBrowsingScene, 0,zOffset_InternetBrowsingScene);
- 	console.log(browsingSceneCenter);
-    camera.position = browsingSceneCenter;
-    camera.position.z+=200; 
-    //camera.lookAt(browsingSceneCenter);
-   //  if(controls) controls.center.set(xOffset_InternetBrowsingScene,0,zOffset_InternetBrowsingScene) ;
-     //console.log(controls.center);
-   // if(controls) controls.center = browsingSceneCenter.add(new THREE.Vector3(400, 0,0));
- 	//controls.center = new THREE.Vector3(0,0,0);
- 	// create a new scene to hold CSS
+ 	browsingSceneCenter = SCENE_CONTAINER_INITIAL_POSITION.clone();
+ 	
+
 	browsingScene = new THREE.Object3D();
 	 browsingScene.position = browsingSceneCenter;
  	browserCubePos = [ [ browsingSceneCenter.x-d, browsingSceneCenter.y, browsingSceneCenter.z ], [ browsingSceneCenter.x+d, browsingSceneCenter.y, browsingSceneCenter.z ], [ browsingSceneCenter.x, browsingSceneCenter.y+d, browsingSceneCenter.z ], [ browsingSceneCenter.x, browsingSceneCenter.y-d, browsingSceneCenter.z ], [ browsingSceneCenter.x, 0, d+browsingSceneCenter.z ], [ browsingSceneCenter.x, 0, browsingSceneCenter.z-d  ] ];
@@ -581,23 +507,32 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	//	browsingCssScene.add(cube);
 
 
- //controls.center =new THREE.Vector3(xOffset_InternetBrowsingScene, 0,zOffset_InternetBrowsingScene-200);
-	
+ //controls.center =new THREE.Vector3(SCENE_CONTAINER_INITIAL_POSITION.x, 0,SCENE_CONTAINER_INITIAL_POSITION.z-200);
+	/*
 	var axis = new THREE.AxisHelper(DFLT_CUBE_SIZE/4);
-    
+	axis.name = "brickscene.axis";
     browsingScene.add(axis);
-    axis.position = new THREE.Vector3(0, 0,zOffset_InternetBrowsingScene);
+    axis.position = new THREE.Vector3(0, 0,SCENE_CONTAINER_INITIAL_POSITION.z);
+    axis.visible = false;
+    */
     if(controls){
-    	controls.center = new THREE.Vector3(0, 0,zOffset_InternetBrowsingScene-200);;
+    	controls.center = new THREE.Vector3(0, 0,browsingSceneCenter.z-200);;
     }
-  //camera.lookAt(axes);
-  
 
- //welcomeTextContainer.position.set(0,0,0);
- console.log(browserCubePos);
- console.log(welcomeTxt.position);
+ if(setupControlLimits)
+ {
+ 	setupBrowsingControlLimits(browsingSceneCenter);
+ }
     return browsingScene;
 }	
+
+function setupBrowsingControlLimits(browsingCenter){
+	controls.maxDistance = DFLT_CUBE_SIZE/2
+	controls.maxPolarAngle = Math.PI/2;
+	controls.minPolarAngle = Math.PI/4;
+	   camera.position = browsingCenter;
+    camera.position.z+=200; 
+}
 
 ///////////
 //Animation and Renderering
@@ -643,6 +578,76 @@ function render()
 	renderer.render( scene, camera );	
 }
 
+
+/////////////////////////////// Add Assets (i.e. sphere, htmlpage)
+
+
+	////////////
+	// addSphere 
+	////////////
+function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ, showCoords){
+	if(showCoords===undefined){
+		showCoords = false;	
+	}
+	if(showCoords){
+		sayAt("("+positionX.toFixed(2)+","+  positionY.toFixed(2)+") ", positionX, positionY+radius, positionZ, 0, 0, 0, 0xaaaa66 );
+	}
+	
+	console.log(positionX+" "+positionY +" "+ positionZ);
+	var sphereGeom = new THREE.SphereGeometry(radius, geometryY, geometryZ);
+    
+	var moonTexture = THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/textures/sprites/ball.png' );
+	var moonMaterial = new THREE.MeshBasicMaterial( { map: moonTexture } );
+    var moon = new THREE.Mesh(sphereGeom, moonMaterial);
+	moon.position.set(positionX, positionY, positionZ);
+    graphingSceneContainer.add(moon);
+        moon.name="moon"+targetList.length;
+    /**
+	// create custom material from the shader code above
+	//   that is within specially labeled script tags
+	var customMaterial = new THREE.ShaderMaterial( 
+	{
+	    uniforms: 
+		{ 
+			"c":   { type: "f", value: 1.0 },
+			"p":   { type: "f", value: 1.4 },
+			glowColor: { type: "c", value: new THREE.Color(0xffff00) },
+			viewVector: { type: "v3", value: camera.position }
+		},
+		vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+		fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+		side: THREE.FrontSide,
+		blending: THREE.AdditiveBlending,
+		transparent: true
+	}   );
+		
+	this.moonGlow = new THREE.Mesh( sphereGeom.clone(), customMaterial.clone() );
+    moonGlow.position = moon.position;
+	moonGlow.scale.multiplyScalar(1.2);
+	scene.add( moonGlow );
+	
+	var cubeGeom = new THREE.BoxGeometry(150,150,150,2,2,2);
+	var crateTexture = THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/crate.png' );
+	var crateMaterial = new THREE.MeshBasicMaterial( { map: crateTexture } );
+    this.crate = new THREE.Mesh(cubeGeom, crateMaterial);
+	crate.position.set(-150,0,-150);
+   // scene.add(crate);
+
+	var smoothCubeGeom = cubeGeom.clone();
+	var modifier = new THREE.SubdivisionModifier( 2 );
+
+	modifier.modify( smoothCubeGeom ); 
+
+	this.crateGlow = new THREE.Mesh( smoothCubeGeom, customMaterial.clone() );
+    crateGlow.position = crate.position;
+	crateGlow.scale.multiplyScalar(1.5);
+	//scene.add( crateGlow );
+	*/
+	return moon;
+}
+
+
+
 	/////////////
 	//-- Create a Mesh and add it to webgl/canvas renderer.  Then create an iFrame 
 	//   and place it in the same position and rotation as a side of the polygon (for now a cube )menu
@@ -651,7 +656,8 @@ function render()
 	var r = Math.PI / 2;
 	var d = 700;
  	var z = DFLT_PAGE_HEIGHT+500;
-	var pos = [ [ browsingSceneCenter.x-d, browsingSceneCenter.y, 2*browsingSceneCenter.z-z ], [ browsingSceneCenter.x+d , browsingSceneCenter.y, 2*browsingSceneCenter.z-z ], [ browsingSceneCenter.x, browsingSceneCenter.y+d,2*browsingSceneCenter.z-z ], [ browsingSceneCenter.x, browsingSceneCenter.y-d, 2*browsingSceneCenter.z-z], [ browsingSceneCenter.x, browsingSceneCenter.y, 2*browsingSceneCenter.z+d ], [ browsingSceneCenter.x, browsingSceneCenter.y, 2*browsingSceneCenter.z-d ] ];
+ 	var sceneCenter = SCENE_CONTAINER_INITIAL_POSITION
+	var pos = [ [ sceneCenter.x-d, sceneCenter.y, 2*sceneCenter.z-z ], [ sceneCenter.x+d , sceneCenter.y, 2*sceneCenter.z-z ], [ sceneCenter.x, sceneCenter.y+d,2*sceneCenter.z-z ], [ sceneCenter.x, sceneCenter.y-d, 2*sceneCenter.z-z], [ sceneCenter.x, sceneCenter.y, 2*sceneCenter.z+d ], [ sceneCenter.x, sceneCenter.y, 2*sceneCenter.z-d ] ];
 	var rot = [ [ 0, r/2, 0 ]/*left facing right*/, [ 0, -r/2, 0 ]/*top>bottom*/, [ -r, 0, 0 ], [-r/2, 0, 0 ]/*bottom->up*/, [ 0, 0, 0 ]/*back facing front*/, [ 0, 0, 0 ] ];
 	//var pos = [ [ -d, 0, -z ], [ d+ DFLT_CUBE_SIZE/3 , 0, -z ], [ 0, d,-z ], [ 0, -d, -z], [ 0, 0, d ], [ 0, 0, -d ] ];
 	var xyPlaneToZpos = 5;  // front facing side
@@ -851,7 +857,7 @@ function render()
                 var points = [];
                 var origin = raycaster.ray.origin.clone();
                 //console.log(origin);
-                points.push(browsingSceneCenter);
+                points.push(SCENE_CONTAINER_INITIAL_POSITION);
                 points.push(intersects[0].point);
 
 

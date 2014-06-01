@@ -11,9 +11,10 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>Menu</a>
-          <ul class="dropdown-menu">
-            <li><span>3D Home Scene</span></li>
-            <li><span class="">Graphing Scene</span></li>
+          <ul class="dropdown-menu jax-threed-menu">
+            <li><button type="button" id="home-threed-menuitem"   class="menu-toggle" >Home Scene</button></li>
+            <li><button type="button" id="html-browsing-menuitem" class="menu-toggle" >Browsing Scene</button></li>
+            <li><button type="button" id="graphing-menuitem" class="menu-toggle" >Graphing Scene</button></li>
           </ul>
         </li>
       </ul>
