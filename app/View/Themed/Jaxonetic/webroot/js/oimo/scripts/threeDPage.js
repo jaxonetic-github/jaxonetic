@@ -8,13 +8,13 @@ jQuery(function($) {
 	var SCREEN_WIDTH,	 SCREEN_HEIGHT ;
     var ORIGIN_POSITION = new THREE.Vector3(0,0,0);
     var SCENE_CONTAINER_INITIAL_POSITION = new THREE.Vector3(0,0,1000);
-    
+    var GRID_DOT_SIZE= .4;
 // standard global variables
 var container,camera, rendererCSS, controls, stats;
 var keyboard = new THREEx.KeyboardState();
 var clock = new THREE.Clock();
-var iFrameTargetList = [],mouse = { x: 0, y: 0 };
-var sceneTargetList=[];
+var iFrameTargetList = [],sceneTargetList=[], graphPlaneTargetList=[];
+var mouse = new THREE.Vector3(0,0,.5)
 var scene, browsingCssScene;
 
 var cameraTunnelGroup;
@@ -54,7 +54,7 @@ var DFLT_PAGE_HEIGHT =700;
 var brickSceneContainer;
 var graphingSceneContainer, browsingSceneContainer; 
 var graphingSceneSky, browsingSceneSky;
-
+var graphOriginPosition;
 
 //SCENE CONTAINER POSITIONS
 	// Cube as a matrix
@@ -68,10 +68,15 @@ var graphingSceneSky, browsingSceneSky;
 var textureCamera;
 var welcomeTxt;
 var welcomeTextContainer;
+var graphingTextContainer;
 // intermediate scene for reflecting the reflection
 var screenScene, screenCamera, firstRenderTarget, finalRenderTarget;
 var inBrowsingScene;
+
+//the plane that holds my picture
 var  planeMesh;
+var frontPlaneMaterial 
+var xyPlaneMesh;
 var tube;
 var pageHtmlObjCount;
 var frameObjects = [];
@@ -105,21 +110,21 @@ function init()
 	
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	projector = new THREE.Projector();
-	
+	scene.add(camera);
 	//cameraTunnelGroup.add(camera);
 	
 	initRenderers();
  	controls = new THREE.OrbitControls( camera, renderer.domElement );
 
-	graphingSceneContainer = createGraphingScene();
+	
 	browsingSceneContainer =createInternetBrowsingScene(true);
 	//brickSceneContainer = createBrickScene();
     sceneTargetList.push(browsingSceneContainer);
   //  sceneTargetList.push(brickSceneContainer);
-	browsingSceneContainer.add(camera);
+	//browsingSceneContainer.add(camera);
     //graphingSceneContainer.add(camera);
     scene.add(browsingSceneContainer);
-    scene.add(graphingSceneContainer);
+
    // scene.add(brickSceneContainer);
     
     //camera.position.set(0, 0, 107);
@@ -130,13 +135,13 @@ function init()
       
 	drawTunnel();
     scene.add( cameraTunnelGroup );
-    
+    scene.add(camera);
 
     	cameraTunnelGroup.traverse(hideChildren);
     	
 		// EVENTS
 		THREEx.WindowResize(renderer, camera);
-
+		document.addEventListener('mousemove', onDocumentMouseMove, false);
 		document.addEventListener('mousedown', onDocumentMouseDown, false);
 }
 
@@ -217,11 +222,89 @@ function cameraResetTween(){
 	resetTween.start();
 	
 }
+
+function graphingIntroTween(){
+		var graphingTextPosition = { x : graphingTextContainer.position.x, y:graphingTextContainer.position.y, z:graphingTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0};
+    var graphingTextTargetPosition = { x :-300, y:"+1000", z:500, rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
+	
+	
+	var graphingTextTween	= new TWEEN.Tween(graphingTextPosition);
+		graphingTextTween.to(graphingTextTargetPosition, 3000)
+		.delay(0)
+		.easing(TWEEN.Easing.Exponential.InOut)
+		.onUpdate(function(){
+
+		graphingTextContainer.position.x =graphingTextPosition.x;
+		graphingTextContainer.position.y = graphingTextPosition.y;
+		graphingTextContainer.position.z = graphingTextPosition.z;
+		graphingTextContainer.rotation.y = graphingTextPosition.ry;
+		
+	}).onComplete(function(){
+		console.log("graphing text group moved to...");
+		console.log(graphingTextContainer.position);
+	
+	});
+	
+	// start the first
+	graphingTextTween.start();
+
+}
+
+
+function showGraphingTextTween(){
+		var graphingTextPosition = { x : graphingTextContainer.position.x, y:graphingTextContainer.position.y, z:graphingTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0};
+    var graphingTextTargetPosition = { x :-300, y:200, z:500, rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
+	
+	
+	var graphingTextTween	= new TWEEN.Tween(graphingTextPosition);
+		graphingTextTween.to(graphingTextTargetPosition, 3000)
+		.delay(0)
+		.easing(TWEEN.Easing.Exponential.InOut)
+		.onUpdate(function(){
+
+		graphingTextContainer.position.x =graphingTextPosition.x;
+		graphingTextContainer.position.y = graphingTextPosition.y;
+		graphingTextContainer.position.z = graphingTextPosition.z;
+		graphingTextContainer.rotation.y = graphingTextPosition.ry;
+		
+	}).onComplete(function(){
+		console.log("graphing text group moved to...");
+		console.log(graphingTextContainer.position);
+	
+	});
+	
+	// start the first
+	graphingTextTween.start();
+
+}
+
+function fadeObjectTween(material, targetOpacity){
+		var meshOpacity =  {opacity :material.opacity};	
+	
+	var meshTween	= new TWEEN.Tween(meshOpacity);
+		meshTween.to({ opacity: targetOpacity }, 3000)
+		.delay(0)
+		.easing(TWEEN.Easing.Exponential.InOut)
+		.onUpdate(function(){
+
+		material.opacity = meshOpacity.opacity;
+		
+	}).onComplete(function(){
+		console.log("graphing text group moved to...");
+		//console.log(graphingTextContainer.position);
+	
+	});
+	
+	// start the first
+	meshTween.start();
+
+}
+
 function showWelcomeTween(){
 	var welcomTextPlanePosition = { x : welcomeTextContainer.position.x, y:welcomeTextContainer.position.y, z:welcomeTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0};
     var welcomTextTargetPosition = { x :-300, y:20, z:-500, rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
      	var planePosition = { x : planeMesh.position.x, y:planeMesh.position.y, z:planeMesh.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0, cameraZ:camera.position.z  };
-    var planeTargetPosition = { x : "+50", y:0, z:"-1300", rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4,cameraZ:"+200"  };
+    var planeTargetPosition = { x : "+50", y:0, z:"-1300", rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4,cameraZ:"+1000"  };
    
 
     console.log("showWelcomeTween");
@@ -240,10 +323,10 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 		planeMesh.position.x = planePosition.x;
 		planeMesh.position.y = planePosition.y;
 		planeMesh.position.z = planePosition.z;
-		planeMesh.rotation.ry = planePosition.ry;
-		planeMesh.position.rz = planePosition.rz;
+		//planeMesh.rotation.ry = planePosition.ry;
+		//planeMesh.position.rz = planePosition.rz;
 		//browsingSceneContainer.rotation.y = planePosition.browsingSceneContainerRotY;
-		//camera.position.z = planePosition.cameraZ;
+		camera.position.z = planePosition.cameraZ;
 
 	}).onComplete(function(){
 		console.log("planeMesh moved to...");
@@ -368,13 +451,46 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
 
 	graphingSceneSky = createSkyBox(brickImage, skyGeometry, skyPosition,skyMaterial );
-	graphingScene.add(graphingSceneSky);
+	//graphingScene.add(graphingSceneSky);
+graphingTextContainer = new THREE.Object3D();
+	graphingTextContainer.position = new THREE.Vector3(-900, 200, -2000 );
+	
+	var phraseRotation = new THREE.Vector3(0, 0,0);
+	
 
-		showXYZPlane(graphingScene,graphingSceneCenter,100);
+	  sayAt("Browse the Internet",
+	  SCENE_CONTAINER_INITIAL_POSITION.x,-DFLT_CUBE_SIZE*1.5,SCENE_CONTAINER_INITIAL_POSITION.z,
+	  phraseRotation, 0x666006,70,10);
+	 
+	 
+	 //Writing on the back wall
+	 // phraseRotation.set(-1*Math.PI/10,2*(-0),0);
+	  console.log(phraseRotation);
+	   graphingTextContainer.add(sayAt("Plotting Practice:",
+	  SCENE_CONTAINER_INITIAL_POSITION.x,SCENE_CONTAINER_INITIAL_POSITION.y+250,0,
+	  phraseRotation, 0x666006,25,1));	  
+	 
+	  
+	  graphingTextContainer.add(sayAt("There is a ton of math",
+	  SCENE_CONTAINER_INITIAL_POSITION.x, SCENE_CONTAINER_INITIAL_POSITION.y+200,0,
+	  phraseRotation, 0x666006,25,2)); 	 
+	 
+	 graphingTextContainer.add(	  sayAt("involved in the 3d on this site. ",
+	  SCENE_CONTAINER_INITIAL_POSITION.x,SCENE_CONTAINER_INITIAL_POSITION.y+150,0,
+	  phraseRotation, 0x666006,25,3)); 	 
+	 
+	  	  
+	  graphingTextContainer.add(sayAt("This is/will be my sketch pad",
+	  SCENE_CONTAINER_INITIAL_POSITION.x,SCENE_CONTAINER_INITIAL_POSITION.y+100,0,
+	  phraseRotation, 0x666006,25,4)); 	
+	  
+	  graphingSceneContainer.add(graphingTextContainer);
+	  //fadeObjectTween(graphingTextContainer,1);
+	  showGraphingTextTween();
+	  
+		//showXYZPlane(graphingScene,graphingSceneCenter,100);
 
-	var axes = new THREE.AxisHelper(1500);
-   	axes.position = graphingSceneCenter;
-    graphingScene.add(axes);
+	
     console.log("graphing scene added?");
     return graphingScene;
 }	
@@ -453,13 +569,14 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 	  	//  sayAt("but there will b",browsingSceneCenter.x+textAlignment,50,browsingSceneCenter.z,  phraseRotation, 0x666006,25,5); 
 	  	  
 	  	  var texture = new THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/me.png' );
-	var planeMaterial   = new THREE.MeshBasicMaterial({color: 0xffffff, opacity: .9,transparent:true, side: THREE.DoubleSide ,map:texture});
+	frontPlaneMaterial   = new THREE.MeshBasicMaterial({color: 0xffffff, opacity: .9,transparent:true, side: THREE.DoubleSide ,map:texture});
 	
 	var planeWidth = DFLT_CUBE_SIZE;
     var planeHeight = DFLT_PAGE_HEIGHT-100;
 	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight,DFLT_CUBE_SIZE);
-	 planeMesh= new THREE.Mesh( planeGeometry, planeMaterial );
+	 planeMesh= new THREE.Mesh( planeGeometry, frontPlaneMaterial );
 	//planeMesh.overdraw = true;
+	//graphPlaneTargetList.push(planeMesh);
 	planeMesh.position.fromArray( browserCubePos[ 5 ]);
 	planeMesh.rotation.fromArray( cubeRot[ 5 ] );
 	//planeMesh.rotation.y = Math.PI/7;
@@ -468,8 +585,8 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 	//planeMesh.position.x+=15;
 	// add it to the standard (WebGL) scene
 	planeMesh.name = "jax2d";
-	browsingScene.add(planeMesh);
-	browsingScene.add(welcomeTextContainer);
+	scene.add(planeMesh);
+	scene.add(welcomeTextContainer);
 	addPageToContainer(browsingScene,"/jaxonetic/Pages/aboutme/nolayout",1);
 	addPageToContainer(browsingScene,"/jaxonetic/Jaxcontact/index/nolayout",3);
 	addPageToContainer(browsingScene,"/jaxonetic/Projects/index/nolayout",0);
@@ -483,7 +600,7 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 
 	// cube
 	var cube = new THREE.Object3D();
-	scene.add( cube );
+	//scene.add( cube );
 
 	// sides
 	for ( var i = 0; i < 6; i ++ ) {
@@ -527,11 +644,11 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 }	
 
 function setupBrowsingControlLimits(browsingCenter){
-	controls.maxDistance = DFLT_CUBE_SIZE/2
+	//controls.maxDistance = DFLT_CUBE_SIZE/2
 	controls.maxPolarAngle = Math.PI/2;
 	controls.minPolarAngle = Math.PI/4;
 	   camera.position = browsingCenter;
-    camera.position.z+=200; 
+    camera.position.z+=800; 
 }
 
 ///////////
@@ -576,6 +693,7 @@ function render()
 			//cameraTunnelGroup.position = camera.position;;
 	 rendererCSS.render( browsingCssScene, camera );
 	renderer.render( scene, camera );	
+
 }
 
 
@@ -586,22 +704,22 @@ function render()
 	// addSphere 
 	////////////
 function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ, showCoords){
+	 var phraseRotation = new THREE.Vector3(0,0,0);
 	if(showCoords===undefined){
 		showCoords = false;	
 	}
 	if(showCoords){
-		sayAt("("+positionX.toFixed(2)+","+  positionY.toFixed(2)+") ", positionX, positionY+radius, positionZ, 0, 0, 0, 0xaaaa66 );
+		sayAt("("+positionX.toFixed(2)+","+  positionY.toFixed(2)+") ", positionX, positionY+radius, positionZ, phraseRotation, 0xaaaa66,5,2 );
 	}
-	
-	console.log(positionX+" "+positionY +" "+ positionZ);
+	//console.log(positionX+" "+positionY +" "+ positionZ);
 	var sphereGeom = new THREE.SphereGeometry(radius, geometryY, geometryZ);
     
 	var moonTexture = THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/textures/sprites/ball.png' );
 	var moonMaterial = new THREE.MeshBasicMaterial( { map: moonTexture } );
     var moon = new THREE.Mesh(sphereGeom, moonMaterial);
 	moon.position.set(positionX, positionY, positionZ);
-    graphingSceneContainer.add(moon);
-        moon.name="moon"+targetList.length;
+    scene.add(moon);
+        moon.name="moon"+positionX+"_"+positionX;
     /**
 	// create custom material from the shader code above
 	//   that is within specially labeled script tags
@@ -671,8 +789,8 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
     var planeHeight = DFLT_CUBE_SIZE;
 	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight );
 	var framePlaneMesh= new THREE.Mesh( planeGeometry, planeMaterial );
-	framePlaneMesh.position = pos[cubeSide];
-	framePlaneMesh.rotation = rot[cubeSide];
+	framePlaneMesh.position.fromArray( pos[ cubeSide ] );
+	framePlaneMesh.rotation.fromArray( rot[ cubeSide ] );
 	//framePlaneMesh.position.y -= planeHeight/2;
 	// add it to the standard (WebGL) scene
 	sceneContainer.add(framePlaneMesh);
@@ -728,15 +846,51 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
       function showXYGrid(container,position, size){
       	var phraseRotation = new THREE.Vector3(0, 0,0);
     gridXY = new THREE.GridHelper(size, 10);
+    gridXY.name = "xy_plane";
     gridXY.position.set( position.x+size,position.y+size,position.z );
     gridXY.rotation.x = Math.PI/2;
     gridXY.setColors( new THREE.Color(0x000066), new THREE.Color(0x000066) );
+    gridXY.material.opacity = 0.1;
+    gridXY.material.transparent = true;
+    var posYText = sayAt("+Y",
+	  position.x-(size*1.5),position.y+size/2,position.z,
+	  phraseRotation, 0x666006,50,10);
+	 var posXText = sayAt("+X",
+	  position.x,position.y-size,position.z,
+	  phraseRotation, 0x666006,50,10);
+	  
+    container.add(posYText);
     container.add(gridXY);
-    
-    for(var i=0; i<=size; i++){
-   		sayAt(i, i,-2,0,phraseRotation,0xaaaaaa );
+    container.add(posXText);
+    container.add(gridXY);
+	fadeObjectTween(gridXY.material,1);
+	fadeObjectTween(posYText.material,1);
+	fadeObjectTween(posXText.material,1);
+	var txtCenteringXOffset;
+    for(var i=0; i<=size/10; i++){
+      txtCenteringXOffset = (i<10)? -3:-4.5;
+   	  var xValue = sayAt(i,
+	  position.x+(i*10)+txtCenteringXOffset,position.y-10,position.z,
+	  phraseRotation, 0x666006,5,2);
+	  
+	  container.add(xValue);
+	  fadeObjectTween(xValue.material,1);
     }  
-     sayAt("XY blue", 0,-20,0,phraseRotation,0x000066 );
+    
+    var txtCenteringYOffset;
+    for(var i=0; i<=size/10; i++){
+      txtCenteringXOffset = (i<10)? -3:-4.5;
+   	  var xValue = sayAt(i,
+	  position.x-10,position.y+(i*10)+txtCenteringXOffset,position.z,
+	  phraseRotation, 0x666006,5,2);
+	  
+	  container.add(xValue);
+	  fadeObjectTween(xValue.material,1);
+    }  
+    return gridXY;
+    
+
+    // sayAt("XY blue", 0,-20,0,phraseRotation,0x000066 );
     //  iFrameTargetList.push(gridXY);
    }
         function showYZGrid(container,position,size){
@@ -754,15 +908,20 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
       var axes = new THREE.AxisHelper(10000);
       
       axes.position = position;
-      container.add(axes);
+      scene.add(axes);
      //  showXZGrid(position, 100);
-      showXYGrid(position, 100);
+      showXYGrid(container,position, 100);
     //showYZGrid(position, 100);
-
-
-
   }
 
+function showArrowFromOriginTo(endPoint){
+    // direction (normalized), origin, length, color(hex)
+    var origin =SCENE_CONTAINER_INITIAL_POSITION.clone();
+   //console.log( Math.sMath.pow(endPoint.x,2)+ Math.pow(endPoint.y,2));
+    var direction = new THREE.Vector3().subVectors(endPoint , origin).normalize();
+    var arrow = new THREE.ArrowHelper(direction, origin,Math.sqrt ( Math.pow(endPoint.x,2)+ Math.pow(endPoint.y,2)), 0x884400);
+    scene.add(arrow);
+}
 
 ///////////
     // ADD  TEXT
@@ -777,7 +936,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 
         // add 3D text
     var materialFront = new THREE.MeshBasicMaterial( { color: frontColor } );
-    var materialSide = new THREE.MeshBasicMaterial( { color: 0x124253 } );
+    var materialSide = new THREE.MeshBasicMaterial( { color: 0xc242e3 } );
     var materialArray = [ materialFront, materialSide ];
     var textGeom = new THREE.TextGeometry( text, 
     {
@@ -791,7 +950,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
     
     var textMaterial = new THREE.MeshFaceMaterial(materialArray);
     var textMesh = new THREE.Mesh(textGeom, textMaterial );
-    
+    textMaterial.opacity = 0.1;
     textGeom.computeBoundingBox();
     var textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x;
     
@@ -818,54 +977,121 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	}
 	
 
-	$(document).on('click', '#home-threed-menuitem', function() {
-		
- 
-				console.log("home clicked");
+function onDocumentMouseMove(event) {
+				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
-
-	}); 
+//-console.log("mouseCoords=("+event.clientX+","+event.clientY+")");
+//	console.log("mouseCoords=("+mouseX+","+mouseY+")");
+}
 
     function onDocumentMouseDown(event) {
 			
 			if(event.target.id === "html-browsing-menuitem"){
+				
+			 //toggle iframes
+				if(renderer.domElement.style.zIndex=== "1"){
 				//unmask iFrames
-				renderer.domElement.style.zIndex   = -1;
+					renderer.domElement.style.zIndex   = -1;
+				}else{
+					renderer.domElement.style.zIndex   = 1;
+				}
 			}else
 			if(event.target.id === "home-threed-menuitem"){
 				//mask iFrames
 				renderer.domElement.style.zIndex   = 1;
 				cameraResetTween();	
-			}
-			
-			
-            var vector = new THREE.Vector3(( event.clientX / window.innerWidth ) * 2 - 1, -( event.clientY / window.innerHeight ) * 2 + 1, 0.5);
-            projector.unprojectVector(vector, camera);
+			}else
+			if(event.target.id === "graphing-menuitem"){
+				//hide welcome text
+				welcomeTextContainer.traverse(hideChildren);
+				//construct and add graphing scene
+				    graphingSceneContainer = createGraphingScene();
+    				scene.add(graphingSceneContainer);
+    				
+    				//hide my photo material
+					fadeObjectTween(frontPlaneMaterial, 0);
+	
+	//XY graph Origin 
+	 graphOriginPosition =SCENE_CONTAINER_INITIAL_POSITION.clone();
+	graphOriginPosition.z+=DFLT_CUBE_SIZE/2;
+	graphOriginPosition.x-=100;
+	showXYGrid(scene,graphOriginPosition, 100);
+	//controls.center = graphOriginPosition;
+	//controls.center.x+=0;
+	//controls.center.z-= 5;
+	
+	//setup clickable pane 
+	var planeMaterial   = new THREE.MeshBasicMaterial({color: 0xffffff });
+	var planeWidth = 100;
+    var planeHeight = 100;
+	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight );
+	 xyPlaneMesh= new THREE.Mesh( planeGeometry, planeMaterial );
+	scene.add(xyPlaneMesh);
+	xyPlaneMesh.position = graphOriginPosition.clone();
+	xyPlaneMesh.position.x += planeWidth/2;
+	xyPlaneMesh.position.y += planeHeight/2;
+	planeMesh.position.z += .01;
+	xyPlaneMesh.name="xyPlane";
+	// add it to the standard (WebGL) scene
+	
+	graphPlaneTargetList.push(xyPlaneMesh);
+	console.log("xyPlaneMesh.position and boundingbox");
+	console.log(xyPlaneMesh.position);
+	console.log(xyPlaneMesh.geometry);
+	
+	camera.lookAt(graphOriginPosition);
+	  }
 
-            var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+				event.preventDefault();
 
+				var vector = mouse.clone();
+				projector.unprojectVector( vector, camera );
+				 var direction =  vector.sub( camera.position ).normalize();//direction from camera to click position
+				var raycaster = new THREE.Raycaster( camera.position, direction);
+				
+/*
+    
+	var distance = -camera.position.z / direction.z;
+ var raycaster = new THREE.Raycaster(camera.position, direction.z);
+	
+	console.log(pos);
+	 var raycaster = new THREE.Raycaster(camera.position, direction);
+      */
+			var graphPlaneIntersects =  raycaster.intersectObjects(graphPlaneTargetList);
             var iFrameIntersects = raycaster.intersectObjects(iFrameTargetList);
 			var sceneIntersects  = raycaster.intersectObjects(sceneTargetList);
-			
+
 			//cameraTunnelGroup.traverse(showChildren);
 //console.log(intersects);
-            if (iFrameIntersects.length > 0) {
-             //   intersects[ 0 ].object.material.transparent = true;
-             //   intersects[ 0 ].object.material.opacity = 0.1;
-
-//    Pointer
-                var points = [];
+			if (graphPlaneIntersects.length > 0){
+				console.log("Graph Intersect");
+				var pos = graphPlaneIntersects[0].point;
+var points = [];
                 var origin = raycaster.ray.origin.clone();
                 //console.log(origin);
-                points.push(SCENE_CONTAINER_INITIAL_POSITION);
-                points.push(intersects[0].point);
+                //	var distance = -camera.position.z / direction.z;
+			//	var pos = camera.position.clone().add( direction.multiplyScalar( distance ) );
+				
+                points.push(origin);
+                points.push(pos);
 
 
                 var mat = new THREE.MeshBasicMaterial({color: 0xff0000, transparent: true, opacity: 1});
                 var tubeGeometry = new THREE.TubeGeometry(new THREE.SplineCurve3(points), 60, 10);
 				if (tube) scene.remove(tube);
 				tube = new THREE.Mesh(tubeGeometry, mat);
-                scene.add(tube);
+               // scene.add(tube);
+           			scene.add(addSphere(5, 32, 16,pos.x,pos.y,pos.z, true));
+
+			}
+			else
+            if (iFrameIntersects.length > 0) {
+             //   intersects[ 0 ].object.material.transparent = true;
+             //   intersects[ 0 ].object.material.opacity = 0.1;
+
+//    Pointer
+                
 
 				//
                 
