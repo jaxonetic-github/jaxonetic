@@ -68,10 +68,10 @@ var graphOriginPosition;
 //SCENE CONTAINER POSITIONS
 	// Cube as a matrix
 
-	var r = Math.PI / 2;
+var r = Math.PI / 2;
 	
-	var browserCubePos,	cubeRot,graphingPos, brickCubePosition;	
-
+var browserCubePos,	cubeRot,graphingPos, brickCubePosition;	
+var rotatingCube;
 
     
 var textureCamera;
@@ -598,7 +598,7 @@ graphingTextContainer = new THREE.Object3D();
 	
 	
 	// cube
-	var cube = new THREE.Object3D();
+	rotatingCube = new THREE.Object3D();
 	//scene.add( cube );
 
 	//creating a new paragraph facing the +z dir based on an array of text
@@ -618,11 +618,11 @@ graphingTextContainer = new THREE.Object3D();
 
 	
 	//add faces to cube then add cube to scene
-	cube.add(frontFace);
-	cube.add(leftFace);
-	cube.add(rightFace);
+	rotatingCube.add(frontFace);
+	rotatingCube.add(leftFace);
+	rotatingCube.add(rightFace);
 	
-	scene.add(cube);
+	scene.add(rotatingCube);
 	
 	// create a new scene to hold CSS
 	if(!browsingCssScene)
@@ -649,6 +649,10 @@ graphingTextContainer = new THREE.Object3D();
     return browsingScene;
 }	
 
+	/**
+	 *  takes an array of containerTexts(=["",""]) at a starting containerPosition(=new Vector3D())
+	 * and puts it on a cubeSide rotation.
+	 */
 	function createTextContainer(frontFaceTexts,frontFaceTextPosition,cubeSide){
 		var r = Math.PI / 2;
 		var rot = [ [ 0, r, 0 ], [ 0, -r, 0 ], [ -r, 0, 0 ], [ r, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];
@@ -715,6 +719,7 @@ function render()
 			//mesh.rotation.x	+= Math.PI/2;
 			//if(brickSceneContainer) {brickSceneContainer.rotation.y+=.542; console.log(brickSceneContainer.rotation.y);}
 			//cameraTunnelGroup.position = camera.position;;
+			if(rotatingCube) rotatingCube.rotation.y+=(.05)*Math.PI/180;
 	 rendererCSS.render( browsingCssScene, camera );
 	renderer.render( scene, camera );	
 
