@@ -106,7 +106,7 @@ function init()
 	SCREEN_WIDTH = window.innerWidth;
 	SCREEN_HEIGHT = window.innerHeight;
 	
-	var VIEW_ANGLE = 40, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 15000;
+	var VIEW_ANGLE = 70, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 15000;
 	
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	projector = new THREE.Projector();
@@ -302,9 +302,9 @@ function fadeObjectTween(material, targetOpacity){
 
 function showWelcomeTween(){
 	var welcomTextPlanePosition = { x : welcomeTextContainer.position.x, y:welcomeTextContainer.position.y, z:welcomeTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0};
-    var welcomTextTargetPosition = { x :-300, y:20, z:-500, rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
+    var welcomTextTargetPosition = { x :-300, y:20, z:300, rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
      	var planePosition = { x : planeMesh.position.x, y:planeMesh.position.y, z:planeMesh.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0, cameraZ:camera.position.z  };
-    var planeTargetPosition = { x : "+50", y:0, z:"-1300", rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4,cameraZ:"+1000"  };
+    var planeTargetPosition = { x : 50, y:0, z:SCENE_CONTAINER_INITIAL_POSITION.z-200, rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4,cameraZ:"+200"  };
    
 
     console.log("showWelcomeTween");
@@ -503,7 +503,7 @@ graphingTextContainer = new THREE.Object3D();
  	//   -- returns a THREE.Object3D representation of browsing section
  	///////
  function createInternetBrowsingScene(setupControlLimits){
- 	var d = 500;  //an  offset which adjusts the distance between iFrames
+ 	var d = 380;  //an  offset which adjusts the distance between iFrames
  	browsingSceneCenter = SCENE_CONTAINER_INITIAL_POSITION.clone();
  	
 
@@ -717,7 +717,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	var moonTexture = THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/textures/sprites/ball.png' );
 	var moonMaterial = new THREE.MeshBasicMaterial( { map: moonTexture } );
     var moon = new THREE.Mesh(sphereGeom, moonMaterial);
-	moon.position.set(positionX, positionY, positionZ);
+	moon.position.set(positionX.toFixed(2), positionY.toFixed(2), positionZ.toFixed(2));
     scene.add(moon);
         moon.name="moon"+positionX+"_"+positionX;
     /**
@@ -1029,9 +1029,9 @@ function onDocumentMouseMove(event) {
 	 xyPlaneMesh= new THREE.Mesh( planeGeometry, planeMaterial );
 	scene.add(xyPlaneMesh);
 	xyPlaneMesh.position = graphOriginPosition.clone();
-	xyPlaneMesh.position.x += planeWidth/2;
-	xyPlaneMesh.position.y += planeHeight/2;
-	planeMesh.position.z += .01;
+	//xyPlaneMesh.position.x += planeWidth/2;
+	//xyPlaneMesh.position.y += planeHeight/2;
+	//planeMesh.position.z += .01;
 	xyPlaneMesh.name="xyPlane";
 	// add it to the standard (WebGL) scene
 	
@@ -1039,7 +1039,7 @@ function onDocumentMouseMove(event) {
 	console.log("xyPlaneMesh.position and boundingbox");
 	console.log(xyPlaneMesh.position);
 	console.log(xyPlaneMesh.geometry);
-	
+	scene.add(addSphere(5, 32, 16,xyPlaneMesh.position.x,xyPlaneMesh.position.y,xyPlaneMesh.position.z, true));
 	camera.lookAt(graphOriginPosition);
 	  }
 
