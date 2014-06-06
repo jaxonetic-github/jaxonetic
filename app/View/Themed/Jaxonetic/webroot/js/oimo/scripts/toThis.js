@@ -90,6 +90,7 @@ var xyPlaneMesh;
 var tube;
 var pageHtmlObjCount;
 var frameObjects = [];
+var selectedObject;
 
 init();
 animate();
@@ -148,7 +149,7 @@ function init()
     scene.add(camera);
 
     	cameraTunnelGroup.traverse(hideChildren);
-    	
+    	scene.updateMatrixWorld(true);
 		// EVENTS
 		THREEx.WindowResize(renderer, camera);
 		document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -204,6 +205,37 @@ function positionTunnel(){
 // ## Tweens
 // ## =========================
 
+
+function cameraMoveToTween(camPosition, targetObject){
+	
+    var cameraPosition = { x : camera.position.x, y:camera.position.y, z:camera.position.z, rx:camera.rotation.x, ry:camera.rotation.y,rz:camera.rotation.z};
+    var cameraTargetPosition = { x : camPosition.x, y:camPosition.y, z:(camPosition.z+600) , rx:0, ry:0,rz:0};
+  		
+   
+    var moveTween	= new TWEEN.Tween(cameraPosition);
+		moveTween.to(cameraTargetPosition, 5000)
+		.delay(0)
+		.easing(TWEEN.Easing.Linear.None)
+		.onUpdate(function(){
+	 camera.lookAt(camPosition);
+		camera.position.x = cameraPosition.x;
+		camera.position.y = cameraPosition.y;
+		camera.position.z = cameraPosition.z;
+	
+       
+       
+	}).onComplete(function(){
+		controls.center = camPosition;
+		controls.minDistance=500;
+		//controls.maxDistance=600;
+		console.log("camera moved to...");
+		console.log(camera.position);
+		// targetObject.lookAt(camera.position);
+	});
+	
+	moveTween.start();
+	
+}
 
 function cameraResetTween(){
 	
@@ -512,7 +544,7 @@ graphingTextContainer = new THREE.Object3D();
 	browsingScene = new THREE.Object3D();
 	 browsingScene.position = browsingSceneCenter;
  	browserCubePos = [ [ browsingSceneCenter.x-d, browsingSceneCenter.y, browsingSceneCenter.z ], [ browsingSceneCenter.x+d, browsingSceneCenter.y, browsingSceneCenter.z ], [ browsingSceneCenter.x, browsingSceneCenter.y+d, browsingSceneCenter.z ], [ browsingSceneCenter.x, browsingSceneCenter.y-d, browsingSceneCenter.z ], [ browsingSceneCenter.x, 0, d+browsingSceneCenter.z ], [ browsingSceneCenter.x, 0, browsingSceneCenter.z-d  ] ];
-	//controls.center.fromArray(browsingSceneCenter);
+
 	cubeRot = [ [ 0, r, 0 ]/*left facing right*/, [ 0, -r, 0 ], [ -r, 0, 0 ], [ r, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];	
 	var xyPlaneToZpos = 5;  // front facing side
 	var YZPlaneToXpos = 0;  //left facing right
@@ -630,7 +662,6 @@ graphingTextContainer = new THREE.Object3D();
 	//	browsingCssScene.add(cube);
 
 
- //controls.center =new THREE.Vector3(SCENE_CONTAINER_INITIAL_POSITION.x, 0,SCENE_CONTAINER_INITIAL_POSITION.z-200);
 	/*
 	var axis = new THREE.AxisHelper(DFLT_CUBE_SIZE/4);
 	axis.name = "brickscene.axis";
@@ -638,9 +669,7 @@ graphingTextContainer = new THREE.Object3D();
     axis.position = new THREE.Vector3(0, 0,SCENE_CONTAINER_INITIAL_POSITION.z);
     axis.visible = false;
     */
-    if(controls){
-    	controls.center = new THREE.Vector3(0, 0,browsingSceneCenter.z-200);;
-    }
+  
 
  if(setupControlLimits)
  {
@@ -663,20 +692,33 @@ graphingTextContainer = new THREE.Object3D();
 		textContainer.rotation.fromArray(rot[cubeSide]);
 		var i = 0;
 		for( i =0; i<frontFaceTexts.length; i++){
+			
 			textContainer.add( writeText(frontFaceTexts[i],frontFaceTextPosition.clone(),phraseRotation, 0x666006,60,10));
 			frontFaceTextPosition.y+=100;
 		}
-		return textContainer;
+		
+		var planeWidth = frontFaceTextPosition.x;
+    var planeHeight = frontFaceTextPosition.y + 100*frontFaceTexts.length;
+	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight,DFLT_CUBE_SIZE);
+	var	planeMaterial   = new THREE.MeshBasicMaterial({color: 0xffffff, opacity: .9,transparent:true, side: THREE.DoubleSide });
+
+	var backgroundMesh= new THREE.Mesh( planeGeometry, planeMaterial );
+	backgroundMesh.position = frontFaceTextPosition;
+	backgroundMesh.rotation.fromArray(rot[cubeSide]);
+	textContainer.add(backgroundMesh);
+
+	return textContainer;
 	}
 
 function setupBrowsingControlLimits(browsingCenter){
-	controls.center = SCENE_CONTAINER_INITIAL_POSITION;
+/*	controls.center = SCENE_CONTAINER_INITIAL_POSITION;
 	controls.minDistance = 900;
 	controls.maxDistance = 3000;
 	controls.maxPolarAngle = Math.PI/2;
 	controls.minPolarAngle = Math.PI/4;
 	//   camera.position = SCENE_CONTAINER_INITIAL_POSITION;
     camera.position.z+=2500; 
+    */
 }
 
 ///////////
@@ -732,6 +774,9 @@ function render()
 	////////////
 	// addSphere 
 	////////////
+	function addSphereAtPosition(radius, geometryY, geometryZ,position, showCoords){
+		
+	}
 function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ, showCoords){
 	 var phraseRotation = new THREE.Vector3(0,0,0);
 	if(showCoords===undefined){
@@ -856,7 +901,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	cssObject.scale.y /= (1 + percentBorder) * (elementWidth / planeWidth);
 	browsingCssScene.add(cssObject);
 	frameObjects.push(cssObject);
-	reOrientTargetList.push(framePlaneMesh);
+	//reOrientTargetList.push(framePlaneMesh);
 	iFrameTargetList.push(framePlaneMesh);
 	
 	browserTextContainer = new THREE.Object3D();
@@ -1108,7 +1153,7 @@ function onDocumentMouseMove(event) {
 			var graphPlaneIntersects =  raycaster.intersectObjects(graphPlaneTargetList);
             var adjustOrientationIntersects = raycaster.intersectObjects(reOrientTargetList);
 			var sceneIntersects  = raycaster.intersectObjects(sceneTargetList);
-var iFrameTargetInterects = raycaster.intersectObjects(iFrameTargetList);
+			var iFrameTargetInterects = raycaster.intersectObjects(iFrameTargetList);
 			//cameraTunnelGroup.traverse(showChildren);
 //console.log(intersects);
             if (adjustOrientationIntersects.length > 0) {
@@ -1154,14 +1199,29 @@ var points = [];
              //   intersects[ 0 ].object.material.opacity = 0.1;
 
 //    Pointer
-                
+ //     scene.add(objMesh);
+selectedObject = iFrameTargetInterects[ 0 ].object;
+var frameCenterPosition = new THREE.Vector3();
+console.log(iFrameTargetInterects[0].object.matrixWorld );
+frameCenterPosition.setFromMatrixPosition( iFrameTargetInterects[0].object.matrixWorld );
+   scene.add(addSphere(25, 32, 16,frameCenterPosition.x,frameCenterPosition.y,frameCenterPosition.z, true));       
+                //get the center of the clicked iFrame Mesh
+var centroid = frameCenterPosition.clone();
 
-				//
-                
-              controls.center = iFrameTargetInterects[ 0 ].point;
-              controls.minDistance = 400;
-              controls.maxDistance = 600;
-              console.log(adjustOrientationIntersects[ 0 ].point);
+for ( var i = 0, l =  iFrameTargetInterects[0].object.geometry.vertices.length; i < l; i ++ ) {
+console.log(centroid);
+     centroid = centroid.add(  iFrameTargetInterects[0].object.geometry.vertices[ i ] );
+console.log(centroid);
+} 
+//frameCenterPosition.x=centroid.x;
+//frameCenterPosition.y=centroid.y;
+
+			 cameraMoveToTween(frameCenterPosition, iFrameTargetInterects[0].object);
+              //controls.center = frameCenterPosition;
+              //scene.add(addSphere(10, 32, 16,controls.center.x,controls.center.y,controls.center.z, true));
+              //controls.minDistance = 0;
+              //controls.maxDistance = 600;
+             
         
                     
             }else{//if not an iframeClick, ensure renderer is on top of cssRenderer
