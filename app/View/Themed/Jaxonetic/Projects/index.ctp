@@ -3,12 +3,17 @@
 
 <div class="project-item"> 
 <h4>... This Site:</h4><p class="left-margined-paragraph">
-    This is a PHP <?php echo PHP_VERSION?> site powered by CakePHP with
+    This started as a PHP <?php echo PHP_VERSION?> site powered by CakePHP with
      Croogo CMS v1.5.7 connected to a MySQL database. 
-    It uses Twitter Bootstrap, Scss/Sass, JQuery, and simple  javascript.
-    See the source at&nbsp;<a href="https://github.com/jaxonetic-github/jaxonetic" target="_blank">Github</a>.  
-    This site is being hosted by <a href="http://www.0fees.net/hosting.php" target="_blank">0fees.net</a>.
+    It used Twitter Bootstrap, Scss/Sass, JQuery, a little Java (see Jax-Man below) and a lot of javascript.
+     It was meant to show potential clients that I can do what I say I can do; therefore, it purposefully includes many
+      technologies and languages.   It is also chronically unfinished and always evolving.  
+  <!--  See the source at&nbsp;<a href="https://github.com/jaxonetic-github/jaxonetic" target="_blank">Github</a>.-->  
+    This site is being hosted by <a href="http://www.0fees.net/hosting.php" target="_blank">0fees.net</a> for now
+    and you may see the source at&nbsp;<a href="https://github.com/jaxonetic-github/jaxonetic" target="_blank">Github</a>.
+    
 </p>
+
 </div>
 
 <div class="project-item">    
@@ -67,8 +72,9 @@
 </div>
 
 <div class="project-item"> 
-<h4>... Living Interactive 3D Blog:</h4>
-<p class="left-margined-paragraph">This will be using Node.js and will be hosted on Heroku</p>
+<h4>... a 3D version of this site:</h4>
+<p class="left-margined-paragraph">This will be using Node.js and Meteor and will be hosted on Heroku.  For now it,
+    it is using CakePHP.</p>
 </div>
 
 <div class="project-item"> 
