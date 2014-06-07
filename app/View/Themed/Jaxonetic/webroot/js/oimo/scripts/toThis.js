@@ -139,7 +139,8 @@ function init()
 	
 	initRenderers();
  	controls = new THREE.OrbitControls( camera, renderer.domElement );
-
+controls.center = SCENE_CONTAINER_INITIAL_POSITION;
+controls.maxDistance =4000;
 	
 	browsingSceneContainer =createInternetBrowsingScene(true);
 	//brickSceneContainer = createBrickScene();
@@ -242,7 +243,7 @@ function cameraMoveToTween(camPosition, targetObject){
        
 	}).onComplete(function(){
 		controls.center = camPosition;
-		controls.minDistance=500;
+		//controls.minDistance=500;
 		//controls.maxDistance=600;
 		console.log("camera moved to...");
 		console.log(camera.position);
@@ -274,7 +275,7 @@ function cameraResetTween(){
 	
         camera.lookAt(ORIGIN_POSITION);
 	}).onComplete(function(){
-		controls.center = ORIGIN_POSITION;
+		controls.center = SCENE_CONTAINER_INITIAL_POSITION;
 		console.log("camera moved to...");
 		console.log(camera.position);
 	});
@@ -635,18 +636,17 @@ graphingTextContainer = new THREE.Object3D();
  
 // params
 	
+	
+	var navInfoTexts = [ "empty space to rotate the scene.", "and forth.  Drag your mouse on", "mousewheel or trackpad to go back","To interact with this site, use your" ];
+	var navInfoTextsPosition = new THREE.Vector3(browsingSceneCenter.x-DFLT_CUBE_SIZE,DFLT_CUBE_SIZE*1.5-100,0);
+	var navInfo = createTextContainer(navInfoTexts,navInfoTextsPosition,	xyPlaneToZpos,DESCENDING_TEXT_VERTICAL);
+	
 	var d = browsingSceneCenter.z;
 	var pos = [ [ d, 0, 0 ], [ -d, 0, 0 ], [ 0, d, 0 ], [ 0, -d, 0 ], [ 0, 0, 0 ], [ 0, 0, -d ] ];
-	
-	
 	
 	// cube
 	rotatingCube = new THREE.Object3D();
 	rotatingCube.position = browsingSceneCenter;
-	//scene.add( cube );
-
-	//creating a new paragraph facing the +z dir based on an array of text
-	
 	
 	var frontFaceTexts = [ "still in its infancy stage.", "see my updates. This project is ","Come back soon and often to" ];
 	var frontFaceTextPosition = new THREE.Vector3(browsingSceneCenter.x-DFLT_CUBE_SIZE,-DFLT_CUBE_SIZE*1.5-100,browsingSceneCenter.z);
@@ -661,7 +661,7 @@ graphingTextContainer = new THREE.Object3D();
 	var leftFaceTextPosition = new THREE.Vector3(browsingSceneCenter.x-DFLT_CUBE_SIZE,-DFLT_CUBE_SIZE*1.5-100,browsingSceneCenter.z);
 	var leftFace = createTextContainer(leftFaceTexts,leftFaceTextPosition,yzPlaneToXneg,DESCENDING_TEXT_VERTICAL_FRONTTOBACK);
 
-	var backFaceTexts = [ " enough time to do it all","of course, there is never","There is so much more to do and", "So much space and so many ideas." ];
+	var backFaceTexts = [ " enough time to do it all.","of course, there is never","There is so much more to do and", "So much space and so many ideas." ];
 	var backFaceTextPosition = new THREE.Vector3(browsingSceneCenter.x-DFLT_CUBE_SIZE,-DFLT_CUBE_SIZE*1.5-100,browsingSceneCenter.z);
 	var backFace = createTextContainer(backFaceTexts,backFaceTextPosition,xyPlaneToZneg,DESCENDING_TEXT_VERTICAL_FRONTTOBACK);
 
@@ -670,9 +670,9 @@ graphingTextContainer = new THREE.Object3D();
 	rotatingCube.add(leftFace);
 	rotatingCube.add(rightFace);
 	rotatingCube.add(backFace);
-	backFace.position.fromArray( pos[ 4 ]);
+	//backFace.position.fromArray( pos[ 4 ]);
 	scene.add(rotatingCube);
-	
+	browsingScene.add(navInfo);
 	// create a new scene to hold CSS
 	if(!browsingCssScene)
 		browsingCssScene = new THREE.Scene();
@@ -1236,9 +1236,9 @@ function onDocumentMouseMove(event) {
 
 				//
                 
-              controls.center = adjustOrientationIntersects[ 0 ].point;
-               controls.minDistance = 700;
-              controls.maxDistance = 3000;
+              controls.center = SCENE_CONTAINER_INITIAL_POSITION;// adjustOrientationIntersects[ 0 ].point;
+             //  controls.minDistance = 700;
+            //  controls.maxDistance = 3000;
               console.log(adjustOrientationIntersects[ 0 ].point);
         
                     
