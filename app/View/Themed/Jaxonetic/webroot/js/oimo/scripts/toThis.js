@@ -70,15 +70,28 @@ var graphOriginPosition;
 
 var r = Math.PI / 2;
 	
-var browserCubePos,	cubeRot,graphingPos, brickCubePosition;	
+var browserCubePos,graphingPos, brickCubePosition;	
 var rotatingCube;
+var	cubeRot = [ [ 0, r, 0 ]/*left facing right*/, [ 0, -r, 0 ], [ -r, 0, 0 ], [ r, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];	
+var flexibleCubeRot = function(radians){return [ [ 0, radians, 0 ]/*left facing radiansight*/, [ 0, -radians, 0 ], [ -radians, 0, 0 ], [ radians, 0, 0 ], [ 0,  2*radians, 0 ], [ 0, 0, 0 ] ];}	
 
+	var yzPlaneToXpos = 0;  //left facing right
+	var yzPlaneToXneg = 1;  //right facing left
+	var zxPlanetoYneg = 3;  //top facing down
+	var zxPlanetoYpos = 2;  //bottom facing up
+	var xyPlaneToZneg = 4;  // front facing side
+	var xyPlaneToZpos = 5;  // front facing side	
     
+    	var DESCENDING_TEXT_VERTICAL  = 0; //only y
+		var DESCENDING_TEXT_VERTICAL_FRONTTOBACK=1; //y and z
+		var DESCENDING_TEXT_VERTICAL_LEFTTORIGHT=2; //x and y
+		
 var textureCamera;
 var welcomeTxt;
 var welcomeTextContainer;
 var graphingTextContainer;
 var browserTextContainer;
+var DFLT_TEXT_LINESPACING = 100;
 // intermediate scene for reflecting the reflection
 var screenScene, screenCamera, firstRenderTarget, finalRenderTarget;
 var inBrowsingScene;
@@ -138,16 +151,17 @@ function init()
 	//scene.add(createBrickSky() );
    // scene.add(brickSceneContainer);
     
-    //camera.position.set(0, 0, 107);
+    camera.position.set(0, -100, 107);
 
  	var axes = new THREE.AxisHelper(5000);   
       axes.position = ORIGIN_POSITION;
-     scene.add(axes);
+   //  scene.add(axes);
       
 	drawTunnel();
     scene.add( cameraTunnelGroup );
     scene.add(camera);
-
+	//scene.add(createBrickSky);
+				
     	cameraTunnelGroup.traverse(hideChildren);
     	scene.updateMatrixWorld(true);
 		// EVENTS
@@ -205,7 +219,9 @@ function positionTunnel(){
 // ## Tweens
 // ## =========================
 
-
+/*
+ * Move camera to @camPosition 
+ */
 function cameraMoveToTween(camPosition, targetObject){
 	
     var cameraPosition = { x : camera.position.x, y:camera.position.y, z:camera.position.z, rx:camera.rotation.x, ry:camera.rotation.y,rz:camera.rotation.z};
@@ -242,7 +258,7 @@ function cameraResetTween(){
 
 
     var cameraPosition = { x : camera.position.x, y:camera.position.y, z:camera.position.z, rx:camera.rotation.x, ry:camera.rotation.y,rz:camera.rotation.z};
-    var cameraTargetPosition = { x : SCENE_CONTAINER_INITIAL_POSITION.x, y:SCENE_CONTAINER_INITIAL_POSITION.y, z:(SCENE_CONTAINER_INITIAL_POSITION.z+1800) , rx:0, ry:0,rz:0};
+    var cameraTargetPosition = { x : SCENE_CONTAINER_INITIAL_POSITION.x, y:SCENE_CONTAINER_INITIAL_POSITION.y-100, z:(SCENE_CONTAINER_INITIAL_POSITION.z+1800) , rx:0, ry:0,rz:0};
   		console.log(cameraPosition);
 			console.log(cameraTargetPosition); 
    
@@ -258,6 +274,7 @@ function cameraResetTween(){
 	
         camera.lookAt(ORIGIN_POSITION);
 	}).onComplete(function(){
+		controls.center = ORIGIN_POSITION;
 		console.log("camera moved to...");
 		console.log(camera.position);
 	});
@@ -344,7 +361,7 @@ function fadeObjectTween(material, targetOpacity){
 }
 
 function showWelcomeTween(){
-	var welcomTextPlanePosition = { x : welcomeTextContainer.position.x, y:welcomeTextContainer.position.y, z:welcomeTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0};
+	var welcomTextPlanePosition = { x : welcomeTextContainer.position.x, y:welcomeTextContainer.position.y+1000, z:welcomeTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0};
     var welcomTextTargetPosition = { x :-500, y:20, z:1300, rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
      	var planePosition = { x : planeMesh.position.x, y:planeMesh.position.y, z:planeMesh.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0, cameraZ:camera.position.z  };
     var planeTargetPosition = { x : 0, y:0, z:SCENE_CONTAINER_INITIAL_POSITION.z, rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4,cameraZ:(SCENE_CONTAINER_INITIAL_POSITION.z+2800)  };
@@ -452,9 +469,9 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 			}
 	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
 
-	brickSceneSky = createSkyBox(brickImage, skyGeometry, skyPosition,skyMaterial );
+	var brickSceneSky = createSkyBox(brickImage, skyGeometry, skyPosition,skyMaterial );
 	
-
+scene.add(brickSceneSky);
     return brickSceneSky;
 }	
 
@@ -485,7 +502,7 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
 
 	graphingSceneSky = createSkyBox(brickImage, skyGeometry, skyPosition,skyMaterial );
-	//graphingScene.add(graphingSceneSky);
+	//scene.add(graphingSceneSky);
 graphingTextContainer = new THREE.Object3D();
 	graphingTextContainer.position = new THREE.Vector3(-900, 200, -2000 );
 	
@@ -523,7 +540,7 @@ graphingTextContainer = new THREE.Object3D();
 	  showGraphingTextTween();
 	  
 		//showXYZPlane(graphingScene,graphingSceneCenter,100);
-
+			
 	
     console.log("graphing scene added?");
     return graphingScene;
@@ -545,13 +562,7 @@ graphingTextContainer = new THREE.Object3D();
 	 browsingScene.position = browsingSceneCenter;
  	browserCubePos = [ [ browsingSceneCenter.x-d, browsingSceneCenter.y, browsingSceneCenter.z ], [ browsingSceneCenter.x+d, browsingSceneCenter.y, browsingSceneCenter.z ], [ browsingSceneCenter.x, browsingSceneCenter.y+d, browsingSceneCenter.z ], [ browsingSceneCenter.x, browsingSceneCenter.y-d, browsingSceneCenter.z ], [ browsingSceneCenter.x, 0, d+browsingSceneCenter.z ], [ browsingSceneCenter.x, 0, browsingSceneCenter.z-d  ] ];
 
-	cubeRot = [ [ 0, r, 0 ]/*left facing right*/, [ 0, -r, 0 ], [ -r, 0, 0 ], [ r, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];	
-	var xyPlaneToZpos = 5;  // front facing side
-	var YZPlaneToXpos = 0;  //left facing right
-	var YZPlaneToXneg = 1;  //right facing left
-	var zxPlanetoYneg = 3;  //top facing down
-	var zxPlanetoYpos = 2;  //bottom facing up
-	
+
 	console.log(browserCubePos);     
 
 	var skyGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1 );
@@ -607,8 +618,8 @@ graphingTextContainer = new THREE.Object3D();
 	 reOrientTargetList.push(planeMesh);
 	//planeMesh.overdraw = true;
 	//graphPlaneTargetList.push(planeMesh);
-	planeMesh.position.fromArray( browserCubePos[ 5 ]);
-	planeMesh.rotation.fromArray( cubeRot[ 5 ] );
+	//planeMesh.position.fromArray( browserCubePos[ 5 ]);
+	planeMesh.rotation.fromArray( cubeRot[ xyPlaneToZpos ] );
 	//planeMesh.rotation.y = Math.PI/7;
 	//planeMesh.rotation.z = Math.PI;
 	console.log(planeMesh.position);
@@ -616,7 +627,7 @@ graphingTextContainer = new THREE.Object3D();
 	// add it to the standard (WebGL) scene
 	planeMesh.name = "jax2d";
 	scene.add(planeMesh);
-	
+
 	addPageToContainer(browsingScene,"/jaxonetic/Pages/aboutme/nolayout",1);
 	addPageToContainer(browsingScene,"/jaxonetic/Jaxcontact/index/nolayout",3);
 	addPageToContainer(browsingScene,"/jaxonetic/Projects/index/nolayout",0);
@@ -624,36 +635,42 @@ graphingTextContainer = new THREE.Object3D();
  
 // params
 	
-	var d = 50;
-	var pos = [ [ d, 0, 0 ], [ -d, 0, 0 ], [ 0, d, 0 ], [ 0, -d, 0 ], [ 0, 0, d ], [ 0, 0, -d ] ];
+	var d = browsingSceneCenter.z;
+	var pos = [ [ d, 0, 0 ], [ -d, 0, 0 ], [ 0, d, 0 ], [ 0, -d, 0 ], [ 0, 0, 0 ], [ 0, 0, -d ] ];
 	
 	
 	
 	// cube
 	rotatingCube = new THREE.Object3D();
+	rotatingCube.position = browsingSceneCenter;
 	//scene.add( cube );
 
 	//creating a new paragraph facing the +z dir based on an array of text
 	
 	
-	var frontFaceTexts = [ "This project is still in its infancy stage.", "I am still organizing and setting up a backbone.","Come back soon and often as I make updates often." ];
-	var frontFaceTextPosition = new THREE.Vector3(browsingSceneCenter.x-DFLT_CUBE_SIZE,DFLT_CUBE_SIZE*1.5-100,browsingSceneCenter.z);
-	var frontFace = createTextContainer(frontFaceTexts,frontFaceTextPosition,5);
+	var frontFaceTexts = [ "still in its infancy stage.", "see my updates. This project is ","Come back soon and often to" ];
+	var frontFaceTextPosition = new THREE.Vector3(browsingSceneCenter.x-DFLT_CUBE_SIZE,-DFLT_CUBE_SIZE*1.5-100,browsingSceneCenter.z);
+	var frontFace = createTextContainer(frontFaceTexts,frontFaceTextPosition,	xyPlaneToZpos,DESCENDING_TEXT_VERTICAL_FRONTTOBACK);
 	
-	var rightFaceTexts = [ "Use your mouse or trackpad to move around.", "The internal pages are active but you must select them first","Come back soon and often as I make updates often." ];
-	var rightFaceTextPosition = new THREE.Vector3(browsingSceneCenter.x-DFLT_CUBE_SIZE,DFLT_CUBE_SIZE*1.5-100,browsingSceneCenter.z);
-	var rightFace = createTextContainer(rightFaceTexts,rightFaceTextPosition,0);
-
-	var leftFaceTexts = [ "There is so much more to do.", "There is so much more I can do","There is never enough time to do it all" ];
-	var leftFaceTextPosition = new THREE.Vector3(browsingSceneCenter.x-DFLT_CUBE_SIZE,DFLT_CUBE_SIZE*1.5-100,browsingSceneCenter.z);
-	var leftFace = createTextContainer(leftFaceTexts,leftFaceTextPosition,1);
-
+	var rightFaceTexts = [ "but you must select them first." , "The internal pages are active"];
+	var rightFaceTextPosition = new THREE.Vector3(browsingSceneCenter.x-DFLT_CUBE_SIZE,-DFLT_CUBE_SIZE*1.5-100,browsingSceneCenter.z);
+	var rightFace = createTextContainer(rightFaceTexts,rightFaceTextPosition,yzPlaneToXpos,DESCENDING_TEXT_VERTICAL_FRONTTOBACK);
 	
+	
+	var leftFaceTexts = [ "in the top corner may help.","getting used to. The menu", "Navigating may take some" ];
+	var leftFaceTextPosition = new THREE.Vector3(browsingSceneCenter.x-DFLT_CUBE_SIZE,-DFLT_CUBE_SIZE*1.5-100,browsingSceneCenter.z);
+	var leftFace = createTextContainer(leftFaceTexts,leftFaceTextPosition,yzPlaneToXneg,DESCENDING_TEXT_VERTICAL_FRONTTOBACK);
+
+	var backFaceTexts = [ " enough time to do it all","of course, there is never","There is so much more to do and", "So much space and so many ideas." ];
+	var backFaceTextPosition = new THREE.Vector3(browsingSceneCenter.x-DFLT_CUBE_SIZE,-DFLT_CUBE_SIZE*1.5-100,browsingSceneCenter.z);
+	var backFace = createTextContainer(backFaceTexts,backFaceTextPosition,xyPlaneToZneg,DESCENDING_TEXT_VERTICAL_FRONTTOBACK);
+
 	//add faces to cube then add cube to scene
 	rotatingCube.add(frontFace);
 	rotatingCube.add(leftFace);
 	rotatingCube.add(rightFace);
-	
+	rotatingCube.add(backFace);
+	backFace.position.fromArray( pos[ 4 ]);
 	scene.add(rotatingCube);
 	
 	// create a new scene to hold CSS
@@ -677,38 +694,89 @@ graphingTextContainer = new THREE.Object3D();
  }
     return browsingScene;
 }	
-
+	
 	/**
 	 *  takes an array of containerTexts(=["",""]) at a starting containerPosition(=new Vector3D())
 	 * and puts it on a cubeSide rotation.
 	 */
-	function createTextContainer(frontFaceTexts,frontFaceTextPosition,cubeSide){
+	function createTextContainer(containerTexts,containerTextPosition,cubeSide, descendingTextType){
+	
 		var r = Math.PI / 2;
-		var rot = [ [ 0, r, 0 ], [ 0, -r, 0 ], [ -r, 0, 0 ], [ r, 0, 0 ], [ 0, 0, 0 ], [ 0, 0, 0 ] ];
+		var rot = [ [ 0, r, 0 ], [ 0, -r, 0 ], [ -r, 0, 0 ], [ r, 0, 0 ], [ 0, 2*r, 0 ], [ 0, 0, 0 ] ];
 		//let the rotation of the text be handled by the cubeSide variable and the rotation Array.
-		var phraseRotation = new THREE.Vector3(0, 0,0);
+		var phraseRotation =(descendingTextType=== DESCENDING_TEXT_VERTICAL)? new THREE.Vector3(0, 0,0) : new THREE.Vector3(-r/4, 0,0);
 		var textContainer = new  THREE.Object3D();
 		//frontFace.position.fromArray(pos[5]);
 		textContainer.rotation.fromArray(rot[cubeSide]);
 		var i = 0;
-		for( i =0; i<frontFaceTexts.length; i++){
+		var minX = Infinity;
+		var maxX = -Infinity;
+		var minY = Infinity;
+		var maxY = -Infinity;
+		for( i =0; i<containerTexts.length; i++){
+			var tmpMesh = writeText(containerTexts[i],containerTextPosition.clone(),phraseRotation, 0x666006,60,20);
+			//tmpMesh.rotation.fromArray(flexibleCubeRot(r/2)[zxPlanetoYpos]);
+			tmpMesh.geometry.computeBoundingBox();
+			//console.log(tmpMesh.geometry.boundingBox);
+			minX = Math.min(minX,tmpMesh.geometry.boundingBox.min.x );
+			maxX = Math.max(maxX,tmpMesh.geometry.boundingBox.max.x );
+			minY = Math.min(minY,tmpMesh.geometry.boundingBox.min.y );
+			maxY = Math.max(maxY,tmpMesh.geometry.boundingBox.max.y );
+			textContainer.add( tmpMesh );
+			//align tmpMesh
+			var xoffset = (DFLT_CUBE_SIZE*2 - ( maxX -minX))/2;
+			tmpMesh.position.x+= xoffset;
+			if(descendingTextType ===DESCENDING_TEXT_VERTICAL){
+				containerTextPosition.y+=100;
+			}else
+				if(descendingTextType ===DESCENDING_TEXT_VERTICAL_FRONTTOBACK){
+				containerTextPosition.y+=100;
+				containerTextPosition.z-=100;
 			
-			textContainer.add( writeText(frontFaceTexts[i],frontFaceTextPosition.clone(),phraseRotation, 0x666006,60,10));
-			frontFaceTextPosition.y+=100;
+			}else 
+				if(descendingTextType ===DESCENDING_TEXT_VERTICAL_LEFTTORIGHT){
+				containerTextPosition.y+=100;
+				containerTextPosition.z+=100;
+			}
 		}
-		
-		var planeWidth = frontFaceTextPosition.x;
-    var planeHeight = frontFaceTextPosition.y + 100*frontFaceTexts.length;
-	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight,DFLT_CUBE_SIZE);
-	var	planeMaterial   = new THREE.MeshBasicMaterial({color: 0xffffff, opacity: .9,transparent:true, side: THREE.DoubleSide });
-
-	var backgroundMesh= new THREE.Mesh( planeGeometry, planeMaterial );
-	backgroundMesh.position = frontFaceTextPosition;
-	backgroundMesh.rotation.fromArray(rot[cubeSide]);
+					
+	var backgroundMesh= getTextContainerBackgroundMesh(textContainer,containerTextPosition,Math.max(DFLT_CUBE_SIZE*2, ( maxX -minX)), containerTexts.length,descendingTextType);
+	if(descendingTextType ===DESCENDING_TEXT_VERTICAL){
+			//	backgroundMesh.rotation.fromArray(flexibleCubeRot(r)[zxPlanetoYpos]);
+	}else
+	{
+		backgroundMesh.rotation.fromArray(flexibleCubeRot(r/2)[zxPlanetoYpos]);
+		}
+	//backgroundMesh.rotation.y=r;
 	textContainer.add(backgroundMesh);
-
+	
 	return textContainer;
 	}
+
+
+function getTextContainerBackgroundMesh(textContainer,containerPosition, planeWidth, lineCount,descendingTextType){
+		
+	
+	var helper = new THREE.BoundingBoxHelper(textContainer.clone(), 0xff0000);
+	helper.update();
+// If you want a visible bounding box
+	//textContainer.add(helper);
+		var containerBox = helper.box;	
+		
+    var planeHeight = (descendingTextType=== DESCENDING_TEXT_VERTICAL)?(lineCount+1)*DFLT_TEXT_LINESPACING : (lineCount+3)*DFLT_TEXT_LINESPACING;
+    var planeDepth =Math.min( containerBox.max.z - containerBox.min.z);
+    //console.log(planeWidth+"--"+planeHeight);
+	var planeGeometry = new THREE.PlaneGeometry( planeWidth, planeHeight);
+	var	planeMaterial   = new THREE.MeshBasicMaterial({color: 0xD4C8AF, opacity: .7,transparent:true, side: THREE.DoubleSide });
+
+	var backgroundMesh= new THREE.Mesh( planeGeometry, planeMaterial );
+	backgroundMesh.position =containerPosition;
+	
+	backgroundMesh.position.x += planeWidth/2;
+	backgroundMesh.position.y -= planeHeight/2;
+	backgroundMesh.doubleSided = false;
+	return backgroundMesh;
+}
 
 function setupBrowsingControlLimits(browsingCenter){
 /*	controls.center = SCENE_CONTAINER_INITIAL_POSITION;
@@ -904,8 +972,7 @@ function addSphere(radius, geometryY, geometryZ,positionX, positionY, positionZ,
 	//reOrientTargetList.push(framePlaneMesh);
 	iFrameTargetList.push(framePlaneMesh);
 	
-	browserTextContainer = new THREE.Object3D();
-	scene.add(browserTextContainer);
+	
 /*	//add container for 3D version
 	browserTextContainer.add(  writeText("Projects",
 	  framePlaneMesh.position.clone().add(new THREE.Vector3(0, 500,-150)),
@@ -1026,6 +1093,9 @@ function showArrowFromOriginTo(endPoint){
  	 return writeText(text, phrasePosition,  phraseRotation, frontColor,fontSize, fontHeight);
  }   
 
+/*
+ * Returns a Mesh with a single line of text
+ */
 function writeText(text, textPosition,  textRotation, frontColor,fontSize, fontHeight){
     	
 	if ( frontColor === undefined ) {
@@ -1034,8 +1104,8 @@ function writeText(text, textPosition,  textRotation, frontColor,fontSize, fontH
 	
 
         // add 3D text
-    var materialFront = new THREE.MeshBasicMaterial( { color: frontColor } );
-    var materialSide = new THREE.MeshBasicMaterial( { color: 0xc242e3 } );
+    var materialFront = new THREE.MeshBasicMaterial( { color: frontColor,side : THREE.FrontSide} );
+    var materialSide = new THREE.MeshBasicMaterial( { color: 0xffffff,side : THREE.FrontSide } );
     var materialArray = [ materialFront, materialSide ];
     var textGeom = new THREE.TextGeometry( text, 
     {
@@ -1049,6 +1119,7 @@ function writeText(text, textPosition,  textRotation, frontColor,fontSize, fontH
     
     var textMaterial = new THREE.MeshFaceMaterial(materialArray);
     var textMesh = new THREE.Mesh(textGeom, textMaterial );
+    textMaterial.side = THREE.FrontSide;
     textMaterial.opacity = 0.1;
     textGeom.computeBoundingBox();
     var textWidth = textGeom.boundingBox.max.x - textGeom.boundingBox.min.x;
@@ -1057,7 +1128,7 @@ function writeText(text, textPosition,  textRotation, frontColor,fontSize, fontH
     textMesh.rotation.x = textRotation.x;
     textMesh.rotation.y = textRotation.y;
     textMesh.rotation.z = textRotation.z;
-    
+    textMesh.doubleSided = false;
     //scene.add(textMesh);
     // done adding Text
     return textMesh;
@@ -1190,7 +1261,7 @@ var points = [];
 				if (tube) scene.remove(tube);
 				tube = new THREE.Mesh(tubeGeometry, mat);
                // scene.add(tube);
-           			scene.add(addSphere(5, 32, 16,pos.x,pos.y,pos.z, true));
+           		//	scene.add(addSphere(5, 32, 16,pos.x,pos.y,pos.z, true));
 
 			}
 			else
