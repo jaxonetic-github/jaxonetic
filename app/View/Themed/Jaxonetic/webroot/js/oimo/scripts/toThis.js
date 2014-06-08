@@ -12,6 +12,47 @@
  * 
  */
 jQuery(function($) {
+	
+// assign global variables to HTML elements
+var video = document.getElementById( 'monitor' );
+var videoTexture;
+var videoCanvas = document.getElementById( 'videoCanvas' );
+var videoContext = videoCanvas.getContext( '2d' );
+
+var layer2Canvas = document.getElementById( 'layer2' );
+var layer2Context = layer2Canvas.getContext( '2d' );
+
+var blendCanvas  = document.getElementById( "blendCanvas" );
+var blendContext = blendCanvas.getContext('2d');
+
+var messageArea = document.getElementById( "messageArea" );
+
+// these changes are permanent
+videoContext.translate(320, 0);
+videoContext.scale(-1, 1);
+		
+// background color if no video present
+videoContext.fillStyle = '#005337';
+videoContext.fillRect( 0, 0, videoCanvas.width, videoCanvas.height );				
+
+var buttons = [];
+
+var button1 = new Image();
+button1.src ="/jaxonetic/theme/jaxonetic/img/textures/SquareRed.png";
+var buttonData1 = { name:"red", image:button1, x:320 - 96 - 30, y:10, w:32, h:32 };
+buttons.push( buttonData1 );
+
+var button2 = new Image();
+button2.src ="/jaxonetic/theme/jaxonetic/img/textures/SquareGreen.png";
+var buttonData2 = { name:"green", image:button2, x:320 - 64 - 20, y:10, w:32, h:32 };
+buttons.push( buttonData2 );
+
+var button3 = new Image();
+button3.src ="/jaxonetic/theme/jaxonetic/img/textures/SquareBlue.png";
+var buttonData3 = { name:"blue", image:button3, x:320 - 32 - 10, y:10, w:32, h:32 };
+buttons.push( buttonData3 );
+//////webcam
+//////////////////////
 // MAIN
 	var SCREEN_WIDTH,	 SCREEN_HEIGHT ;
     var ORIGIN_POSITION = new THREE.Vector3(0,0,0);
@@ -136,9 +177,7 @@ function init()
 	brickSceneContainer = new THREE.Object3D();
 	browsingSceneContainer = new THREE.Object3D();
 	graphingSceneContainer = new THREE.Object3D();
-	console.log(browsingSceneCenter);
-console.log(cameraFocusOnBrowsingScenePosition);
-console.log(cameraFocusOnBrowsingAndWebcamScenesPosition);
+
 	cameraTunnelGroup = new THREE.Object3D();
 	
 	// CAMERA
@@ -154,8 +193,8 @@ console.log(cameraFocusOnBrowsingAndWebcamScenesPosition);
 	
 	initRenderers();
  	controls = new THREE.OrbitControls( camera, renderer.domElement );
-controls.center = SCENE_CONTAINER_INITIAL_POSITION;
-controls.maxDistance =10000;
+	controls.center = SCENE_CONTAINER_INITIAL_POSITION;
+	controls.maxDistance =10000;
 	
 	browsingSceneContainer =createInternetBrowsingScene();
 	var webcamSceneContainer = createWebcamScene();
@@ -168,13 +207,26 @@ controls.maxDistance =10000;
 	scene.add(webcamSceneContainer);
    // scene.add(brickSceneContainer);
     
-    camera.position.set(0, 2000, 3000);
+    camera.position.set(0, INITIAL_CAMERA_YPOS, 3000);
 
+	var bridgeTexts = [ "grinning from ear to ear!!","Neo4J yet. My inner geek is", "haven't even added Meteor and ","This is so cool to me and I " ];
+	var bridgeTextsTextPosition = new THREE.Vector3(cameraFocusOnBrowsingAndWebcamScenesCenter.x,cameraFocusOnBrowsingAndWebcamScenesCenter.y,cameraFocusOnBrowsingAndWebcamScenesCenter.z);
+	var bridgeTextsFace = createTextContainer(bridgeTexts,bridgeTextsTextPosition,	xyPlaneToZpos,DESCENDING_TEXT_VERTICAL);
+	 
+	 var helper = new THREE.BoundingBoxHelper(bridgeTextsFace.clone(), 0xff0000);
+	helper.update();
+// If you want a visible bounding box
+	//textContainer.add(helper);
+			
+
+	 bridgeTextsFace.position.x-=(helper.box.max.x - helper.box.min.x)/2;
+	 scene.add(bridgeTextsFace)
  	var axes = new THREE.AxisHelper(5000);   
       axes.position = ORIGIN_POSITION;
      scene.add(axes);
       
-      
+   
+
       
 	drawTunnel();
     scene.add( cameraTunnelGroup );
@@ -614,17 +666,68 @@ graphingTextContainer = new THREE.Object3D();
  	//   -- returns a THREE.Object3D representation of browsing section
  	///////
  function createWebcamScene(){
- 	var d = 380;  //an  offset which adjusts the distance between iFrames
- 	//browsingSceneCenter = SCENE_CONTAINER_INITIAL_POSITION.clone();
- 	
 
 	var webcamScene = new THREE.Object3D();
+	webcamScene.position = webcamSceneCenter;
 	var webcamPlatformGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE, DFLT_CUBE_SIZE*2 );
 	var webcamPlatformPosition = new THREE.Vector3( 0, -DFLT_CUBE_SIZE*1.7, 0 );
+	
+	
+	
+		var bridgeXDistance =Math.abs (browsingSceneCenter.x - webcamSceneCenter.x);
+/*	var browsingBridgeGeometry = new THREE.Vector3(bridgeXDistance-DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE, DFLT_CUBE_SIZE*2 );
+	var browsingBridgePosition = new THREE.Vector3( 0, -DFLT_CUBE_SIZE*3, 0 );
+	var bridgePlatform = createBrickSky( browsingBridgeGeometry,browsingBridgePosition);	
+	
+	webcamScene.add(bridgePlatform);
+*/	
 	
 	var webcamPlatform = createBrickSky( webcamPlatformGeometry,webcamPlatformPosition);
 	
 	webcamScene.add(webcamPlatform);
+	
+	var homecenterAxis = new THREE.AxisHelper(DFLT_CUBE_SIZE);
+	homecenterAxis.name = "homescene.axis";
+	homecenterAxis.position = cameraFocusOnBrowsingAndWebcamScenesCenter;
+    scene.add(homecenterAxis);
+	
+/*	
+	var homeBridgeGeometry = new THREE.Vector3(bridgeXDistance-DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE*2 );
+	var homeBridgePosition = new THREE.Vector3( cameraFocusOnBrowsingAndWebcamScenesCenter.x, -DFLT_CUBE_SIZE*6, cameraFocusOnBrowsingAndWebcamScenesCenter.z );
+	var homeBridgePlatform = createBrickSky( homeBridgeGeometry,homeBridgePosition);	
+	
+	scene.add(homeBridgePlatform);
+	*/
+	   ////////////
+	// camcube //
+	////////////
+	this.colorRed = THREE.ImageUtils.loadTexture( "/jaxonetic/theme/jaxonetic/img/textures/SquareRed.png" );
+	this.colorGreen = THREE.ImageUtils.loadTexture( "/jaxonetic/theme/jaxonetic/img/textures/SquareGreen.png" );
+	this.colorBlue = THREE.ImageUtils.loadTexture( "/jaxonetic/theme/jaxonetic/img/textures/SquareBlue.png" );
+	var cubeGeometry = new THREE.CubeGeometry( 250, 250, 250 );
+	this.cubeMaterial = new THREE.MeshLambertMaterial( { color: 0xffffff, map: colorRed, emissive: 0x333333 } );
+	webcamCube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+	//webcamCube.position.set(5000,0,0);
+	//cube.rotation.set(Math.PI / 4, 0, 0);
+	
+	webcamScene.add(webcamCube);
+	console.log(webcamCube.position);
+	
+	
+	videoTexture = new THREE.Texture( videoCanvas );
+	videoTexture.minFilter = THREE.LinearFilter;
+	videoTexture.magFilter = THREE.LinearFilter;
+	
+	var movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
+	// the geometry on which the movie will be displayed;
+	// 		movie image will be scaled to fit these dimensions.
+	var movieGeometry = new THREE.PlaneGeometry( 400, 400, 1, 1 );
+	var movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
+	movieScreen.position.set(0,50,0);
+	webcamScene.add(movieScreen);
+	
+	
+	
 	
 	
 	
@@ -632,7 +735,7 @@ graphingTextContainer = new THREE.Object3D();
 	axis.name = "webcamscene.axis";
     webcamScene.add(axis);
    
-   webcamScene.position = webcamSceneCenter;
+   
 
     return webcamScene;
 }
@@ -661,17 +764,18 @@ graphingTextContainer = new THREE.Object3D();
 			}));
 	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
 	*/
-	var browsingBridgeGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*5, DFLT_CUBE_SIZE, DFLT_CUBE_SIZE*2 );
-	var browsingBridgePosition = new THREE.Vector3( DFLT_CUBE_SIZE*4.5, -DFLT_CUBE_SIZE*3, 0 );
+	var bridgeXDistance =Math.abs (browsingSceneCenter.x - webcamSceneCenter.x);
+//	var browsingBridgeGeometry = new THREE.Vector3(bridgeXDistance-DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE, DFLT_CUBE_SIZE*2 );
+//	var browsingBridgePosition = new THREE.Vector3( 0, -DFLT_CUBE_SIZE*3, 0 );
 	var browsingPlatformGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE, DFLT_CUBE_SIZE*2 );
 	var browsingPlatformPosition = new THREE.Vector3( 0, -DFLT_CUBE_SIZE*1.7, 0 );
 
 	
-	var bridgePlatform = createBrickSky( browsingBridgeGeometry,browsingBridgePosition);
+//	var bridgePlatform = createBrickSky( browsingBridgeGeometry,browsingBridgePosition);
 	var browsingPlatform = createBrickSky( browsingPlatformGeometry,browsingPlatformPosition);
 	
 	
-	browsingScene.add(bridgePlatform);
+//	browsingScene.add(bridgePlatform);
 	browsingScene.add(browsingPlatform);
 	
 	welcomeTextContainer = new THREE.Object3D();
@@ -905,6 +1009,9 @@ function update()
 	if(controls){ 
 		controls.update();
 	}
+	//webcam
+	blend();	
+	checkAreas();
 }
         
 function render() 
@@ -927,12 +1034,111 @@ function render()
 			//mesh.rotation.x	+= Math.PI/2;
 			//if(brickSceneContainer) {brickSceneContainer.rotation.y+=.542; console.log(brickSceneContainer.rotation.y);}
 			//cameraTunnelGroup.position = camera.position;;
+			
+			if ( video.readyState === video.HAVE_ENOUGH_DATA ) 
+			{
+				// mirror video
+				videoContext.drawImage( video, 0, 0, videoCanvas.width, videoCanvas.height );
+				
+				//overlay buttons
+				for ( var i = 0; i < buttons.length; i++ ){
+					layer2Context.drawImage( buttons[i].image, buttons[i].x, buttons[i].y, buttons[i].w, buttons[i].h );
+				}		
+				
+				if ( videoTexture ) {
+					videoTexture.needsUpdate = true;
+				}
+			}
+			
+	
 			if(rotatingCube) rotatingCube.rotation.y+=(.05)*Math.PI/180;
 	 rendererCSS.render( browsingCssScene, camera );
 	renderer.render( scene, camera );	
 
 }
+/////////////////
+///Webcam
+/////////////////
+var lastImageData;
 
+function blend() 
+{
+	var width  = videoCanvas.width;
+	var height = videoCanvas.height;
+	// get current webcam image data
+	var sourceData = videoContext.getImageData(0, 0, width, height);
+	// create an image if the previous image doesn�t exist
+	if (!lastImageData) lastImageData = videoContext.getImageData(0, 0, width, height);
+	// create a ImageData instance to receive the blended result
+	var blendedData = videoContext.createImageData(width, height);
+	// blend the 2 images
+	differenceAccuracy(blendedData.data, sourceData.data, lastImageData.data);
+	// draw the result in a canvas
+	blendContext.putImageData(blendedData, 0, 0);
+	// store the current webcam image
+	lastImageData = sourceData;
+}
+function differenceAccuracy(target, data1, data2) 
+{
+	if (data1.length != data2.length) return null;
+	var i = 0;
+	while (i < (data1.length * 0.25)) 
+	{
+		var average1 = (data1[4*i] + data1[4*i+1] + data1[4*i+2]) / 3;
+		var average2 = (data2[4*i] + data2[4*i+1] + data2[4*i+2]) / 3;
+		var diff = threshold(fastAbs(average1 - average2));
+		target[4*i]   = diff;
+		target[4*i+1] = diff;
+		target[4*i+2] = diff;
+		target[4*i+3] = 0xFF;
+		++i;
+	}
+}
+function fastAbs(value) 
+{
+	return (value ^ (value >> 31)) - (value >> 31);
+}
+function threshold(value) 
+{
+	return (value > 0x15) ? 0xFF : 0;
+}
+
+// check if white region from blend overlaps area of interest (e.g. triggers)
+function checkAreas() 
+{
+	for (var b = 0; b < buttons.length; b++)
+	{
+		// get the pixels in a note area from the blended image
+		var blendedData = blendContext.getImageData( buttons[b].x, buttons[b].y, buttons[b].w, buttons[b].h );
+			
+		// calculate the average lightness of the blended data
+		var i = 0;
+		var sum = 0;
+		var countPixels = blendedData.data.length * 0.25;
+		while (i < countPixels) 
+		{
+			sum += (blendedData.data[i*4] + blendedData.data[i*4+1] + blendedData.data[i*4+2]);
+			++i;
+		}
+		// calculate an average between of the color values of the note area [0-255]
+		var average = Math.round(sum / (3 * countPixels));
+		if (average > 50) // more than 20% movement detected
+		{
+			console.log( "Button " + buttons[b].name + " triggered." ); // do stuff
+			if (buttons[b].name == "red")
+				cubeMaterial.map = colorRed;
+			if (buttons[b].name == "green")
+				cubeMaterial.map = colorGreen;
+			if (buttons[b].name == "blue")
+				cubeMaterial.map = colorBlue;
+			// messageArea.innerHTML = "Button " + buttons[b].name + " triggered.";
+			messageArea.innerHTML = "<font size='+4' color=" + buttons[b].name + "><b>Button " + buttons[b].name + " triggered.</b></font>";
+		}
+	}
+}
+/////
+// end webcam
+/////
 
 /////////////////////////////// Add Assets (i.e. sphere, htmlpage)
 

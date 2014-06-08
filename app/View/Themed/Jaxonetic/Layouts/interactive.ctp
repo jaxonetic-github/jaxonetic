@@ -59,13 +59,13 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
            
     </div>
 
-        <div id="wrapper"> 
+
             <div id="flashMessages" class="container">
                 <?php echo $this->Session->flash(); ?></p>
               </div>
             <?php echo $this->fetch('content'); ?>  
             
-        </div><!--wrapper--> 
+ 
        
        
 <?php           

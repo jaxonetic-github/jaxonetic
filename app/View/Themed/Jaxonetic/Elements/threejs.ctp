@@ -1,4 +1,50 @@
 
+<video id="monitor" autoplay style="display: none; width: 320px; height: 240px;"></video>
+
+<div id="canvasLayers"  width="320" height="240"  style="position: relative; left: 0px; top: 0px;">
+<canvas id="videoCanvas" width="320" height="240" style="z-index: 1; position: absolute; left:0px; top:0px;"></canvas>
+<canvas id="layer2"     width="320" height="240" style="z-index: 2; position: absolute; left:0px; top:0px; opacity:0.5;"></canvas>
+</div>
+<canvas id="blendCanvas" style="display: none; position: relative; left: 320px; top: 240px; width: 320px; height: 240px;"></canvas>
+<div id="messageError"></div>
+<div id="messageArea" style="position: relative; left: 0px; top: 270px;">Messages will be displayed here.</div>
+
+<script>
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+window.URL = window.URL || window.webkitURL;
+
+var camvideo = document.getElementById('monitor');
+
+    if (!navigator.getUserMedia) 
+    {
+        document.getElementById('messageError').innerHTML = 
+            'Sorry. <code>navigator.getUserMedia()</code> is not available.';
+    }
+    navigator.getUserMedia({video: true}, gotStream, noStream);
+
+function gotStream(stream) 
+{
+    if (window.URL) 
+    {   camvideo.src = window.URL.createObjectURL(stream);   } 
+    else // Opera
+    {   camvideo.src = stream;   }
+
+    camvideo.onerror = function(e) 
+    {   stream.stop();   };
+
+    stream.onended = noStream;
+}
+
+function noStream(e) 
+{
+    var msg = 'No camera available.';
+    if (e.code == 1) 
+    {   msg = 'User denied access to use camera.';   }
+    document.getElementById('errorMessage').textContent = msg;
+}
+</script>
+
+
 <!--<div id="home">
     <div class="">
         My Site.
@@ -100,8 +146,8 @@ void main()
     <?php
 
      echo $this->Html->script('bootstrap.min', array('block' => 'scriptBottom'));
-                  //   echo $this->Html->script('oimo/three');
-                   echo $this->Html->script('threejs/three.min');
+                     echo $this->Html->script('threejs/RequestAnimationFrame.js');
+                   echo $this->Html->script('oimo/three');
                    echo $this->Html->script('fonts/helvetiker_regular.typeface');
          echo $this->Html->script('fonts/helvetiker_bold.typeface');
                 echo $this->Html->script('oimo/Detector', array('block' => 'scriptBottom'));
@@ -122,8 +168,8 @@ echo $this->Html->script('threejs/controls/TrackballControls', array('block' => 
                   echo $this->Html->script('tween.min', array('block' => 'scriptBottom'));
                 echo $this->Html->script('parser', array('block' => 'scriptBottom'));
 //            echo $this->Html->script('../obj/Bird', array('block' => 'scriptBottom'));
-  //           echo $this->Html->script('../obj/Cloth', array('block' => 'scriptBottom'));
-             echo $this->Html->script('oimo/scripts/threeDPage', array('block' => 'scriptBottom'));
+             echo $this->Html->script('obj/Cloth', array('block' => 'scriptBottom'));
+             echo $this->Html->script('oimo/scripts/toThis', array('block' => 'scriptBottom'));
             
              
 
