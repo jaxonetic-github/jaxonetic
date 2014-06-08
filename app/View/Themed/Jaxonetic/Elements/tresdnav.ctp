@@ -11,10 +11,10 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>Menu</a>
-          <ul class="dropdown-menu jax-threed-menu">
-            <li><button type="button" id="home-threed-menuitem"   class="menu-toggle" >Home Scene</button></li>
-            <li><button type="button" id="html-browsing-menuitem" class="menu-toggle" >Browsing Scene</button></li>
-            <li><button type="button" id="graphing-menuitem" class="menu-toggle" >Graphing Scene</button></li>
+          <ul class="dropdown-menu jax-iiid-menu">
+            <li><button type="button" id="home-iiid-menuitem"   class="menu-toggle" >Center All Scenes</button></li>
+            <li><button type="button" id="browsing-iiid-menuitem" class="menu-toggle" >Browsing Scene</button></li>
+            <li><button type="button" id="webcam-iiid-menuitem" class="menu-toggle" >Webcam Scene</button></li>
           </ul>
         </li>
       </ul>

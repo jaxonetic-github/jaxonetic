@@ -58,12 +58,25 @@ var areBirdsActive;
 var cube;
 var DFLT_CUBE_SIZE = 800;
 var DFLT_PAGE_HEIGHT =700;
-
+var INITIAL_CAMERA_YPOS = 2000;
+var INITIAL_CAMERA_ZPOS = 1800;
 // Scene containers info
 var brickSceneContainer;
 var graphingSceneContainer, browsingSceneContainer; 
 var graphingSceneSky, browsingSceneSky;
 var graphOriginPosition;
+
+var browsingSceneCenter = (new THREE.Vector3(0,0,ORIGIN_POSITION.z)).add(SCENE_CONTAINER_INITIAL_POSITION);
+var webcamSceneCenter = (new THREE.Vector3(DFLT_CUBE_SIZE*8.5,0,ORIGIN_POSITION.z)).add(SCENE_CONTAINER_INITIAL_POSITION);
+var cameraFocusOnBrowsingAndWebcamScenesCenter = new THREE.Vector3((webcamSceneCenter.x+browsingSceneCenter.x)/2,0,1000);
+
+var cameraFocusOnBrowsingScenePosition = (new THREE.Vector3(0,INITIAL_CAMERA_YPOS,INITIAL_CAMERA_ZPOS)).add(browsingSceneCenter);
+var cameraFocusOnWebcamScenePosition = (new THREE.Vector3(0,INITIAL_CAMERA_YPOS,INITIAL_CAMERA_ZPOS)).add(webcamSceneCenter);
+
+var cameraFocusOnBrowsingAndWebcamScenesPosition = 
+new THREE.Vector3(cameraFocusOnBrowsingAndWebcamScenesCenter.x,INITIAL_CAMERA_YPOS,
+			(cameraFocusOnWebcamScenePosition.z+cameraFocusOnBrowsingScenePosition.z+webcamSceneCenter.z+browsingSceneCenter.z));
+
 
 //SCENE CONTAINER POSITIONS
 	// Cube as a matrix
@@ -123,7 +136,9 @@ function init()
 	brickSceneContainer = new THREE.Object3D();
 	browsingSceneContainer = new THREE.Object3D();
 	graphingSceneContainer = new THREE.Object3D();
-	
+	console.log(browsingSceneCenter);
+console.log(cameraFocusOnBrowsingScenePosition);
+console.log(cameraFocusOnBrowsingAndWebcamScenesPosition);
 	cameraTunnelGroup = new THREE.Object3D();
 	
 	// CAMERA
@@ -140,28 +155,30 @@ function init()
 	initRenderers();
  	controls = new THREE.OrbitControls( camera, renderer.domElement );
 controls.center = SCENE_CONTAINER_INITIAL_POSITION;
-controls.maxDistance =4000;
+controls.maxDistance =10000;
 	
-	browsingSceneContainer =createInternetBrowsingScene(true);
+	browsingSceneContainer =createInternetBrowsingScene();
+	var webcamSceneContainer = createWebcamScene();
 	//brickSceneContainer = createBrickScene();
     sceneTargetList.push(browsingSceneContainer);
   //  sceneTargetList.push(brickSceneContainer);
 	//browsingSceneContainer.add(camera);
     //graphingSceneContainer.add(camera);
     scene.add(browsingSceneContainer);
-	//scene.add(createBrickSky() );
+	scene.add(webcamSceneContainer);
    // scene.add(brickSceneContainer);
     
-    camera.position.set(0, -100, 107);
+    camera.position.set(0, 2000, 3000);
 
  	var axes = new THREE.AxisHelper(5000);   
       axes.position = ORIGIN_POSITION;
-   //  scene.add(axes);
+     scene.add(axes);
+      
+      
       
 	drawTunnel();
     scene.add( cameraTunnelGroup );
     scene.add(camera);
-	//scene.add(createBrickSky);
 				
     	cameraTunnelGroup.traverse(hideChildren);
     	scene.updateMatrixWorld(true);
@@ -254,17 +271,16 @@ function cameraMoveToTween(camPosition, targetObject){
 	
 }
 
-function cameraResetTween(){
+
+function cameraFocusOnBrowsingAndWebcamSceneTween(){
 	
-
-
     var cameraPosition = { x : camera.position.x, y:camera.position.y, z:camera.position.z, rx:camera.rotation.x, ry:camera.rotation.y,rz:camera.rotation.z};
-    var cameraTargetPosition = { x : SCENE_CONTAINER_INITIAL_POSITION.x, y:SCENE_CONTAINER_INITIAL_POSITION.y-100, z:(SCENE_CONTAINER_INITIAL_POSITION.z+1800) , rx:0, ry:0,rz:0};
+    var cameraTargetPosition = { x : cameraFocusOnBrowsingAndWebcamScenesPosition.x, y:cameraFocusOnBrowsingAndWebcamScenesPosition.y, z:cameraFocusOnBrowsingAndWebcamScenesPosition.z , rx:0, ry:0,rz:0};
   		console.log(cameraPosition);
 			console.log(cameraTargetPosition); 
    
-    var resetTween	= new TWEEN.Tween(cameraPosition);
-		resetTween.to(cameraTargetPosition, 5000)
+    var viewBrowsingAndWebcamSceneTween	= new TWEEN.Tween(cameraPosition);
+		viewBrowsingAndWebcamSceneTween.to(cameraTargetPosition, 5000)
 		.delay(1000)
 		.easing(TWEEN.Easing.Linear.None)
 		.onUpdate(function(){
@@ -273,14 +289,68 @@ function cameraResetTween(){
 		camera.position.y = cameraPosition.y;
 		camera.position.z = cameraPosition.z;
 	
-        camera.lookAt(ORIGIN_POSITION);
+        camera.lookAt(cameraFocusOnBrowsingAndWebcamScenesCenter);
 	}).onComplete(function(){
-		controls.center = SCENE_CONTAINER_INITIAL_POSITION;
+		controls.center = cameraFocusOnBrowsingAndWebcamScenesCenter;
 		console.log("camera moved to...");
 		console.log(camera.position);
 	});
 	
-	resetTween.start();
+	viewBrowsingAndWebcamSceneTween.start();
+	
+}
+function cameraFocusOnWebcamSceneTween(){
+	
+    var cameraPosition = { x : camera.position.x, y:camera.position.y, z:camera.position.z, rx:camera.rotation.x, ry:camera.rotation.y,rz:camera.rotation.z};
+    var cameraTargetPosition = { x : cameraFocusOnWebcamScenePosition.x, y:cameraFocusOnWebcamScenePosition.y, z:cameraFocusOnWebcamScenePosition.z , rx:0, ry:0,rz:0};
+  		console.log(cameraPosition);
+			console.log(cameraTargetPosition); 
+   
+    var toWebcamSceneTween	= new TWEEN.Tween(cameraPosition);
+		toWebcamSceneTween.to(cameraTargetPosition, 5000)
+		.delay(1000)
+		.easing(TWEEN.Easing.Linear.None)
+		.onUpdate(function(){
+	
+		camera.position.x = cameraPosition.x;
+		camera.position.y = cameraPosition.y;
+		camera.position.z = cameraPosition.z;
+	
+        camera.lookAt(webcamSceneCenter);
+	}).onComplete(function(){
+		controls.center = webcamSceneCenter;
+		console.log("camera moved to...");
+		console.log(camera.position);
+	});
+	
+	toWebcamSceneTween.start();
+	
+}
+function cameraFocusOnBrowsingSceneTween(){
+	
+    var cameraPosition = { x : camera.position.x, y:camera.position.y, z:camera.position.z, rx:camera.rotation.x, ry:camera.rotation.y,rz:camera.rotation.z};
+    var cameraTargetPosition = { x : cameraFocusOnBrowsingScenePosition.x, y:cameraFocusOnBrowsingScenePosition.y, z:cameraFocusOnBrowsingScenePosition.z , rx:0, ry:0,rz:0};
+  		console.log(cameraPosition);
+			console.log(cameraTargetPosition); 
+   
+    var toBrowsingSceneTween	= new TWEEN.Tween(cameraPosition);
+		toBrowsingSceneTween.to(cameraTargetPosition, 5000)
+		.delay(500)
+		.easing(TWEEN.Easing.Linear.None)
+		.onUpdate(function(){
+	
+		camera.position.x = cameraPosition.x;
+		camera.position.y = cameraPosition.y;
+		camera.position.z = cameraPosition.z;
+	
+        camera.lookAt(browsingSceneCenter);
+	}).onComplete(function(){
+		controls.center = browsingSceneCenter;
+		console.log("camera moved to...");
+		console.log(camera.position);
+	});
+	
+	toBrowsingSceneTween.start();
 	
 }
 
@@ -364,34 +434,23 @@ function fadeObjectTween(material, targetOpacity){
 function showWelcomeTween(){
 	var welcomTextPlanePosition = { x : welcomeTextContainer.position.x, y:welcomeTextContainer.position.y+1000, z:welcomeTextContainer.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0};
     var welcomTextTargetPosition = { x :-500, y:20, z:1300, rx:0, ry:Math.PI/8,rz:0,browsingSceneContainerRotY:Math.PI / 1000  };
-     	var planePosition = { x : planeMesh.position.x, y:planeMesh.position.y, z:planeMesh.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0, cameraZ:camera.position.z  };
-    var planeTargetPosition = { x : 0, y:0, z:SCENE_CONTAINER_INITIAL_POSITION.z, rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4,cameraZ:(SCENE_CONTAINER_INITIAL_POSITION.z+2800)  };
-   
+     	var planePosition = { x : planeMesh.position.x, y:planeMesh.position.y, z:planeMesh.position.z, rx:0, ry:0,rz:0, browsingSceneContainerRotY:0 };
+    var planeTargetPosition = { x : 0, y:0, z:SCENE_CONTAINER_INITIAL_POSITION.z, rx:0, ry:-Math.PI/4,rz:0,browsingSceneContainerRotY:Math.PI / 4  };
 
-    console.log("showWelcomeTween");
-      console.log(planePosition);  
-    console.log(welcomTextPlanePosition);
-     console.log(welcomTextTargetPosition);
-
-	
 var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 		pushObjectOutTween.to(planeTargetPosition, 5000)
 		.delay(1000)
 		.easing(TWEEN.Easing.Cubic.InOut)
 		.onUpdate(function(){
-		//console.log(welcomTextPlanePosition);
-		//	console.log(welcomTextPlanePosition.z);
-		planeMesh.position.x = planePosition.x;
-		planeMesh.position.y = planePosition.y;
-		planeMesh.position.z = planePosition.z;
-		//planeMesh.rotation.ry = planePosition.ry;
-		//planeMesh.position.rz = planePosition.rz;
-		//browsingSceneContainer.rotation.y = planePosition.browsingSceneContainerRotY;
-		camera.position.z = planePosition.cameraZ;
+
+			planeMesh.position.x = planePosition.x;
+			planeMesh.position.y = planePosition.y;
+			planeMesh.position.z = planePosition.z;
 
 	}).onComplete(function(){
 		console.log("planeMesh moved to...");
 		console.log(planeMesh.position);
+	
 	});
 	
 	var welcomeTween	= new TWEEN.Tween(welcomTextPlanePosition);
@@ -455,22 +514,23 @@ var pushObjectOutTween	= new TWEEN.Tween(planePosition);
 	//////////////
 //----------- Brick Scene Functions	
 ///////////////
- function createBrickSky(){
+ function createBrickSky(geometry, position){
+ 	
  	var brickSceneCenter = SCENE_CONTAINER_INITIAL_POSITION.clone;
  	
-	var skyGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*3, DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE*2.2 );
- 	var skyPosition = SCENE_CONTAINER_INITIAL_POSITION;
+	var skyGeometry = geometry || new THREE.Vector3(DFLT_CUBE_SIZE*3, DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE*2.2 );
+ 	var skyPosition = position || SCENE_CONTAINER_INITIAL_POSITION;
 	skyPosition.y-=140;
  		var materialArray = [];
 	for (var i = 0; i < 6; i++){
 			materialArray.push( new THREE.MeshBasicMaterial({
 				map: THREE.ImageUtils.loadTexture( brickImage ),
-				side: THREE.BackSide
+				side: THREE.FrontSide
 			}));
 			}
 	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
 
-	var brickSceneSky = createSkyBox(brickImage, skyGeometry, skyPosition,skyMaterial );
+	var brickSceneSky = createSkyBox( skyGeometry, skyPosition,skyMaterial );
 	
 scene.add(brickSceneSky);
     return brickSceneSky;
@@ -502,7 +562,7 @@ scene.add(brickSceneSky);
 }
 	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
 
-	graphingSceneSky = createSkyBox(brickImage, skyGeometry, skyPosition,skyMaterial );
+	graphingSceneSky = createSkyBox( skyGeometry, skyPosition,skyMaterial );
 	//scene.add(graphingSceneSky);
 graphingTextContainer = new THREE.Object3D();
 	graphingTextContainer.position = new THREE.Vector3(-900, 200, -2000 );
@@ -549,14 +609,40 @@ graphingTextContainer = new THREE.Object3D();
 	
 
 //-----------End Graphing Functions
+///////
+ 	//Webcam Scene
+ 	//   -- returns a THREE.Object3D representation of browsing section
+ 	///////
+ function createWebcamScene(){
+ 	var d = 380;  //an  offset which adjusts the distance between iFrames
+ 	//browsingSceneCenter = SCENE_CONTAINER_INITIAL_POSITION.clone();
+ 	
 
+	var webcamScene = new THREE.Object3D();
+	var webcamPlatformGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE, DFLT_CUBE_SIZE*2 );
+	var webcamPlatformPosition = new THREE.Vector3( 0, -DFLT_CUBE_SIZE*1.7, 0 );
+	
+	var webcamPlatform = createBrickSky( webcamPlatformGeometry,webcamPlatformPosition);
+	
+	webcamScene.add(webcamPlatform);
+	
+	
+	
+	var axis = new THREE.AxisHelper(DFLT_CUBE_SIZE);
+	axis.name = "webcamscene.axis";
+    webcamScene.add(axis);
+   
+   webcamScene.position = webcamSceneCenter;
+
+    return webcamScene;
+}
 	///////
  	//Internet Browsing Scene
  	//   -- returns a THREE.Object3D representation of browsing section
  	///////
  function createInternetBrowsingScene(setupControlLimits){
  	var d = 380;  //an  offset which adjusts the distance between iFrames
- 	browsingSceneCenter = SCENE_CONTAINER_INITIAL_POSITION.clone();
+ 	//browsingSceneCenter = SCENE_CONTAINER_INITIAL_POSITION.clone();
  	
 
 	browsingScene = new THREE.Object3D();
@@ -564,10 +650,9 @@ graphingTextContainer = new THREE.Object3D();
  	browserCubePos = [ [ browsingSceneCenter.x-d, browsingSceneCenter.y, browsingSceneCenter.z ], [ browsingSceneCenter.x+d, browsingSceneCenter.y, browsingSceneCenter.z ], [ browsingSceneCenter.x, browsingSceneCenter.y+d, browsingSceneCenter.z ], [ browsingSceneCenter.x, browsingSceneCenter.y-d, browsingSceneCenter.z ], [ browsingSceneCenter.x, 0, d+browsingSceneCenter.z ], [ browsingSceneCenter.x, 0, browsingSceneCenter.z-d  ] ];
 
 
-	console.log(browserCubePos);     
-
-	var skyGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1, DFLT_CUBE_SIZE*2.1 );
-		 
+	
+	
+	/**	 
 	var materialArray = [];
 	for (var i = 0; i < 6; i++)
 			materialArray.push( new THREE.MeshBasicMaterial({
@@ -575,9 +660,20 @@ graphingTextContainer = new THREE.Object3D();
 				side: THREE.DoubleSide
 			}));
 	var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
-	var skyPosition = new THREE.Vector3( browsingSceneCenter.x, 0, browsingSceneCenter.z );
-	browsingSceneSky = createSkyBox(brickImage, skyGeometry,skyPosition,skyMaterial);
-	//browsingScene.add(browsingSceneSky);
+	*/
+	var browsingBridgeGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*5, DFLT_CUBE_SIZE, DFLT_CUBE_SIZE*2 );
+	var browsingBridgePosition = new THREE.Vector3( DFLT_CUBE_SIZE*4.5, -DFLT_CUBE_SIZE*3, 0 );
+	var browsingPlatformGeometry = new THREE.Vector3(DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE, DFLT_CUBE_SIZE*2 );
+	var browsingPlatformPosition = new THREE.Vector3( 0, -DFLT_CUBE_SIZE*1.7, 0 );
+
+	
+	var bridgePlatform = createBrickSky( browsingBridgeGeometry,browsingBridgePosition);
+	var browsingPlatform = createBrickSky( browsingPlatformGeometry,browsingPlatformPosition);
+	
+	
+	browsingScene.add(bridgePlatform);
+	browsingScene.add(browsingPlatform);
+	
 	welcomeTextContainer = new THREE.Object3D();
 	scene.add(welcomeTextContainer);
 	welcomeTextContainer.position = new THREE.Vector3(-900, 200, -2000 );
@@ -679,13 +775,13 @@ graphingTextContainer = new THREE.Object3D();
 	//	browsingCssScene.add(cube);
 
 
-	/*
+	
 	var axis = new THREE.AxisHelper(DFLT_CUBE_SIZE/4);
 	axis.name = "brickscene.axis";
     browsingScene.add(axis);
-    axis.position = new THREE.Vector3(0, 0,SCENE_CONTAINER_INITIAL_POSITION.z);
-    axis.visible = false;
-    */
+  //  axis.position = browsingSceneCenter;
+   // axis.visible = false;
+    
   
 
  if(setupControlLimits)
@@ -695,10 +791,10 @@ graphingTextContainer = new THREE.Object3D();
     return browsingScene;
 }	
 	
-	/**
-	 *  takes an array of containerTexts(=["",""]) at a starting containerPosition(=new Vector3D())
-	 * and puts it on a cubeSide rotation.
-	 */
+	 //**
+	 // *  takes an array of containerTexts(=["",""]) at a starting containerPosition(=new Vector3D())
+	 //* and puts it on a cubeSide rotation.
+	 //*/
 	function createTextContainer(containerTexts,containerTextPosition,cubeSide, descendingTextType){
 	
 		var r = Math.PI / 2;
@@ -744,7 +840,9 @@ graphingTextContainer = new THREE.Object3D();
 	if(descendingTextType ===DESCENDING_TEXT_VERTICAL){
 			//	backgroundMesh.rotation.fromArray(flexibleCubeRot(r)[zxPlanetoYpos]);
 	}else
-	{
+	{	
+		backgroundMesh.position.y+=100;
+		backgroundMesh.position.z+=100;  //push mesh closer to text when on vertical slant
 		backgroundMesh.rotation.fromArray(flexibleCubeRot(r/2)[zxPlanetoYpos]);
 		}
 	//backgroundMesh.rotation.y=r;
@@ -1136,10 +1234,10 @@ function writeText(text, textPosition,  textRotation, frontColor,fontSize, fontH
 
 
 	
-	function createSkyBox(textureImage, geometry, position,skyMaterial){
+	function createSkyBox( geometry, position,skyMaterial){
 	
 		var skyGeometry = new THREE.BoxGeometry( geometry.x, geometry.y, geometry.z );	//originally THREE.CubeGeometry( 1000, 1000, -350 );
-		;
+		
 		var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
 		skyBox.position.set( position.x, position.y, position.z );
 		
@@ -1157,15 +1255,23 @@ function onDocumentMouseMove(event) {
 
     function onDocumentMouseDown(event) {
 			
-			if(event.target.id === "html-browsing-menuitem"){
-			
+			if(event.target.id === "browsing-iiid-menuitem"){
+				cameraFocusOnBrowsingSceneTween();	
 			}else
-			if(event.target.id === "home-threed-menuitem"){
+			if(event.target.id === "home-iiid-menuitem"){
 				//mask iFrames
 				//renderer.domElement.style.zIndex   = 1;
-				cameraResetTween();	
-			}else
-			if(event.target.id === "graphing-menuitem"){
+				cameraFocusOnBrowsingAndWebcamSceneTween();	
+				
+			}else 
+			if(event.target.id === "webcam-iiid-menuitem"){
+				//mask iFrames
+				//renderer.domElement.style.zIndex   = 1;
+				cameraFocusOnWebcamSceneTween();	
+				
+			}
+			else
+			if(event.target.id === "original-graphing-menuitem"){
 				//hide welcome text
 				welcomeTextContainer.traverse(hideChildren);
 				//construct and add graphing scene
@@ -1202,7 +1308,7 @@ function onDocumentMouseMove(event) {
 	console.log("xyPlaneMesh.position and boundingbox");
 	console.log(xyPlaneMesh.position);
 	console.log(xyPlaneMesh.geometry);
-	scene.add(addSphere(5, 32, 16,xyPlaneMesh.position.x,xyPlaneMesh.position.y,xyPlaneMesh.position.z, true));
+	//scene.add(addSphere(5, 32, 16,xyPlaneMesh.position.x,xyPlaneMesh.position.y,xyPlaneMesh.position.z, true));
 	camera.lookAt(graphOriginPosition);
 	  }
 
@@ -1275,7 +1381,7 @@ selectedObject = iFrameTargetInterects[ 0 ].object;
 var frameCenterPosition = new THREE.Vector3();
 console.log(iFrameTargetInterects[0].object.matrixWorld );
 frameCenterPosition.setFromMatrixPosition( iFrameTargetInterects[0].object.matrixWorld );
-   scene.add(addSphere(25, 32, 16,frameCenterPosition.x,frameCenterPosition.y,frameCenterPosition.z, true));       
+  // scene.add(addSphere(25, 32, 16,frameCenterPosition.x,frameCenterPosition.y,frameCenterPosition.z, true));       
                 //get the center of the clicked iFrame Mesh
 var centroid = frameCenterPosition.clone();
 
