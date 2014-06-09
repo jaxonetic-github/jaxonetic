@@ -14,7 +14,7 @@
           <ul class="dropdown-menu jax-iiid-menu">
             <li><button type="button" id="home-iiid-menuitem"   class="menu-toggle" >Center All Scenes</button></li>
             <li><button type="button" id="browsing-iiid-menuitem" class="menu-toggle" >Browsing Scene</button></li>
-            <li><button type="button" id="webcam-iiid-menuitem" class="menu-toggle" >Webcam Scene</button></li>
+            <li><button type="button" id="webcam-iiid-menuitem" class="menu-toggle"  >Webcam Scene</button></li>
           </ul>
         </li>
       </ul>

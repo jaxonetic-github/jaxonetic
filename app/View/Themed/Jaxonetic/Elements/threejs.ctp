@@ -7,8 +7,8 @@
 </div>
 <canvas id="blendCanvas" style="display: none; position: relative; left: 320px; top: 240px; width: 320px; height: 240px;"></canvas>
 <div id="messageError"></div>
-<div id="messageArea" style="position: relative; left: 0px; top: 270px;">Messages will be displayed here.</div>
-
+<!--<div id="messageArea" style="position: relative; left: 0px; top: 270px;">Messages will be displayed here.</div>
+-->
 <script>
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 window.URL = window.URL || window.webkitURL;

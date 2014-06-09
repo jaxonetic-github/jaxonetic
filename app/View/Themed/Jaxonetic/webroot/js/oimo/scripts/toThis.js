@@ -24,7 +24,7 @@ var layer2Context = layer2Canvas.getContext( '2d' );
 
 var blendCanvas  = document.getElementById( "blendCanvas" );
 var blendContext = blendCanvas.getContext('2d');
-
+var movieScreen;
 var messageArea = document.getElementById( "messageArea" );
 
 // these changes are permanent
@@ -103,7 +103,7 @@ var INITIAL_CAMERA_YPOS = 2000;
 var INITIAL_CAMERA_ZPOS = 1800;
 // Scene containers info
 var brickSceneContainer;
-var graphingSceneContainer, browsingSceneContainer; 
+var graphingSceneContainer, browsingSceneContainer,webcamSceneContainer; 
 var graphingSceneSky, browsingSceneSky;
 var graphOriginPosition;
 
@@ -197,7 +197,7 @@ function init()
 	controls.maxDistance =10000;
 	
 	browsingSceneContainer =createInternetBrowsingScene();
-	var webcamSceneContainer = createWebcamScene();
+	 webcamSceneContainer = createWebcamScene();
 	//brickSceneContainer = createBrickScene();
     sceneTargetList.push(browsingSceneContainer);
   //  sceneTargetList.push(brickSceneContainer);
@@ -704,14 +704,14 @@ graphingTextContainer = new THREE.Object3D();
 	this.colorRed = THREE.ImageUtils.loadTexture( "/jaxonetic/theme/jaxonetic/img/textures/SquareRed.png" );
 	this.colorGreen = THREE.ImageUtils.loadTexture( "/jaxonetic/theme/jaxonetic/img/textures/SquareGreen.png" );
 	this.colorBlue = THREE.ImageUtils.loadTexture( "/jaxonetic/theme/jaxonetic/img/textures/SquareBlue.png" );
-	var cubeGeometry = new THREE.CubeGeometry( 250, 250, 250 );
+	var cubeGeometry = new THREE.CubeGeometry( 500, 500, 500 );
 	this.cubeMaterial = new THREE.MeshLambertMaterial( { color: 0xffffff, map: colorRed, emissive: 0x333333 } );
 	webcamCube = new THREE.Mesh( cubeGeometry, cubeMaterial );
-	//webcamCube.position.set(5000,0,0);
+	webcamCube.position.y = webcamPlatformPosition.y+600;
 	//cube.rotation.set(Math.PI / 4, 0, 0);
 	
 	webcamScene.add(webcamCube);
-	console.log(webcamCube.position);
+	//console.log(webcamCube.position);
 	
 	
 	videoTexture = new THREE.Texture( videoCanvas );
@@ -721,13 +721,21 @@ graphingTextContainer = new THREE.Object3D();
 	var movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
 	// the geometry on which the movie will be displayed;
 	// 		movie image will be scaled to fit these dimensions.
-	var movieGeometry = new THREE.PlaneGeometry( 400, 400, 1, 1 );
-	var movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
+	var movieGeometry = new THREE.PlaneGeometry( DFLT_CUBE_SIZE*1.5, DFLT_CUBE_SIZE, 1, 1 );
+	movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
 	movieScreen.position.set(0,50,0);
 	webcamScene.add(movieScreen);
 	
 	
-	
+	var frontFaceTexts = [ "the cubes color", "webcam view to change ","Air tap the cube on the" ];
+	var frontFaceTextPosition = new THREE.Vector3(DFLT_CUBE_SIZE,DFLT_CUBE_SIZE,0);
+	var frontFace = createTextContainer(frontFaceTexts,frontFaceTextPosition,	xyPlaneToZpos,DESCENDING_TEXT_VERTICAL);
+
+	var frontFaceTexts = [ "come back to this later.","functionality  but I'll have to","I have many plans for this " ];
+	var frontFaceTextPosition = new THREE.Vector3(DFLT_CUBE_SIZE,0,0);
+	var frontFace = createTextContainer(frontFaceTexts,frontFaceTextPosition,	xyPlaneToZpos,DESCENDING_TEXT_VERTICAL);
+
+	webcamScene.add(frontFace);
 	
 	
 	
@@ -914,7 +922,7 @@ graphingTextContainer = new THREE.Object3D();
 		var minY = Infinity;
 		var maxY = -Infinity;
 		for( i =0; i<containerTexts.length; i++){
-			var tmpMesh = writeText(containerTexts[i],containerTextPosition.clone(),phraseRotation, 0x666006,60,20);
+			var tmpMesh = writeText(containerTexts[i],containerTextPosition.clone(),phraseRotation,0x3a2a06/* 0x666006*/,60,12);
 			//tmpMesh.rotation.fromArray(flexibleCubeRot(r/2)[zxPlanetoYpos]);
 			tmpMesh.geometry.computeBoundingBox();
 			//console.log(tmpMesh.geometry.boundingBox);
@@ -1050,7 +1058,10 @@ function render()
 				}
 			}
 			
-	
+			if(movieScreen) {
+		movieScreen.lookAt( webcamSceneContainer.worldToLocal( camera.position.clone() ));
+	//	movieScreen.lookAt(camera.position);
+	}
 			if(rotatingCube) rotatingCube.rotation.y+=(.05)*Math.PI/180;
 	 rendererCSS.render( browsingCssScene, camera );
 	renderer.render( scene, camera );	
@@ -1132,7 +1143,7 @@ function checkAreas()
 			if (buttons[b].name == "blue")
 				cubeMaterial.map = colorBlue;
 			// messageArea.innerHTML = "Button " + buttons[b].name + " triggered.";
-			messageArea.innerHTML = "<font size='+4' color=" + buttons[b].name + "><b>Button " + buttons[b].name + " triggered.</b></font>";
+			//messageArea.innerHTML = "<font size='+4' color=" + buttons[b].name + "><b>Button " + buttons[b].name + " triggered.</b></font>";
 		}
 	}
 }
