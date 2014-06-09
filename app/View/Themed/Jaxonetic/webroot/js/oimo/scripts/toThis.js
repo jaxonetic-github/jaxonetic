@@ -184,7 +184,7 @@ function init()
 	browsingSceneContainer = new THREE.Object3D();
 	graphingSceneContainer = new THREE.Object3D();
 
-	cameraTunnelGroup = new THREE.Object3D();
+	//cameraTunnelGroup = new THREE.Object3D();
 	
 	// CAMERA
 	SCREEN_WIDTH = window.innerWidth;
@@ -233,14 +233,16 @@ function init()
      scene.add(axes);
       */
    
-
+   // create a light
+	var light = new THREE.AmbientLight(0xffffff);
+	scene.add(light);
       
-	drawTunnel();
-    scene.add( cameraTunnelGroup );
+	//drawTunnel();
+    //scene.add( cameraTunnelGroup );
     scene.add(camera);
 				
-    	cameraTunnelGroup.traverse(hideChildren);
-    	scene.updateMatrixWorld(true);
+   // 	cameraTunnelGroup.traverse(hideChildren);
+    	//scene.updateMatrixWorld(true);
 		// EVENTS
 		THREEx.WindowResize(renderer, camera);
 		document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -255,43 +257,7 @@ function showChildren(obj){
 	obj.visible=true;
 }
 
-		function drawTunnel(){	
-			light1	= new THREE.DirectionalLight( 0xff8000, 1.5 );
-			light2	= new THREE.PointLight( 0x44FFAA, 15, 25 );
-			light3	= new THREE.PointLight( 0xff4400, 20, 30 );
-			
-			
-			//scene.add( light3 );
-			//cameraTunnelGroup.add(light3);
-			//scene.fog	= new THREE.FogExp2( 0x222222, 0.15 );
-
-			// here you add your objects
-			// - you will most likely replace this part by your own
-			var geometry	= new THREE.CylinderGeometry( 1, 1, 30, 32, 1, true );
-			texture		= THREE.ImageUtils.loadTexture( waterTextureImage);
-			texture.wrapT	= THREE.RepeatWrapping;
-
-			var material	= new THREE.MeshLambertMaterial({color : 0xFFFFFF, map : texture,side: THREE.BackSide});
-			tunnel	= new THREE.Mesh( geometry, material );
-			tunnel.rotation.x	= Math.PI/2;
-			//mesh.position.z+=100;
-			tunnel.flipSided	= true;
-			positionTunnel();
-
-				cameraTunnelGroup.add(tunnel);
-					cameraTunnelGroup.add(light1);
-					cameraTunnelGroup.add(light2);
-			cameraTunnelGroup.add(light3);
-		}
-
-function positionTunnel(){
-			tunnel.position.set(camera.position.x, camera.position.y, camera.position.z);
-		    light1.position.set( camera.position.x-1, camera.position.y+1, camera.position.z-7 ).normalize();
-			light2.position.set( camera.position.x, camera.position.y-3, camera.position.z-7  );
-			light3.position.set( camera.position.x+3, camera.position.x+3, camera.position.z-7  );
-}
-
-
+	
 // ## =========================
 // ## Tweens
 // ## =========================
@@ -1054,7 +1020,7 @@ function animate()
     
 	render();		
 	update();
-	positionTunnel();
+
 	TWEEN.update();
 }
 
@@ -1070,25 +1036,7 @@ function update()
         
 function render() 
 {
-			// move the texture to give the illusion of moving thru the tunnel
-			texture.offset.y	+= 0.008;
-			texture.offset.y	%= 1;
-			texture.needsUpdate	= true;
-
-			// move the camera back and forth
-			var seconds		= Date.now() / 1000;
-			var radius		= 0.70;
-			var angle		= Math.sin(0.75 * seconds * Math.PI) / 4;
-			angle	= (seconds*Math.PI)/4;
-			//camera.position.x	+= Math.cos(angle - Math.PI/2) * radius;
-			//camera.position.y	+= Math.sin(angle - Math.PI/2) * radius;
-			// camera.rotation.z	= angle;
-			//mesh.position =  camera.position;
-			//mesh.rotation =  camera.rotation;
-			//mesh.rotation.x	+= Math.PI/2;
-			//if(brickSceneContainer) {brickSceneContainer.rotation.y+=.542; console.log(brickSceneContainer.rotation.y);}
-			//cameraTunnelGroup.position = camera.position;;
-			
+		
 			if ( video.readyState === video.HAVE_ENOUGH_DATA ) 
 			{
 				// mirror video
