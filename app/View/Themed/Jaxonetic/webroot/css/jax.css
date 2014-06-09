@@ -509,3 +509,8 @@ body footer {
 .threeD-content .jax-innerpage-pane h3 {
   color: sienna;
 }
+
+/* line 250, ../sass/jax.scss */
+#canvasLayers {
+  z-index: -10;
+}

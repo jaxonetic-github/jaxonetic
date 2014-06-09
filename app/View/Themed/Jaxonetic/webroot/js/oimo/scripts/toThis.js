@@ -51,6 +51,12 @@ var button3 = new Image();
 button3.src ="/jaxonetic/theme/jaxonetic/img/textures/SquareBlue.png";
 var buttonData3 = { name:"blue", image:button3, x:320 - 32 - 10, y:10, w:32, h:32 };
 buttons.push( buttonData3 );
+
+	var redTexture = THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/textures/SquareRed.png' );
+	var blueTexture = THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/textures/SquareBlue.png' );
+	var greenTexture = THREE.ImageUtils.loadTexture( '/jaxonetic/theme/jaxonetic/img/textures/SquareGreen.png' );
+
+
 //////webcam
 //////////////////////
 // MAIN
@@ -221,10 +227,11 @@ function init()
 
 	 bridgeTextsFace.position.x-=(helper.box.max.x - helper.box.min.x)/2;
 	 scene.add(bridgeTextsFace)
+	 /*
  	var axes = new THREE.AxisHelper(5000);   
       axes.position = ORIGIN_POSITION;
      scene.add(axes);
-      
+      */
    
 
       
@@ -689,7 +696,7 @@ graphingTextContainer = new THREE.Object3D();
 	var homecenterAxis = new THREE.AxisHelper(DFLT_CUBE_SIZE);
 	homecenterAxis.name = "homescene.axis";
 	homecenterAxis.position = cameraFocusOnBrowsingAndWebcamScenesCenter;
-    scene.add(homecenterAxis);
+   // scene.add(homecenterAxis);
 	
 /*	
 	var homeBridgeGeometry = new THREE.Vector3(bridgeXDistance-DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE*2, DFLT_CUBE_SIZE*2 );
@@ -727,21 +734,60 @@ graphingTextContainer = new THREE.Object3D();
 	webcamScene.add(movieScreen);
 	
 	
+	var redMaterial = new THREE.MeshBasicMaterial({
+				map: redTexture,
+				side: THREE.FrontSide
+		});
+    var redGeometry = new THREE.PlaneGeometry( 90, 90, 1, 1 );
+	var redMesh = new THREE.Mesh(redGeometry, redMaterial);
+	
+	var blueMaterial = new THREE.MeshBasicMaterial({
+				map: blueTexture,
+				side: THREE.FrontSide
+		});
+    var blueGeometry = new THREE.PlaneGeometry( 90, 90, 1, 1 );
+	var blueMesh = new THREE.Mesh(blueGeometry, blueMaterial);
+	
+	var greenMaterial = new THREE.MeshBasicMaterial({
+				map: greenTexture,
+				side: THREE.FrontSide
+		});
+    var greenGeometry = new THREE.PlaneGeometry( 90, 90, 1, 1 );
+	var greenMesh = new THREE.Mesh(greenGeometry, greenMaterial);
+	
+	
+	
+	redMesh.position = movieScreen.position.clone();
+	redMesh.position.x+=200;
+	redMesh.position.y+=300;
+	redMesh.position.z+=15;
+	blueMesh.position = movieScreen.position.clone();
+	blueMesh.position.x+=500;
+	blueMesh.position.y+=300;
+	blueMesh.position.z+=15;
+	greenMesh.position = movieScreen.position.clone();
+	greenMesh.position.x+=350;
+	greenMesh.position.y+=300;
+	greenMesh.position.z+=15;
+	webcamScene.add(redMesh);
+	webcamScene.add(blueMesh);
+	webcamScene.add(greenMesh);
+	
 	var frontFaceTexts = [ "the cubes color", "webcam view to change ","Air tap the cube on the" ];
 	var frontFaceTextPosition = new THREE.Vector3(DFLT_CUBE_SIZE,DFLT_CUBE_SIZE,0);
 	var frontFace = createTextContainer(frontFaceTexts,frontFaceTextPosition,	xyPlaneToZpos,DESCENDING_TEXT_VERTICAL);
 
-	var frontFaceTexts = [ "come back to this later.","functionality  but I'll have to","I have many plans for this " ];
-	var frontFaceTextPosition = new THREE.Vector3(DFLT_CUBE_SIZE,0,0);
-	var frontFace = createTextContainer(frontFaceTexts,frontFaceTextPosition,	xyPlaneToZpos,DESCENDING_TEXT_VERTICAL);
+	var webcamPlansTexts = [ "come back to this later.","functionality  but I'll have to","I have many plans for this " ];
+	var webcamPlansTextPosition = new THREE.Vector3(DFLT_CUBE_SIZE,0,0);
+	var webcamPlans = createTextContainer(webcamPlansTexts,webcamPlansTextPosition,	xyPlaneToZpos,DESCENDING_TEXT_VERTICAL);
 
 	webcamScene.add(frontFace);
-	
+	webcamScene.add(webcamPlans);
 	
 	
 	var axis = new THREE.AxisHelper(DFLT_CUBE_SIZE);
 	axis.name = "webcamscene.axis";
-    webcamScene.add(axis);
+   // webcamScene.add(axis);
    
    
 
@@ -890,7 +936,7 @@ graphingTextContainer = new THREE.Object3D();
 	
 	var axis = new THREE.AxisHelper(DFLT_CUBE_SIZE/4);
 	axis.name = "brickscene.axis";
-    browsingScene.add(axis);
+   // browsingScene.add(axis);
   //  axis.position = browsingSceneCenter;
    // axis.visible = false;
     
@@ -1059,7 +1105,7 @@ function render()
 			}
 			
 			if(movieScreen) {
-		movieScreen.lookAt( webcamSceneContainer.worldToLocal( camera.position.clone() ));
+		//movieScreen.lookAt( webcamSceneContainer.worldToLocal( camera.position.clone() ));
 	//	movieScreen.lookAt(camera.position);
 	}
 			if(rotatingCube) rotatingCube.rotation.y+=(.05)*Math.PI/180;
