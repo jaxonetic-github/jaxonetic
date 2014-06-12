@@ -133,9 +133,7 @@
 						<li>
 							Implemented portals to load reports or lien data in MS Word and Excel formats and convert them into XML for external delivery or internal processing.
 						</li>
-						<li>
-							Implemented the integration of 3rd party vendor and submitter services with Ingeo
-							</li>
+				
 					</ul>
 				</dd>
 
