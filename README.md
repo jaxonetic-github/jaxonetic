@@ -1,12 +1,11 @@
-The house that Jax built
+The hoUSe thAT Jax buILT
 =======
-
+[#Click To View]http://www.jaxonetic.0fees.us/jaxonetic)
    
 What do you do when you can't produce a decent portfolio because a majority of your jobs require you to sign a NDA or your harddrive
 crashed with your personal projects. You start over.  This is me starting over.  Parts of this site will be very professional and
 other parts will be silly as I play and experiment with various technologies.    Ultimately elements on this site are here to show prospective
-clients what I am capable of, to serve as backup, and to be a portal to my digital presence.  It will serve as a landing page because
-unfortunately people are always slow to update their browsers and I want this to accessible to as many people as possible. 
+clients what I am capable of, to serve as backup, and to be a portal to my digital presence.  I am using a free no frills hosting service so load times may suffer.
 
 Comments
 ----------------
