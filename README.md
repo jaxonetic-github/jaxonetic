@@ -1,6 +1,6 @@
 The hoUSe thAT Jax buILT
 =======
-[#Click To View]http://www.jaxonetic.0fees.us/jaxonetic)
+[#Click To View](http://www.jaxonetic.0fees.us/jaxonetic)
    
 What do you do when you can't produce a decent portfolio because a majority of your jobs require you to sign a NDA or your harddrive
 crashed with your personal projects. You start over.  This is me starting over.  Parts of this site will be very professional and
